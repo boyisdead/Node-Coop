@@ -1,5 +1,9 @@
 studentModule.controller('addStudentCtrl', ['$scope', '$uibModal','$log', 'StudentsService', function($scope, $uibModal, $log, StudentsService) {
 
+	
+    // CREATE ==================================================================
+    // when submitting the add form, send the text to the node API
+
     $scope.createStudent = function() {
 
         // validate the formData to make sure that something is there
