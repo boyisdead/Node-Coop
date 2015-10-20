@@ -1,41 +1,37 @@
-<!doctype html>
-
-<!-- ASSIGN OUR ANGULAR MODULE -->
+<!DOCTYPE html>
 <html ng-app="coopEdAssist">
+
 <head>
-	<!-- META -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
-
-	<title>Coop transforming</title>
-
-	<!-- SCROLLS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-	<style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
+    <title>Coop transforming</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <style>
 		html 					{ overflow-y:scroll; }
 		body 					{ padding-top:50px; }
 		#todo-list 				{ margin-bottom:30px; }
 		#todo-form 	 			{ margin-bottom:50px; }
+		input {height: 40px;}
 	</style>
 
-	<!-- SPELLS -->
-	
-	<script src="bower_components/angular/angular.min.js"></script>
-	<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
-	<script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
-
-
-	<script src="js/core.js"></script> <!-- load our main application -->
-	<script src="js/controllers/homeCtrl.js"></script>
-	<script src="js/controllers/studentCtrl.js"></script> <!-- load up our controller -->
-	<script src="js/services/students.js"></script> <!-- load our students service -->
-
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/core.js"></script>
+    <!-- load main application -->
+    <script src="js/controllers/homeCtrl.js"></script>
+    <script src="js/controllers/studentCtrl.js"></script>
+    <script src="js/controllers/addStudentCtrl.js"></script>
+    <!-- load controller -->
+    <script src="js/services/students.js"></script>
+    <!-- load students service -->
 </head>
-<!-- SET THE CONTROLLER -->
+
 <body ng-controller="studentCtrl">
-	<a ui-sref="home">home</a><br/>
-	<a ui-sref="student">student</a>
-<div ui-view></div>
+    <a ui-sref="home">home</a>
+    <br/>
+    <a ui-sref="student">student</a>
+    <div ui-view></div>
 </body>
+
 </html>

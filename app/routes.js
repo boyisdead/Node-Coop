@@ -26,9 +26,14 @@ module.exports = function(app) {
 
 		// create a student, information comes from AJAX request from Angular
 		Student.create({
-			name_en : req.body.text,
-			name_th : req.body.text,
-			done : false
+			stu_code : req.body.stu_code,
+			name_th : req.body.first_name_th + " " + req.body.last_name_th,
+			name_en : req.body.first_name_en + " " + req.body.last_name_en,
+			contact_email : req.body.contact_email,
+			tel : req.body.tel,
+			advisor_id : req.body.advisor,
+			sex : req.body.sex
+
 		}, function(err, student) {
 			if (err)
 				res.send(err);

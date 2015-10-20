@@ -1,6 +1,7 @@
 var mainModule = angular.module('coopEdAssist', [
 
 	'ui.router',
+	'ui.bootstrap',
 
 
 	'coopEdAssist.home',

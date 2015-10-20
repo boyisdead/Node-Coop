@@ -6,7 +6,7 @@ studentModule.factory('StudentsService', ['$http',function($http) {
 				return $http.get('/api/students');
 			},
 			create : function(studentData) {
-				console.log("before post " + studentData.text);
+				console.log("before post " + studentData);
 				return $http.post('/api/students', studentData);
 			},
 			delete : function(id) {
