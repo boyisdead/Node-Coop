@@ -30,3 +30,16 @@
     font-weight:bold;
     text-decoration:none;
 }
+
+.side-menu-show {
+	position:fixed;
+	right:15px;
+	top:5em;
+	background-color: white;
+}
+
+.side-menu-hid {
+	position:fixed;
+	right:-10px;
+	top:5em;
+}

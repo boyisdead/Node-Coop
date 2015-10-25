@@ -39,5 +39,4 @@ studentModule.controller('studentCtrl', ['$scope', '$http', '$uibModal','$log','
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
-
 }]);
