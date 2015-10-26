@@ -8,4 +8,5 @@ module.exports = mongoose.model('Student', {
 	tel : {type : String, default: ''},
 	advisor_id : {type : String, default: ''},
 	sex : {type : String, default: ''},
+	password : {type : String, default: ''},
 });
