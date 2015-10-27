@@ -1,82 +1,98 @@
-<!doctype html>
+<!DOCTYPE html>
+<html ng-app="coopEdAssist">
 
-<!-- ASSIGN OUR ANGULAR MODULE -->
-<html ng-app="scotchTodo">
 <head>
-	<!-- META -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
-
-	<title>Coop transforming</title>
-
-	<!-- SCROLLS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-	<style>
-		html 					{ overflow-y:scroll; }
-		body 					{ padding-top:50px; }
-		#todo-list 				{ margin-bottom:30px; }
-		#todo-form 	 			{ margin-bottom:50px; }
-	</style>
-
-	<!-- SPELLS -->
-	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
-
-	<script src="js/controllers/main.js"></script> <!-- load up our controller -->
-	<script src="js/services/todos.js"></script> <!-- load our todo service -->
-	<script src="js/core.js"></script> <!-- load our main application -->
-
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
+    <title>Coop transforming</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="mian-style.css">
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/core.js"></script>
+    <!-- load main application -->
+    <script src="js/controllers/homeCtrl.js"></script>
+    <script src="js/controllers/studentCtrl.js"></script>
+    <script src="js/controllers/addStudentCtrl.js"></script>
+    <script src="js/controllers/teacherCtrl.js"></script>
+    <script src="js/controllers/addTeacherCtrl.js"></script>
+    <!-- load controller -->
+    <script src="js/services/students.js"></script>
+    <script src="js/services/teachers.js"></script>
+    <!-- load students service -->
 </head>
-<!-- SET THE CONTROLLER -->
-<body ng-controller="mainController">
-	<div class="container">
 
+<body ng-controller="studentCtrl">
+    <header class="navbar navbar-default navbar-fixed-top navbar-inner">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-3" ng-click="isCollapsed = !isCollapsed">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand visible-xs" href="#">Coop transforming</a>
+            </div>
+            <nav class="hidden-xs">
+                <ul class="nav navbar-nav">
+                    <a ui-sref="home" class="navbar-brand" role="button">Dashboard</a>
+                    <li><a ui-sref="student">Student</a></li>
+                    <li><a ui-sref="login">Login</a></li>
+                    <li><a ui-sref="teacher">Teacher</a></li>
+                    <!-- Under construction
+                <li class="dropdown" uib-dropdown="">
+                    <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
+                        Directives <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#accordion">Accordion</a></li>
+                        <li><a href="#alert">Alert</a></li>
+                        <li><a href="#buttons">Buttons</a></li>
+                        <li><a href="#carousel">Carousel</a></li>
+                        <li><a href="#collapse">Collapse</a></li>
+                        <li><a href="#datepicker">Datepicker</a></li>
+                        <li><a href="#dropdown">Dropdown</a></li>
+                        <li><a href="#modal">Modal</a></li>
+                        <li><a href="#pagination">Pagination</a></li>
+                        <li><a href="#popover">Popover</a></li>
+                        <li><a href="#progressbar">Progressbar</a></li>
+                        <li><a href="#rating">Rating</a></li>
+                        <li><a href="#tabs">Tabs</a></li>
+                        <li><a href="#timepicker">Timepicker</a></li>
+                        <li><a href="#tooltip">Tooltip</a></li>
+                        <li><a href="#typeahead">Typeahead</a></li>
+                    </ul>
+                </li> -->
+                    
 
+                    <!-- Under construntion
+                <li class="dropdown" uib-dropdown="">
+                    <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
+                        Previous docs <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
 
-
-		<!-- HEADER AND TODO COUNT -->
-		<div class="jumbotron text-center">
-			<h1>I'm a Todo-aholic <span class="label label-info">{{ todos.length }}</span></h1>
-		</div>
-
-		<!-- TODO LIST -->
-		<div id="todo-list" class="row">
-			<div class="col-sm-4 col-sm-offset-4">
-
-				
-
-				<!-- LOOP OVER THE TODOS IN $scope.todos -->
-				<div class="checkbox" ng-repeat="todo in todos">
-					<label>
-						<input type="checkbox" ng-click="deleteTodo(todo._id)"> {{ todo.text }}
-					</label>
-				</div>
-
-				<p class="text-center" ng-show="loading">
-					<span class="fa fa-spinner fa-spin fa-3x"></span>
-				</p>
-
-			</div>
-		</div>
-
-		<!-- FORM TO CREATE TODOS -->
-		<div id="todo-form" class="row">
-			<div class="col-sm-8 col-sm-offset-2 text-center">
-				<form>
-					<div class="form-group">
-
-						<!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-						<input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.text">
-					</div>
-
-					<!-- createToDo() WILL CREATE NEW TODOS -->
-					<button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>
-				</form>
-			</div>
-		</div>
-
-
-	</div>
-
+                        <li ng-repeat="version in oldDocs" class="ng-scope">
+                            <a ng-href="/bootstrap" class="ng-binding" href="/bootstrap">Current</a>
+                        </li>
+                    </ul>
+                </li> -->
+                </ul>
+            </nav>
+            <nav class="visible-xs collapse" uib-collapse="!isCollapsed" style="height: 0px;">
+                <ul class="nav navbar-nav">
+                    <li><a ui-sref="home" ng-click="isCollapsed = !isCollapsed">Dashboard</a></li>
+                    <li><a ui-sref="student" ng-click="isCollapsed = !isCollapsed">Student</a></li>
+                    <li><a ui-sref="login" ng-click="isCollapsed = !isCollapsed">Login</a></li>
+                    <li><a ui-sref="teacher" ng-click="isCollapsed = !isCollapsed">Teacher</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div ui-view style="position:relative;top:62px;"></div>
 </body>
+
 </html>
