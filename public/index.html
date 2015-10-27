@@ -16,8 +16,11 @@
     <script src="js/controllers/homeCtrl.js"></script>
     <script src="js/controllers/studentCtrl.js"></script>
     <script src="js/controllers/addStudentCtrl.js"></script>
+    <script src="js/controllers/teacherCtrl.js"></script>
+    <script src="js/controllers/addTeacherCtrl.js"></script>
     <!-- load controller -->
     <script src="js/services/students.js"></script>
+    <script src="js/services/teachers.js"></script>
     <!-- load students service -->
 </head>
 
@@ -36,6 +39,9 @@
             <nav class="hidden-xs">
                 <ul class="nav navbar-nav">
                     <a ui-sref="home" class="navbar-brand" role="button">Dashboard</a>
+                    <li><a ui-sref="student">Student</a></li>
+                    <li><a ui-sref="login">Login</a></li>
+                    <li><a ui-sref="teacher">Teacher</a></li>
                     <!-- Under construction
                 <li class="dropdown" uib-dropdown="">
                     <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
@@ -60,7 +66,8 @@
                         <li><a href="#typeahead">Typeahead</a></li>
                     </ul>
                 </li> -->
-                    <li><a ui-sref="student">Student</a></li>
+                    
+
                     <!-- Under construntion
                 <li class="dropdown" uib-dropdown="">
                     <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
@@ -79,6 +86,8 @@
                 <ul class="nav navbar-nav">
                     <li><a ui-sref="home" ng-click="isCollapsed = !isCollapsed">Dashboard</a></li>
                     <li><a ui-sref="student" ng-click="isCollapsed = !isCollapsed">Student</a></li>
+                    <li><a ui-sref="login" ng-click="isCollapsed = !isCollapsed">Login</a></li>
+                    <li><a ui-sref="teacher" ng-click="isCollapsed = !isCollapsed">Teacher</a></li>
                 </ul>
             </nav>
         </div>
