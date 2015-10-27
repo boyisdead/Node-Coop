@@ -1,0 +1,50 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <h1>เพิ่มนักศึกษา</h1>
+            <form class="form-horizontal" style="margin-bottom:25px">
+                <div class="form-group">
+                    <label for="scode">รหัสนักศึกษา</label>
+                    <input type="text" class="form-control" ng-model="formData.stu_code" placeholder="รหัสนักศึกษา" id="scode" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="fnameTh">ชื่อภาษาไทย</label>
+                    <div class="form-inline">
+                        <input type="text" class="form-control" ng-model="formData.first_name_th" placeholder="ชื่อ" for="fnameTh" style="max-width:250px">
+                        <input type="text" class="form-control" ng-model="formData.last_name_th" placeholder="นามสกุล" style="max-width:250px;margin-top:10px">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="fnameEn">ชื่อภาษาอังกฤษ</label>
+                    <div class="form-inline">
+                        <input type="text" class="form-control" ng-model="formData.first_name_en" placeholder="First name" id="fnameEn" style="max-width:250px;">
+                        <input type="text" class="form-control" ng-model="formData.last_name_en" placeholder="Last name" id="lnameEn" style="max-width:250px;margin-top:10px">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email">อีเมล์</label>
+                    <input type="text" class="form-control" ng-model="formData.contact_email" placeholder="Email" id="email" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="tel">เบอร์โทรศัพท์</label>
+                    <input type="text" class="form-control" ng-model="formData.tel" placeholder="Telephone" id="tel" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="advisor">รหัสอาจารย์ที่ปรึกษา</label>
+                    <input type="text" class="form-control" ng-model="formData.advisor" placeholder="Advisor ID" id="advisor" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="sex">เพศ</label>
+                    <label class="radio-inline" id="sex">
+                        <input type="radio" ng-model="formData.sex" value="ชาย"></label><span>ชาย</span>
+                    <label class="radio-inline">
+                        <input type="radio" ng-model="formData.sex" value="หญิง"></label><span>หญิง</span>
+                </div>
+                <!-- class table -->
+                <button type="submit" class="btn btn-primary btn-lg " ng-click="createStudent()">Add</button>
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,33 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-sm-offset-12">
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th>รหัสนักศึกษา</th>
+                        <th>ชื่อไทย</th>
+                        <th>ชื่ออังกฤษ</th>
+                        <th>เพศ</th>
+                        <th>ลบ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="student in students">
+                        <td ng-bind="student.stu_code"></td>
+                        <td ng-bind="student.name_th"></td>
+                        <td ng-bind="student.name_en"></td>
+                        <td ng-bind="student.sex"></td>
+                        <td>
+                            <a ng-click="deleteStudent(student._id)"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-spin fa-3x"></span></p>
+        </div>
+    </div>
+    <hr>
+        <div class="round-button" style="position:fixed;right:20px;bottom:20px;width:58px !important; height:58px
+        !important;"><div class="round-button-circle" ng-click="openAddStudent()"><a class="round-button"><span class="glyphicon glyphicon-plus"></span></a></div></div>
+
+</div>
