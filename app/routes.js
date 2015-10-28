@@ -174,10 +174,14 @@ module.exports = function(app) {
 
     // authenticate to obtains token
     app.post('/api/auth', function(req, res) {
-        if (req.body.type == "student")
+        console.log("Hello login");
+        if (req.body.type == "student"){
+            console.log("Student login");
             studentLogin(req.body, res, app);
-        else if (req.body.type == "teacher")
+        } else if (req.body.type == "teacher") {
             teacherLogin(req.body, res, app);
+            console.log("Teacher login");
+        } else console.log(req.body.type +" login");
     });
 
     // verify token for every request
@@ -214,6 +218,7 @@ module.exports = function(app) {
 
     //     }
     // });
+    
     // -----------------------------------Student API ----------------------------------------------------
     // get all students
     app.get('/api/students', function(req, res) {
