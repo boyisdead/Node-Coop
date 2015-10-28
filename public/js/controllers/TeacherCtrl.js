@@ -30,8 +30,6 @@ teacherModule.controller('teacherCtrl', ['$scope', '$http', '$uibModal','$log','
             animation: true,
             templateUrl: 'view/modal/add_teacher_modal.html',
             controller: 'addTeacherCtrl',
-            backdrop: false,
-            size: 'lg'
         });
 
         modalInstance.result.then(function() {

@@ -6,13 +6,15 @@ var mainModule = angular.module('coopEdAssist', [
 
 	'coopEdAssist.home',
 	'coopEdAssist.student',
-	'coopEdAssist.teacher'
+	'coopEdAssist.teacher',
+	'coopEdAssist.authentication'
 
 ]);
 
 var homeModule = angular.module('coopEdAssist.home',[]);
 var studentModule = angular.module('coopEdAssist.student', []);
 var teacherModule = angular.module('coopEdAssist.teacher', []);
+var authenticationModule = angular.module('coopEdAssist.authentication',[]);
 
 
 mainModule.config(function($stateProvider, $urlRouterProvider){
@@ -33,7 +35,7 @@ mainModule.config(function($stateProvider, $urlRouterProvider){
 		.state('login',{
 			url:"/login",
 			templateUrl: "view/login_page.html",
-			controller: "userCtrl"
+			controller: "loginCtrl"
 		})
 		.state('teacher',{
 			url:"/teacher",

@@ -30,7 +30,6 @@ studentModule.controller('studentCtrl', ['$scope', '$http', '$uibModal','$log','
             animation: true,
             templateUrl: 'view/modal/add_student_modal.html',
             controller: 'addStudentCtrl',
-            backdrop: false,
             size: 'lg'
         });
 
