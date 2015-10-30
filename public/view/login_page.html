@@ -1,12 +1,36 @@
 <div class="container">
-    <div class="row">
-        <div class="col-xs-12 col-sm-3 col-md-4 col-lg-4 col-sm-offset-2" ng-click="openStudentLogin()" style="background-color:blue;height:70px">
-            <h1>Student</h1>
-
+    <div class="row" ng-hide="currentUser.success">
+        <div class="col-sm-8 col-sm-offset-2">
+            <h1>เข้าสู่ระบบ <small> <span ng-bind="currentUser.success" ></span><span ng-bind="currentUser.display_name" ></span> </small> </h1> 
+            <form class="form-horizontal" role="form">
+                <div class="btn-group">
+                    <label class="btn btn-default" ng-model="login.type" uib-btn-radio="'teacher'" uncheckable>Teacher</label>
+                    <label class="btn btn-default" ng-model="login.type" uib-btn-radio="'student'" uncheckable>Student</label>
+                </div>
+                <div class="form-group">
+                    <label for="inputUsername" class="col-sm-4 control-label">Username</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="inputUsername" placeholder="Username" ng-model="login.username">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="col-sm-4 control-label">Password</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" id="inputPassword" placeholder="Password" ng-model="login.password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-4 col-sm-10">
+                        <button type="submit" class="btn btn-default" ng-click="loginVerify(login)">Log In</button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="col-xs-12 col-sm-3 col-md-4 col-lg-4 col-sm-offset-2" ng-click="openTeacherLogin()" style="background-color:red;height:70px">
-            <h1>Teacher</h1>
-
+    </div>
+    <div class="row" ng-hide="!currentUser.success">
+		<div class="col-sm-8 col-sm-offset-2">
+            <h1>ออกจากระบบ <small> คุณ <span ng-bind="currentUser.display_name" ></span></span> </small> </h1> 
+            <button class="btn btn-warning" ng-click="logout()">Logout</button>
         </div>
     </div>
 </div>
