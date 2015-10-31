@@ -9,4 +9,10 @@ module.exports = mongoose.model('Student', {
 	advisor_id : {type : String, default: ''},
 	sex : {type : String, default: ''},
 	password : {type : String, default: ''},
+	status : {
+		"profile":  {type : Boolean, default: false},
+		"document":  {type : Boolean, default: false},
+		"apply":  {type : Boolean, default: false},
+		"accept":  {type : Boolean, default: false},
+	}
 });

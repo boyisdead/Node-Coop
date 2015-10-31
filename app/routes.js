@@ -32,7 +32,7 @@ function studentLogin(item, res, app) {
                     "stu_code": student.stu_code,
                     access_type: "student"
                 }, app.get('secretToken'), {
-                    expiresInMinutes: 180 // expires in 3 hours
+                    expiresInMinutes: 3 // expires in 3 hours
                 });
 
                 // return the information including token as JSON
