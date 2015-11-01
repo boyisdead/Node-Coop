@@ -1,4 +1,4 @@
-studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','StudentsService', function($scope, $modalInstance, StudentsService) {
+teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','StudentsService', function($scope, $modalInstance, StudentsService) {
 
 	
     // CREATE ==================================================================

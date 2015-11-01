@@ -17,6 +17,25 @@ authenticationModule.controller('loginCtrl', ['$scope', '$rootScope','UsersServi
 	// 	});
 	// };
 
+	$scope.documents = [{ 
+			name: "AAAA",
+			type: "resume",
+			status: "ready" 
+		},{ 
+			name: "BBBB",
+			type: "resume",
+			status: "denied" 
+		},{ 
+			name: "CCCC",
+			type: "resume",
+			status: "wait" 
+		},{ 
+			name: "DDDD",
+			type: "resume",
+			status: "ready" 
+		}
+	];
+
 	$scope.loginVerify = function (item){
 		if(item){
 			if (item.username.length < 6){

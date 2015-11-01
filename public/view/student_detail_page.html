@@ -1,0 +1,100 @@
+<div class="container">
+    <header class="navbar navbar-default navbar-inner" ng-class="{'side-menu-show':menuVisible,'side-menu-hid':!menuVisible}" ng-click="menuVisible = !menuVisible" ng-init="menuVisible = false">
+        <div class="container">
+            <div class="navbar-header">
+                <h4 style="color:gray">เมนู</h4>
+            </div>
+            <nav ng-show="menuVisible">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true" ng-click="openAddTeacher()"></span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="page-header">
+        <h2>จัดการข้อมูลนักศึกษา <small>edit</small></h2>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <div class="col-sm-5">
+                        <img src="..." alt="..." class="img-thumbnail" style="max-width:125px;min-width:100px;max-height:150px;min-height:115px;">
+                    </div>
+                    <div class="col-sm-7">
+                        .col-sm-7
+                        <br> Status will show here
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="fnameTH" class="col-sm-4 control-label">ชื่อ <small class="mini-red"><div>(ภาษาไทย)</div></small></label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="fnameTH" placeholder="ชื่อต้น">
+                    </div>
+                    <div class="col-sm-8 col-sm-offset-4">
+                        <input type="text" class="form-control" id="lnameTH" placeholder="นามสกุล">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="fnameEN" class="col-sm-4 control-label">ชื่อ
+                        <div><small class="mini-red">(ภาษาอังกฤษ)</small></div>
+                    </label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="fnameEN" placeholder="ชื่อต้น">
+                    </div>
+                    <div class="col-sm-8 col-sm-offset-4">
+                        <input type="text" class="form-control" id="lnameEN" placeholder="นามสกุล">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <form class="form-horizontal" role="form">
+            	<div class="form-group">
+                    <label for="email" class="col-sm-4 control-label">วันเกิด</label>
+                    <div class="col-sm-8">
+                        <p class="input-group">
+                            <input type="date" class="form-control" uib-datepicker-popup ng-model="dt">
+                            <span class="input-group-btn"></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="tel" class="col-sm-4 control-label">เบอร์โทรศัพท์</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="tel" placeholder="08X XXXXXXX">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-4 control-label">อีเมล์</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="email" placeholder="email@provider.something">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="academicYear" class="col-sm-4 control-label">ปีการศึกษา</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="academicYear" placeholder="25XX (พ.ศ.)">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="gpa" class="col-sm-4 control-label">เกรดเฉลี่ย</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="gpa" placeholder="">
+                    </div>
+                </div>
+                <div class="alert alert-danger" role="alert">
+                    Waring Panel
+                </div>
+                <div class="pull-right">
+                    <div class="center-block">
+                        <button type="button" class="btn btn-success">Save</button>
+                        <button type="button" class="btn btn-warning">Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

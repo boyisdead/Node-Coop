@@ -19,10 +19,13 @@
     <script src="js/controllers/addTeacherCtrl.js"></script>
     <script src="js/controllers/loginCtrl.js"></script>
     <script src="js/controllers/loginModalCtrl.js"></script>
+    <script src="js/controllers/studentDetailCtrl.js"></script>
+    <script src="js/controllers/documentCtrl.js"></script>
     <!-- load controller -->
     <script src="js/services/students.js"></script>
     <script src="js/services/teachers.js"></script>
     <script src="js/services/users.js"></script>
+    <script src="js/services/documents.js"></script>
     <!-- load students service -->
 </head>
 
@@ -43,8 +46,10 @@
                     <a ui-sref="home" class="navbar-brand" role="button">Dashboard</a>
                     <li><a ui-sref="studentList">Student</a></li>
                     <li><a ui-sref="teacherList">Teacher</a></li>
+                    <li><a ui-sref="documentList">Document</a></li>
                     <li><a ui-sref="login"><span ng-show="!currentUser">Login</span><span ng-show="currentUser">Logout</span></a></li>
-                    <!-- Under construction
+
+            <!-- Under construction
                 <li class="dropdown" uib-dropdown="">
                     <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
                         Directives <b class="caret"></b>
@@ -67,10 +72,9 @@
                         <li><a href="#tooltip">Tooltip</a></li>
                         <li><a href="#typeahead">Typeahead</a></li>
                     </ul>
-                </li> -->
-                    
-
-                    <!-- Under construntion
+                </li>
+             -->
+            <!-- Under construntion
                 <li class="dropdown" uib-dropdown="">
                     <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
                         Previous docs <b class="caret"></b>
@@ -81,7 +85,8 @@
                             <a ng-href="/bootstrap" class="ng-binding" href="/bootstrap">Current</a>
                         </li>
                     </ul>
-                </li> -->
+                </li> 
+            -->
                 </ul>
             </nav>
             <nav class="visible-xs collapse" uib-collapse="!isCollapsed" style="height: 0px;">
@@ -89,12 +94,17 @@
                     <li><a ui-sref="home" ng-click="isCollapsed = !isCollapsed">Dashboard</a></li>
                     <li><a ui-sref="studentList" ng-click="isCollapsed = !isCollapsed">Student</a></li>
                     <li><a ui-sref="teacherList" ng-click="isCollapsed = !isCollapsed">Teacher</a></li>
+                    <li><a ui-sref="documentList" ng-click="isCollapsed = !isCollapsed">Document</a></li>
                     <li><a ui-sref="login" ng-click="isCollapsed = !isCollapsed"><span ng-show="!currentUser">Login</span><span ng-show="currentUser">Logout</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
-    <div ui-view style="position:relative;top:62px;"></div>
+    <div class="container" >
+        <div class="row show-grid" ui-view style="margin:50px 10px 10px 10px">
+            
+        </div>
+    </div>
 </body>
 
 </html>

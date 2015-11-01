@@ -1,0 +1,50 @@
+<div class="container little-frame">
+
+    <header class="navbar navbar-default navbar-inner" ng-class="{'side-menu-show':menuVisible,'side-menu-hid':!menuVisible}" ng-click="menuVisible = !menuVisible" ng-init="menuVisible = false">
+        <div class="container">
+            <div class="navbar-header">
+                <h4 style="color:gray">เมนู</h4>
+                
+            </div>
+            <nav ng-show="menuVisible">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true" ng-click="openAddTeacher()"></span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="page-header">
+        <h2>จัดการเอกสาร <small> add edit delete</small></h2>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1 ">
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th>ชื่อเอกสาร</th>
+                        <th>ประเภท</th>
+                        <th>สถานะ</th>
+                        <th>การกระทำ</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="document in documents">
+                    <tr>
+                        <th>Owner : <span ng-bind="document._id"></span></th>
+                    </tr>
+
+                    <tr ng-repeat="file in document.files">
+                        <td ng-bind="file.file_name"></td>
+                        <td ng-bind="file.file_type"></td>
+                        <td ng-bind="file.status"></td>
+                        <td>
+                            <a ng-click="deleteDocument(document._id)"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-spin fa-3x"></span></p>
+        </div>
+    </div>
+</div>

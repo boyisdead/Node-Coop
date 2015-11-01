@@ -7,7 +7,8 @@ var mainModule = angular.module('coopEdAssist', [
     'coopEdAssist.home',
     'coopEdAssist.student',
     'coopEdAssist.teacher',
-    'coopEdAssist.authentication'
+    'coopEdAssist.authentication',
+    'coopEdAssist.document'
 
 ]);
 
@@ -15,6 +16,7 @@ var homeModule = angular.module('coopEdAssist.home', []);
 var studentModule = angular.module('coopEdAssist.student', []);
 var teacherModule = angular.module('coopEdAssist.teacher', []);
 var authenticationModule = angular.module('coopEdAssist.authentication', []);
+var documentModule = angular.module('coopEdAssist.document', []);
 
 
 mainModule.config(function($stateProvider, $urlRouterProvider) {
@@ -27,6 +29,7 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "view/home_page.html",
             controller: "homeCtrl",
             data: {
+                // just for now
                 requireLogin: false,
                 accessType: 'any'
             }
@@ -36,6 +39,7 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "view/login_page.html",
             controller: "loginCtrl",
             data: {
+                // just for now
                 requireLogin: false,
                 accessType: 'any'
             }
@@ -45,7 +49,8 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "view/teacher_page.html",
             controller: "teacherCtrl",
             data: {
-                requireLogin: true,
+                // just for now
+                requireLogin: false,
                 accessType: 'teacher'
             }
         })
@@ -54,11 +59,31 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "view/student_page.html",
             controller: "studentCtrl",
             data: {
-                requireLogin: true,
+                // just for now
+                requireLogin: false,
+                accessType: 'teacher'
+            }
+        })
+        .state('studentDetail', {
+            url: "/student_detail",
+            templateUrl: "view/student_detail_page.html",
+            controller: "studentDetailCtrl",
+            data: {
+                // just for now
+                requireLogin: false,
+                accessType: 'student'
+            }
+        })
+        .state('documentList', {
+            url: "/document",
+            templateUrl: "view/document_page.html",
+            controller: "documentCtrl",
+            data: {
+                // just for now
+                requireLogin: false,
                 accessType: 'teacher'
             }
         });
-
 });
 
 mainModule.run(function($rootScope,$state, loginModal) {

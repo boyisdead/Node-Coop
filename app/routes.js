@@ -1,5 +1,6 @@
 var Student = require('./models/student');
 var Teacher = require('./models/teacher');
+var Document = require('./models/document');
 var jwt = require('jsonwebtoken');
 
 
@@ -130,7 +131,7 @@ function delStudent(item, res) {
             res.send(err);
         getStudents(res);
     })
-}
+};
 
 function getTeacher(res) {
     Teacher.find(function(err, teachers) {
@@ -168,7 +169,30 @@ function delTeacher(item, res) {
             res.send(err);
         getTeacher(res);
     })
+};
+
+function getDocument(res) {
+    var query = Document.aggregate([ { "$group": {"_id": "$owner", "files": { "$push": { "file_name": "$file_name","file_type": "$file_type","comment": "$comment"}}}}]);
+    query.exec(function(err, documents) {
+
+        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+        if (err)
+            res.send(err)
+
+        res.json(documents); // return all documents in JSON format
+    });
+};
+
+function delDocument(item, res) {
+    Document.remove({
+        _id: item
+    }, function(err) {
+        if (err)
+            res.send(err);
+        getDocument(res);
+    })
 }
+
 
 module.exports = function(app) {
 
@@ -251,7 +275,21 @@ module.exports = function(app) {
         delTeacher(req.params.teacher_id, res);
     });
 
+    // -----------------------------------Document API ----------------------------------------------------
+    // get all students
+    app.get('/api/documents', function(req, res) {
+        getDocument(res);
+    });
 
+    // create student and send back all students after creation
+    // app.post('/api/documents', function(req, res) {
+    //     createDocument(req.body, res);
+    // });
+
+    // delete a student
+    app.delete('/api/documents/:document_id', function(req, res) {
+        delDocument(req.params.document_id, res);
+    });
 
 
     // application -------------------------------------------------------------
