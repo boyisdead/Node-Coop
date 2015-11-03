@@ -10,8 +10,10 @@
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-    <script src="js/core.js"></script>
     <!-- load main application -->
+    <script src="js/core.js"></script>
+
+    <!-- load controllers -->
     <script src="js/controllers/homeCtrl.js"></script>
     <script src="js/controllers/studentCtrl.js"></script>
     <script src="js/controllers/addStudentCtrl.js"></script>
@@ -21,12 +23,16 @@
     <script src="js/controllers/loginModalCtrl.js"></script>
     <script src="js/controllers/studentDetailCtrl.js"></script>
     <script src="js/controllers/documentCtrl.js"></script>
-    <!-- load controller -->
+
+    <!-- load services -->
     <script src="js/services/students.js"></script>
     <script src="js/services/teachers.js"></script>
     <script src="js/services/users.js"></script>
     <script src="js/services/documents.js"></script>
-    <!-- load students service -->
+
+    <!-- load filters -->
+    <script src="js/filter/start-from-filter.js"></script>
+
 </head>
 
 <body ng-controller="studentCtrl">

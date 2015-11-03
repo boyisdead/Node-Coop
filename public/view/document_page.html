@@ -29,21 +29,23 @@
                         <th>การกระทำ</th>
                     </tr>
                 </thead>
-                <tbody ng-repeat="document in documents">
+                <tbody ng-repeat="document in documents |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                     <tr>
-                        <th>Owner : <span ng-bind="document._id"></span></th>
+                        <th ng-bind="document.owner"></th>
+                        <td ng-bind="document.file_name"></td>
                     </tr>
 
-                    <tr ng-repeat="file in document.files">
+                    <!-- <tr ng-repeat="file in document.files">
                         <td ng-bind="file.file_name"></td>
                         <td ng-bind="file.file_type"></td>
                         <td ng-bind="file.status"></td>
                         <td>
                             <a ng-click="deleteDocument(document._id)"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
+            <uib-pagination ng-model="currentPage" total-items="documents.length" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
             <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-spin fa-3x"></span></p>
         </div>
     </div>

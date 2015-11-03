@@ -1,6 +1,6 @@
 	// super simple service
 	// each function returns a promise object 
-documentModule.factory('DocumentsService', ['$http',function($http) {
+teacherModule.factory('TeachersService', ['$http',function($http) {
 		return {
 			get : function() {
 				return $http.get('/api/teachers');

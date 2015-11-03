@@ -1,5 +1,9 @@
 documentModule.controller('documentCtrl', ['$scope', 'DocumentsService', function($scope, DocumentsService) {
     $scope.loading = true;
+    $scope.documents = []
+        ,$scope.currentPage = 1
+        ,$scope.numPerPage = 2
+        ,$scope.maxSize = 5;
 
     DocumentsService.get()
         .success(function(data) {
@@ -17,4 +21,5 @@ documentModule.controller('documentCtrl', ['$scope', 'DocumentsService', functio
             $scope.loading = false;
         });
     }
+
 }])
