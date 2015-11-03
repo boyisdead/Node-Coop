@@ -172,8 +172,8 @@ function delTeacher(item, res) {
 };
 
 function getDocument(res) {
-    var query2 = Document.find();
-    var query = Document.aggregate([ { "$group": {"_id": "$owner", "files": { "$push": { "file_name": "$file_name","file_type": "$file_type","comment": "$comment"}}}}]);
+    var query2 = Document.find().sort( { file_name: 1 } );
+    var query = Document.aggregate([ { $sort:{owner:1}},{ "$group": {"_id": "$owner", "files": { "$push": { "file_name": "$file_name","file_type": "$file_type","comment": "$comment"}}}}]);
     query2.exec(function(err, documents) {
 
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute

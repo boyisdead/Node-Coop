@@ -1,0 +1,33 @@
+<div class="container" style="margin:20px">
+    <div class="row">
+        <div class="col-sm-8 col-sm-offset-2">
+            <h1>เพิ่มเอกสาร</h1>
+            <form class="form-horizontal" style="margin-bottom:25px">
+                <div class="form-group">
+                    <label for="scode">รหัสนักศึกษา</label>
+                    <input type="text" class="form-control" ng-model="formData.stu_code" placeholder="รหัสนักศึกษา" id="scode" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="fileUpload">เลือกไฟล์</label>
+                    <input type="file" class="form-control" placeholder="file" for="fileUpload" style="max-width:250px">
+                </div>
+                <div class="form-group">
+                    <label for="fileUpload">ประเภท</label>
+                    <select class="form-control" style="max-width:150px" id="fileType" ng-model="formData.fileType">
+                        <option value="1">Application</option>
+                        <option value="2">Resume</option>
+                        <option value="3">Certificatte</option>
+                        <option value="4">Other</option>
+                    </select>
+                </div>
+                <div class="form-group" ng-show="formData.fileType==3">
+                    <label for="email">หัวข้อ</label>
+                    <input type="text" class="form-control" ng-model="formData.file_name" placeholder="ชื่อไฟล์" for="fileUpload">
+                </div>
+                <!-- class table -->
+                <button type="submit" class="btn btn-primary btn-lg " ng-click="createStudent()">Add</button>
+                <button class="btn btn-warning btn-lg " ng-click="ok()">Close</button>
+            </form>
+        </div>
+    </div>
+</div>
