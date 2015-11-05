@@ -1,7 +1,11 @@
 var Student = require('./models/student');
 var Teacher = require('./models/teacher');
 var Document = require('./models/document');
+
 var jwt = require('jsonwebtoken');
+var fs = require("fs");     
+var multer = require('multer');
+var upload = multer({ dest: './uploads/documents/' });
 
 
 function studentLogin(item, res, app) {
@@ -172,9 +176,9 @@ function delTeacher(item, res) {
 };
 
 function getDocument(res) {
-    var query2 = Document.find().sort( { file_name: 1 } );
-    var query = Document.aggregate([ { $sort:{owner:1}},{ "$group": {"_id": "$owner", "files": { "$push": { "file_name": "$file_name","file_type": "$file_type","comment": "$comment"}}}}]);
-    query2.exec(function(err, documents) {
+    var query = Document.find().sort( { file_name: 1 } );
+    var queryGroup = Document.aggregate([ { $sort:{owner:1}},{ "$group": {"_id": "$owner", "files": { "$push": { "file_name": "$file_name","file_type": "$file_type","comment": "$comment"}}}}]);
+    query.exec(function(err, documents) {
 
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
         if (err)
@@ -183,6 +187,38 @@ function getDocument(res) {
         res.json(documents); // return all documents in JSON format
     });
 };
+
+function createDocument(item, res){
+    var tmp_path = item.file.path;
+    var time_stamp = new Date().getTime() - 1440000000000;
+
+    var new_file_name = item.body.owner.substring(0,2)+item.body.owner.substring(5,9) + item.body.file_type.substring(0,2).toUpperCase()+"_"+time_stamp;
+    // var target_path = './uploads/documents/' + item.file.originalname;
+    var target_path = './uploads/documents/' + new_file_name;
+
+    var src = fs.createReadStream(tmp_path);
+    var dest = fs.createWriteStream(target_path);
+    src.pipe(dest);
+    src.on('end', function() { 
+        var newDocument = new Document({
+            owner : item.body.owner, 
+            file_name: new_file_name,
+            file_location : target_path,
+            file_type : item.body.file_type,
+            status : item.body.status
+        });
+        newDocument.save(function(err) {
+            if (err)
+                res.send(err);
+            getDocument(res);
+        });
+    });
+
+    
+    src.on('error', function(err) { res.send(err); 
+            getDocument(res); });
+            
+}
 
 function delDocument(item, res) {
     Document.remove({
@@ -277,21 +313,27 @@ module.exports = function(app) {
     });
 
     // -----------------------------------Document API ----------------------------------------------------
-    // get all students
+    // get all documents
     app.get('/api/documents', function(req, res) {
         getDocument(res);
     });
 
-    // create student and send back all students after creation
+    // create student and send back all documents after creation
     // app.post('/api/documents', function(req, res) {
     //     createDocument(req.body, res);
     // });
 
-    // delete a student
+    // delete a document
     app.delete('/api/documents/:document_id', function(req, res) {
         delDocument(req.params.document_id, res);
     });
 
+    // upload document
+    app.post('/api/documents/upload', upload.single('attachFile'), function (req, res, next) {
+
+        createDocument(req, res, next);
+
+    });
 
     // application -------------------------------------------------------------
     app.get('*', function(req, res) {
