@@ -7,7 +7,7 @@ var fs = require("fs");
 var multer = require('multer');
 var upload = multer({ dest: './uploads/documents/' });
 
-
+//============================ Authenticate function API ==============================
 function studentLogin(item, res, app) {
     console.log("find Student with : " + item.username);
     Student.findOne({
@@ -98,8 +98,23 @@ function teacherLogin(item, res, app) {
     })
 }
 
+//============================ Student function API ==============================
+
 function getStudents(res) {
+    console.log("get student list");
     Student.find(function(err, students) {
+
+        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+        if (err)
+            res.send(err)
+
+        res.json(students); // return all students in JSON format
+    });
+};
+
+function findStudentByCode(item, res) {
+    console.log("Find student with " + item);
+    Teacher.findOne({'stu_code':item},function(err, students) {
 
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
         if (err)
@@ -116,16 +131,55 @@ function createStudent(item, res) {
         name_en: item.first_name_en + " " + item.last_name_en,
         contact_email: item.contact_email,
         tel: item.tel,
-        advisor_id: item.advisor,
-        sex: item.sex
+        advisor_id: item.advisor_id,
+        sex: item.sex,
+        password: "1234" // random pass algo here 
     });
 
     newStudent.save(function(err) {
-        if (err)
+        if (err){
             res.send(err);
+        }
         getStudents(res);
     })
 };
+
+// function updateStudent(item, res){
+//     var condition = {_id:item._id },
+//         update = { 
+//             sex: item.sex,
+//             advisor_id: item.advisor_id,
+//             tel: item.tel,
+//             contact_email: item.contact_email,
+//             name_th: item.name_th,
+//             name_en: item.name_en,
+//         },
+//         option = { multi:true };
+//     Student.update(condition, update, option, callback);
+// }
+
+function updateStudent(item, res){
+    console.log("update item with " );
+    console.log(item);
+    Student.findOne({ _id :item._id }, function (err, doc){
+        if(doc!=null){ 
+            console.log(doc);
+            doc.sex = item.sex;
+            doc.advisor = item.advisor_id;
+            doc.tel = item.tel;
+            doc.contact = item.contact_email;
+            doc.name_th = item.name_th;
+            doc.name_en = item.name_en;
+            doc.password = item.password;
+            doc.save();
+        } else console.log("Not found - not update");
+        
+        if (err)
+            res.send(err);
+        getStudents(res);
+    });
+}
+
 
 function delStudent(item, res) {
     Student.remove({
@@ -137,8 +191,22 @@ function delStudent(item, res) {
     })
 };
 
+//============================ Teacher function API ==============================
+
 function getTeacher(res) {
     Teacher.find(function(err, teachers) {
+
+        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+        if (err)
+            res.send(err)
+
+        res.json(teachers); // return all teachers in JSON format
+    });
+};
+
+function findTeacherByCode(item, res) {
+    console.log("Find teacher with " + item);
+    Teacher.findOne({'staff_code':item},function(err, teachers) {
 
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
         if (err)
@@ -174,6 +242,8 @@ function delTeacher(item, res) {
         getTeacher(res);
     })
 };
+
+//============================ Document function API ==============================
 
 function getDocument(res) {
     var query = Document.find().sort( { file_name: 1 } );
@@ -231,6 +301,8 @@ function delDocument(item, res) {
 }
 
 
+//================================ Routes ====================================
+
 module.exports = function(app) {
 
     // authenticate to obtains token
@@ -245,6 +317,8 @@ module.exports = function(app) {
         } else console.log(req.body.type +" login");
     });
 
+//===================================================================================
+//suspended due to working
     // verify token for every request
     // app.use(function(req, res, next) {
 
@@ -279,16 +353,28 @@ module.exports = function(app) {
 
     //     }
     // });
+//====================================================================================
     
-    // -----------------------------------Student API ----------------------------------------------------
+    // -----------------------------------Student routes ----------------------------------------------------
     // get all students
     app.get('/api/students', function(req, res) {
         getStudents(res);
     });
 
+    app.get('/api/students/:staff_code', function(req, res) {
+        findStudentByCode(req.params.stu_code, res);
+    });
+
     // create student and send back all students after creation
     app.post('/api/students', function(req, res) {
+        console.log("Creating...");
         createStudent(req.body, res);
+    });
+
+    // update a student
+    app.put('/api/students', function(req, res){
+        console.log("Updating...");
+        updateStudent(req.body, res);
     });
 
     // delete a student
@@ -296,10 +382,14 @@ module.exports = function(app) {
         delStudent(req.params.student_id, res);
     });
 
-    // ---------------------------------- Teacher API ------------------------------------------------------
+    // ---------------------------------- Teacher routes ------------------------------------------------------
     // 
     app.get('/api/teachers', function(req, res) {
         getTeacher(res);
+    });
+
+    app.get('/api/teachers/:staff_code', function(req, res) {
+        findTeacherByCode(req.params.staff_code, res);
     });
 
     // create teacher and send back all teachers after creation
@@ -312,28 +402,23 @@ module.exports = function(app) {
         delTeacher(req.params.teacher_id, res);
     });
 
-    // -----------------------------------Document API ----------------------------------------------------
+    // -----------------------------------Document routes ----------------------------------------------------
     // get all documents
     app.get('/api/documents', function(req, res) {
         getDocument(res);
     });
 
-    // create student and send back all documents after creation
-    // app.post('/api/documents', function(req, res) {
-    //     createDocument(req.body, res);
-    // });
+    // upload document
+    app.post('/api/documents/upload', upload.single('attachFile'), function (req, res, next) {
+        createDocument(req, res, next);
+    });
 
     // delete a document
     app.delete('/api/documents/:document_id', function(req, res) {
         delDocument(req.params.document_id, res);
     });
 
-    // upload document
-    app.post('/api/documents/upload', upload.single('attachFile'), function (req, res, next) {
 
-        createDocument(req, res, next);
-
-    });
 
     // application -------------------------------------------------------------
     app.get('*', function(req, res) {
