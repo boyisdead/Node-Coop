@@ -1,13 +1,13 @@
-<div class="container little-frame">
+<div class="container">
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="page-header">
                 <h1>จัดการนักศึกษา </h1>
             </div>
         </div>
-        <div class="col-xs-12 col-sm-6" style="position:relative;min-height:100px;">
+        <div class="col-xs-12 col-sm-6" style="position:relative;min-height:90px;">
             <form class="form-inline" style="position:absolute;right:15px;bottom:5px;">
-                <button class="btn btn-default btn-sm" type="button" ><span class="glyphicon glyphicon-trash" ></span></button>
+                <button disabled class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-trash"></span></button>
                 <button class="btn btn-default btn-sm" type="button" ng-click="openAddStudent()">Add</button>
                 <div class="form-group">
                     <div class="input-group input-group-sm" style="max-width:200px;">
@@ -17,32 +17,9 @@
                 </div>
             </form>
         </div>
-    </div> 
-     <div class="row">
+    </div>
+    <div class="row">
         <div class="col-xs-12">
-            <uib-accordion close-others="oneAtATime">
-                <uib-accordion-group ng-repeat="student in students|filter:searchKey">
-                    <uib-accordion-heading>
-                        <span ng-bind="student.stu_code"></span> <span ng-bind="student.name_th"></span>
-                    </uib-accordion-heading>
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <span ng-bind="student.status.profile"> </span>
-                        </li>
-                        <li>
-                            <span ng-bind="student.status.document"> </span>
-                        </li>
-                        <li>
-                            <span ng-bind="student.status.apply"> </span>
-                        </li>
-                        <li>
-                            <span ng-bind="student.status.accept"> </span>
-                        </li>
-                    </ul>
-                    <button type="button" class="btn btn-default btn-sm" ng-click="">Detail</button>
-                </uib-accordion-group>
-            </uib-accordion>
-            <!--
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
@@ -54,8 +31,8 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="student in students">
-                        <td ng-bind="student.stu_code"></td>
+                    <tr ng-repeat="student in students |orderBy: student.stu_code |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
+                        <th ng-bind="student.stu_code"></th>
                         <td ng-bind="student.name_th"></td>
                         <td ng-bind="student.name_en"></td>
                         <td ng-bind="student.sex"></td>
@@ -65,11 +42,10 @@
                     </tr>
                 </tbody>
             </table>
-        -->
             <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-spin fa-3x"></span></p>
+            <uib-pagination ng-model="currentPage" total-items="students.length" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
         </div>
     </div>
-    <hr>
     <!--
     <div class="round-button" style="position:fixed;right:20px;bottom:20px;width:58px !important; height:58px
         !important;">

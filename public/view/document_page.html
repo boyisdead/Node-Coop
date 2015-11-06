@@ -1,13 +1,13 @@
-<div class="container little-frame">
+<div class="container">
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="page-header">
                 <h1>จัดการเอกสาร <small> add edit delete</small></h1>
             </div>
         </div>
-        <div class="col-xs-12 col-sm-6" style="position:relative;min-height:100px;">
+        <div class="col-xs-12 col-sm-6" style="position:relative;min-height:90px;">
             <form class="form-inline" style="position:absolute;right:15px;bottom:5px;">
-                <button class="btn btn-default btn-sm" type="button" ><span class="glyphicon glyphicon-trash" ></span></button>
+                <button disabled class="btn btn-default btn-sm" type="button" ><span class="glyphicon glyphicon-trash" ></span></button>
                 <button class="btn btn-default btn-sm" type="button" ng-click="openAddDocument()">Add</button>
                 <div class="form-group">
                     <div class="input-group input-group-sm" style="max-width:200px;">
@@ -31,7 +31,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="document in documents |orderBy: document.$$hashKey |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
+                    <tr ng-repeat="document in documents |orderBy: document.owner |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                         <th ng-bind="document.owner"></th>
                         <td ng-bind="document.file_name"></td>
                         <td ng-bind="document.file_type"></td>
@@ -42,8 +42,10 @@
                     </tr>
                 </tbody>
             </table>
-            <uib-pagination ng-model="currentPage" total-items="documents.length" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
+
             <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-spin fa-3x"></span></p>
+            <uib-pagination ng-model="currentPage" total-items="documents.length" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
+            
         </div>
     </div>
 </div>

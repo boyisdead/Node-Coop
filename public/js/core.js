@@ -8,8 +8,10 @@ var mainModule = angular.module('coopEdAssist', [
     'coopEdAssist.student',
     'coopEdAssist.teacher',
     'coopEdAssist.authentication',
-    'coopEdAssist.document'
+    'coopEdAssist.document',
 
+    'ng-sweet-alert',
+    
 ]);
 
 var homeModule = angular.module('coopEdAssist.home', []);

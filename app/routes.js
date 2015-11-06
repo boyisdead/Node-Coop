@@ -102,7 +102,9 @@ function teacherLogin(item, res, app) {
 
 function getStudents(res) {
     console.log("get student list");
-    Student.find(function (err, students) {
+    var query = Student.find().sort( { stu_code: 1 } );
+
+    query.exec(function (err, students) {
 
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
         if (err)

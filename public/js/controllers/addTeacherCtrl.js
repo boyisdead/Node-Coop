@@ -19,6 +19,7 @@ teacherModule.controller('addTeacherCtrl', ['$scope', '$modalInstance','Teachers
                 $scope.loading = false;
                 $scope.formData = {}; // clear the form so our teacher is ready to enter another
                 $scope.teachers = data; // assign our new list of teachers
+                $modalInstance.close();
             });
         }
     };
