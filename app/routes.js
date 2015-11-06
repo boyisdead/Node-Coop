@@ -280,7 +280,7 @@ function createDocument(item, res){
     var tmp_path = item.file.path;
     var time_stamp = new Date().getTime() - 1440000000000;
 
-    var new_file_name = item.body.owner.substring(0,2)+item.body.owner.substring(5,9) + item.body.file_type.substring(0,2).toUpperCase()+"_"+time_stamp;
+    var new_file_name = item.body.owner.substring(0,2)+item.body.owner.substring(5,9) + item.body.file_type.substring(0,2).toUpperCase()+"_"+time_stamp + "." + item.file.originalname.substr(item.file.originalname.lastIndexOf('.')+1);
     // var target_path = './uploads/documents/' + item.file.originalname;
     var target_path = './uploads/documents/' + new_file_name;
 
