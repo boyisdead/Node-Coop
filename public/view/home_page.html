@@ -1,15 +1,26 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-sm-6">
-            <div class="page-header"><h1>Home {{t}}</h1></div>
+            <div class="page-header">
+                <h1>Home {{t}}</h1></div>
         </div>
-	</div>
-	<div class="row">
-		<div class="col-xs-12 col-sm-6" style="padding:20px 20px 20px 20px;">
-			<img src="..." alt="..." class="img-thumbnail" style="width:90%;height:200px">
-		</div>
-		<div class="col-xs-12 col-sm-6" style="padding:20px 20px 20px 20px;">
-			<table class="table table-hover table-condensed">
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6" style="padding:20px 20px 20px 20px;">
+            <div flow-init="{target: '/api/upload'}" flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message">
+                <input type="file" flow-btn/> Input OR Other element as upload button
+                <span class="btn" flow-btn>Upload File</span>
+                <table>
+                    <tr ng-repeat="file in $flow.files">
+                        <td>{{$index+1}}</td>
+                        <td>{{file.name}}</td>
+                        <td>{{file.msg}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6" style="padding:20px 20px 20px 20px;">
+            <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
                         <th>ชื่อเอกสาร</th>
@@ -25,11 +36,11 @@
                         <td ng-bind="document.status"></td>
                         <td>
                             <a ng-click="deleteDocument(document._id)">
-                            	<span class="glyphicon glyphicon-search"></span></a>
+                                <span class="glyphicon glyphicon-search"></span></a>
                         </td>
                     </tr>
                 </tbody>
             </table>
-		</div>
-	</div>
+        </div>
+    </div>
 </div>

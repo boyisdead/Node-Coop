@@ -50,7 +50,7 @@ documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', 'Documen
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'view/modal/add_document_modal.html',
-            controller: 'addStudentCtrl',
+            controller: 'addDocumentCtrl',
             size: 'lg'
         });
 

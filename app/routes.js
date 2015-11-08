@@ -281,7 +281,7 @@ function getDocument(res) {
 function createDocument(item, res){
     var tmp_path = item.file.path;
     var time_stamp = new Date().getTime() - 1440000000000;
-
+    console.log("Creating...");
     var new_file_name = item.body.owner.substring(0,2)+item.body.owner.substring(5,9) + item.body.file_type.substring(0,2).toUpperCase()+"_"+time_stamp + "." + item.file.originalname.substr(item.file.originalname.lastIndexOf('.')+1);
     // var target_path = './uploads/documents/' + item.file.originalname;
     var target_path = './uploads/documents/' + new_file_name;
@@ -447,16 +447,47 @@ module.exports = function(app) {
 
     // upload document
     app.post('/api/documents/upload', upload.single('attachFile'), function (req, res, next) {
-        createDocument(req, res, next);
+        console.log(req.body);
+            createDocument(req, res, next);
+    });
+
+        // upload document
+    app.post('/api/upload', upload.single('attachFile'), function (req, res, next) {
+        var tmp_path = item.file.path;
+        var time_stamp = new Date().getTime() - 1440000000000;
+        console.log("Creating...");
+        var new_file_name = item.body.owner.substring(0,2)+item.body.owner.substring(5,9) + item.body.file_type.substring(0,2).toUpperCase()+"_"+time_stamp + "." + item.file.originalname.substr(item.file.originalname.lastIndexOf('.')+1);
+    // var target_path = './uploads/documents/' + item.file.originalname;
+        var target_path = './uploads/' + new_file_name;
+
+        var src = fs.createReadStream(tmp_path);
+        var dest = fs.createWriteStream(target_path);
+        src.pipe(dest);
+        src.on('end', function() { 
+            var newDocument = new Document({
+                owner : item.body.owner, 
+                file_name: new_file_name,
+                file_location : target_path,
+                file_type : item.body.file_type,
+                status : item.body.status
+            });
+        newDocument.save(function(err) {
+            if (err)
+                res.send(err);
+            getDocument(res);
+        });
+    });
+
     });
 
     // update document
     app.put('/api/documents', function (req, res) {
-        updateDocument(req.body,res);
+            updateDocument(req.body,res);
     })
 
     // delete a document
     app.delete('/api/documents/:document_id', function (req, res) {
+
         delDocument(req.params.document_id, res);
     });
 

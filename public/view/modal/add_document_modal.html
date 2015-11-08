@@ -2,22 +2,34 @@
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
             <h1>เพิ่มเอกสาร</h1>
-            <form class="form-horizontal" style="margin-bottom:25px">
+            <form class="form-horizontal" style="margin-bottom:25px" name="form">
                 <div class="form-group">
                     <label for="scode">รหัสนักศึกษา</label>
-                    <input type="text" class="form-control" ng-model="formData.stu_code" placeholder="รหัสนักศึกษา" id="scode" style="max-width:250px;">
+                    <input type="text" class="form-control" ng-model="formData.owner" placeholder="รหัสนักศึกษา" id="scode" style="max-width:250px;">
                 </div>
-                <div class="form-group">
+                <div flow-init id="dropTarget">
+
+                    <span type="file" flow-btn id="browseBtn">Upload File</span>
+                    <div ng-repeat="file in $flow.files">
+                        <span ng-bind="file.name"></span> <span ng-bind="file.size"></span>
+                    </div>
+
+
+                </div>
+                <!-- <div class="form-group">
                     <label for="fileUpload">เลือกไฟล์</label>
-                    <input type="file" class="form-control" placeholder="file" for="fileUpload" style="max-width:250px">
+                    <input type="text" disabled class="form-control" ng-model="formData.file" placeholder="file path" id="scode" style="max-width:250px;">
                 </div>
+                <button type="button" class="btn btn-default btn-sm" id="fileUpload" ngf-select ng-model="formData.file" name="file" ngf-max-size="20MB">
+                    Select
+                </button> -->
                 <div class="form-group">
                     <label for="fileUpload">ประเภท</label>
-                    <select class="form-control" style="max-width:150px" id="fileType" ng-model="formData.fileType">
-                        <option value="1">Application</option>
-                        <option value="2">Resume</option>
-                        <option value="3">Certificatte</option>
-                        <option value="4">Other</option>
+                    <select class="form-control" style="max-width:150px" id="fileType" ng-model="formData.file_type">
+                        <option value="Application">Application</option>
+                        <option value="Resume">Resume</option>
+                        <option value="Certificate">Certificate</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
                 <div class="form-group" ng-show="formData.fileType==3">
@@ -25,7 +37,7 @@
                     <input type="text" class="form-control" ng-model="formData.file_name" placeholder="ชื่อไฟล์" for="fileUpload">
                 </div>
                 <!-- class table -->
-                <button type="submit" class="btn btn-primary btn-lg " ng-click="createStudent()">Add</button>
+                <button type="submit" class="btn btn-primary btn-lg " ng-click="createDocument(formData)">Add</button>
                 <button class="btn btn-warning btn-lg " ng-click="ok()">Close</button>
             </form>
         </div>
