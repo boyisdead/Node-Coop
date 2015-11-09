@@ -1,0 +1,60 @@
+<div class="container" style="margin:20px">
+    <div class="row">
+        <h1>แก้ไขอาจารย์ผู้ประสานงาน <small><span ng-bind="formData.staff_code"></span></small></h1>
+        <form class="form-horizontal" style="margin-bottom:25px">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="fnameTh">ชื่อภาษาไทย</label>
+                    <div class="form-inline">
+                        <input type="text" class="form-control" ng-model="formData.first_name_th" placeholder="ชื่อ" for="fnameTh" style="max-width:250px">
+                        <input type="text" class="form-control" ng-model="formData.last_name_th" placeholder="นามสกุล" style="max-width:250px;margin-top:10px">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="fnameEn">ชื่อภาษาอังกฤษ</label>
+                    <div class="form-inline">
+                        <input type="text" class="form-control" ng-model="formData.first_name_en" placeholder="First name" id="fnameEn" style="max-width:250px;">
+                        <input type="text" class="form-control" ng-model="formData.last_name_en" placeholder="Last name" id="lnameEn" style="max-width:250px;margin-top:10px">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="email">อีเมล์</label>
+                    <input type="text" class="form-control" ng-model="formData.contact_email" placeholder="Email" id="email" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="tel">เบอร์โทรศัพท์</label>
+                    <input type="text" class="form-control" ng-model="formData.tel" placeholder="Telephone" id="tel" style="max-width:250px;">
+                </div>
+                <button type="submit" class="btn btn-success" ng-click="updateTeacher()">บันทึก</button>
+                <button type="reset" class="btn btn-warning" ng-click="getTeacherData()">ล้างค่า</button>
+                <button class="btn btn-default" ng-click="ok()">Close</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-12">
+        <h3>เปลี่ยนรหัสผ่าน</h3>
+        <div class="form-group">
+            <label for="changePass">รหัสผ่าน</label>
+            <button type="button" class="form-control btn btn-danger" ng-init="{allowPwChange:false}" ng-click="allowPwChange = !allowPwChange" placeholder="รหัสผ่าน" id="changePass" style="max-width:250px;">เปลี่ยนรหัสผ่าน</button>
+        </div>
+        <div class="well" ng-show="allowPwChange">
+            <div class="form-group">
+                <label for="oldPw">รหัสผ่านเก่า</label>
+                <input type="password" class="form-control" ng-model="formData.oldPassword" placeholder="รหัสผ่าน" id="oldPw" style="max-width:250px;">
+            </div>
+            <div class="form-group">
+                <label for="newPw">รหัสผ่านใหม่</label>
+                <input type="password" class="form-control" ng-model="formData.password" placeholder="รหัสผ่าน" id="newPw" style="max-width:250px;">
+            </div>
+            <div class="form-group">
+                <label for="conPw">ยืนยันรหัสผ่านใหม่</label>
+                <input type="password" class="form-control" ng-model="formData.password_confirm" placeholder="รหัสผ่าน" id="conPw" style="max-width:250px;">
+                <br>
+                <span class="mini-red" ng-hide="formData.password==formData.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
+            </div>
+        </div>
+    </div>
+    <!-- class table -->
+</div>

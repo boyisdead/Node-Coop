@@ -11,6 +11,12 @@ teacherModule.factory('TeachersService', ['$http',function($http) {
 			},
 			delete : function(id) {
 				return $http.delete('/api/teachers/' + id);
+			},
+			update : function(teacherData) {
+				return $http.put('/api/teachers/', teacherData);
+			},
+			find : function(id, mode) {
+				return $http.get('/api/teachers/item/' + id + '/mode/' + mode);
 			}
 		}
 	}]);

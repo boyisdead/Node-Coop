@@ -1,4 +1,4 @@
-teacherModule.controller('teacherCtrl', ['$scope', '$uibModal','$log','TeachersService', function($scope, $uibModal, $log, TeachersService) {
+teacherModule.controller('teacherCtrl', ['$scope','$rootScope', '$uibModal','$log','TeachersService', function($scope, $rootScope, $uibModal, $log, TeachersService) {
 
     $scope.loading = true;
 
@@ -54,6 +54,23 @@ teacherModule.controller('teacherCtrl', ['$scope', '$uibModal','$log','TeachersS
             animation: true,
             templateUrl: 'view/modal/add_teacher_modal.html',
             controller: 'addTeacherCtrl',
+        });
+
+        modalInstance.result.then(function() {
+            $log.info('Modal dismissed at: ' + new Date());
+            getTeacher();
+        });
+    };
+
+    $scope.openEditTeacher = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {teacherId: id};
+        var modalInstance = $uibModal.open({
+            scope : scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_teacher_modal.html',
+            controller: 'editTeacherCtrl',
+            size : 'lg'
         });
 
         modalInstance.result.then(function() {

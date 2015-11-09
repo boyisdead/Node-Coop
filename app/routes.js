@@ -209,23 +209,35 @@ function getTeacher(res) {
     });
 };
 
-function findTeacherByCode(item, res) {
-    console.log("Find teacher with " + item);
-    Teacher.findOne({'staff_code':item},function(err, teachers) {
-
-        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+function findTeacherById(item, res) {
+    console.log("Find teacher by Id with " + item);
+    Teacher.findOne({'_id':item},function(err, teachers) {
         if (err)
             res.send(err)
-
         res.json(teachers); // return all teachers in JSON format
+    });
+};
+
+function findTeacherByCode(item, res) {
+    console.log("Find teacher by Code with " + item);
+    Teacher.findOne({'staff_code':item},function(err, teachers) {
+        if (err)
+            res.send(err)
+        res.json(teachers); 
     });
 };
 
 function createTeacher(item, res) {
     var newTeacher = new Teacher({
         staff_code: item.staff_code,
-        name_th: item.first_name_th + " " + item.last_name_th,
-        name_en: item.first_name_en + " " + item.last_name_en,
+        acade_pos_th: item.acade_pos_th,
+        acade_pos_en: item.acade_pos_en,
+        title_name_th: item.title_name_th,
+        title_name_en: item.title_name_en,
+        first_name_th: item.first_name_th,
+        last_name_th: item.last_name_th,
+        first_name_en: item.first_name_en,
+        last_name_en: item.last_name_en,
         contact_email: item.contact_email,
         tel: item.tel,
         sex: item.sex,
@@ -244,8 +256,14 @@ function updateTeacher(item, res){
             doc.sex = item.sex;
             doc.tel = item.tel;
             doc.contact_email = item.contact_email;
-            doc.name_th = item.name_th;
-            doc.name_en = item.name_en;
+            doc.acade_pos_th = item.acade_pos_th,
+            doc.acade_pos_en = item.acade_pos_en,
+            doc.title_name_th = item.title_name_th,
+            doc.title_name_en = item.title_name_en,
+            doc.first_name_en = item.first_name_en,
+            doc.last_name_en = item.last_name_en,
+            doc.first_name_th = item.first_name_th,
+            doc.last_name_th = item.last_name_th,
             doc.password = item.password;
             doc.save();
         } else console.log("Not found - not update");
@@ -435,8 +453,16 @@ module.exports = function(app) {
         getTeacher(res);
     });
 
-    app.get('/api/teachers/:staff_code', function(req, res) {
-        findTeacherByCode(req.params.staff_code, res);
+    app.get('/api/teachers/item/:item/mode/:mode', function(req, res) {
+        console.log(req.params);
+        if (req.params.mode == 'i'){ // 1 for By Id 2 for By Code
+            findTeacherById(req.params.item, res);
+        } else if (req.params.mode == 'c'){
+            findTeacherByCode(req.params.item, res);
+        } else {
+            console.log("Mode not found");
+            res.json("Invalid Mode");
+        }
     });
 
     // create teacher and send back all teachers after creation
