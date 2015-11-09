@@ -7,17 +7,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12 col-sm-6" style="padding:20px 20px 20px 20px;">
-            <div flow-init="{target: '/api/upload'}" flow-files-submitted="$flow.upload()" flow-file-success="$file.msg = $message">
-                <input type="file" flow-btn/> Input OR Other element as upload button
-                <span class="btn" flow-btn>Upload File</span>
-                <table>
-                    <tr ng-repeat="file in $flow.files">
-                        <td>{{$index+1}}</td>
-                        <td>{{file.name}}</td>
-                        <td>{{file.msg}}</td>
-                    </tr>
-                </table>
-            </div>
+            
         </div>
         <div class="col-xs-12 col-sm-6" style="padding:20px 20px 20px 20px;">
             <table class="table table-hover table-condensed">

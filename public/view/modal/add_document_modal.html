@@ -2,30 +2,36 @@
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
             <h1>เพิ่มเอกสาร</h1>
-            <form class="form-horizontal" style="margin-bottom:25px" name="form">
+            <form class="form-horizontal" flow-init="{singleFile : true}" flow-files-submitted="$flow.upload()" style="margin-bottom:25px">
                 <div class="form-group">
                     <label for="scode">รหัสนักศึกษา</label>
                     <input type="text" class="form-control" ng-model="formData.owner" placeholder="รหัสนักศึกษา" id="scode" style="max-width:250px;">
                 </div>
-                <div flow-init id="dropTarget">
-
-                    <span type="file" flow-btn id="browseBtn">Upload File</span>
-                    <div ng-repeat="file in $flow.files">
-                        <span ng-bind="file.name"></span> <span ng-bind="file.size"></span>
+                <div class="drop" flow-drop="" ng-class="dropClass">
+                    <span class="btn btn-default" flow-btn="">Upload File<input type="file" multiple="multiple" style="visibility: hidden; position: absolute;"></span>
+                </div>
+                <br>
+                {{formData}}
+                <div>
+                    <div ng-repeat="file in $flow.files" class="transfer-box ng-scope ng-binding">
+                        <span ng-bind="file.name"></span>(<span ng-bind="file.size"></span>)bytes
+                        <div class="progress progress-striped" ng-class="{active: file.isUploading()}">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" ng-style="{width: (file.progress() * 100) + '%'}" style="width: 100%;">
+                                <span class="sr-only" ng-bind="(file.progress() * 100)"></span>% Complete
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn btn-xs btn-warning" ng-click="file.pause()" ng-show="!file.paused && file.isUploading()">Pause</a>
+                            <a class="btn btn-xs btn-warning" ng-click="file.resume()" ng-show="file.paused">Resume</a>
+                            <a class="btn btn-xs btn-danger" ng-click="file.cancel()">Cancel</a>
+                            <a class="btn btn-xs btn-info ng-hide" ng-click="file.retry()" ng-show="file.error">Retry</a>
+                        </div>
                     </div>
-
-
+                    <!-- end ngRepeat: file in $flow.files -->
                 </div>
-                <!-- <div class="form-group">
-                    <label for="fileUpload">เลือกไฟล์</label>
-                    <input type="text" disabled class="form-control" ng-model="formData.file" placeholder="file path" id="scode" style="max-width:250px;">
-                </div>
-                <button type="button" class="btn btn-default btn-sm" id="fileUpload" ngf-select ng-model="formData.file" name="file" ngf-max-size="20MB">
-                    Select
-                </button> -->
                 <div class="form-group">
                     <label for="fileUpload">ประเภท</label>
-                    <select class="form-control" style="max-width:150px" id="fileType" ng-model="formData.file_type">
+                    <select class="form-control" style="max-width:150px" id="fileType">
                         <option value="Application">Application</option>
                         <option value="Resume">Resume</option>
                         <option value="Certificate">Certificate</option>
@@ -36,8 +42,7 @@
                     <label for="email">หัวข้อ</label>
                     <input type="text" class="form-control" ng-model="formData.file_name" placeholder="ชื่อไฟล์" for="fileUpload">
                 </div>
-                <!-- class table -->
-                <button type="submit" class="btn btn-primary btn-lg " ng-click="createDocument(formData)">Add</button>
+                <button type="submit" class="btn btn-primary btn-lg " ng-click="createDocument($flow,formData)">Add</button>
                 <button class="btn btn-warning btn-lg " ng-click="ok()">Close</button>
             </form>
         </div>

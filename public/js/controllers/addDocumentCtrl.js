@@ -1,52 +1,42 @@
-documentModule.controller('addDocumentCtrl', ['$scope', '$modalInstance','$document', 'DocumentsService', function($scope, $modalInstance,$document, DocumentsService) {
+documentModule.controller('addDocumentCtrl', ['$scope', '$modalInstance', 'DocumentsService', function($scope, $modalInstance, DocumentsService) {
 
 
     // CREATE ==================================================================
     // when submitting the add form, send the text to the node API
     console.log("In modal");
+    $scope.formData = {};
 
-    var flow = new Flow({
-        target:'/api/upload', 
-    });
-    var myEl = angular.element(document.querySelector( '#browseBtn' ));
-    var flow = new Flow({
-    console.log(myEl);
-
-    flow.assignBrowse(myEl, false, true);
-    flow.on('fileAdded', function(file, event){
-        console.log(file, event);
-    });
-    flow.on('fileSuccess', function(file,message){
-        console.log(file,message);
-    });
-    flow.on('fileError', function(file, message){
-        console.log(file, message);
-    });
-
-    $scope.createDocument = function(formData) {
-      console.log("Document creating... ");
+    $scope.createDocument = function (e,formData) {
+        console.log("Document creating... ");
+         console.log($scope.formData.owner);
+         console.log(formData.owner);
         // validate the formData to make sure that something is there
         // if form is empty, nothing will happen
-        if (formData.owner != undefined) {
-            $scope.loading = true;
-            // if ($scope.formData.file) {
-            //   $scope.upload($scope.formData.file);
-            // }
-            console.log(flow); 
-            //formData.file = $scope.$flow.files;
-            console.log(formData.owner);
-            console.log(formData);
+        if ($scope.formData.owner != undefined) {
+
+            e.upload();
             // call the create function from our service (returns a promise object)
-            DocumentsService.create(formData).success(function(data) {
-                $scope.loading = false;
-                $scope.formData = {}; // clear the form so our teacher is ready to enter another
-                $scope.documents = data; // assign our new list of documents
-                $modalInstance.close();
-            });
+            // DocumentsService.create_2(formData).success(function(data) {
+            //     $scope.loading = false;
+            //     $scope.formData = {}; // clear the form so our teacher is ready to enter another
+            //     $scope.documents = data; // assign our new list of documents
+            //     $modalInstance.close();
+            // });
         } else {
            console.log("no owner! ");
         }
     };
+
+    $scope.uploadFileSuccess = function ( $file, $message, $flow){
+        console.log("Success e");
+        console.log( $file, $message, $flow);
+    }
+
+    $scope.uploadFileAdded = function ( $file, $event, $flow ){
+        console.log("Added e");
+        console.log($file, $event, $flow );
+        $flow.upload();
+    } 
 
     $scope.ok = function() {
         //can return something

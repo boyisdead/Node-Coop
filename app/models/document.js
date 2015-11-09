@@ -6,5 +6,6 @@ module.exports = mongoose.model('Document', {
 	file_location : {type : String, default: ''},
 	file_type : {type : String, default: ''},
 	comment : {type : String, default: ''},
-	status : {type : Boolean, default: false}
+	status : {type : Boolean, default: false},
+	description : {type : String, default: ''}
 });
