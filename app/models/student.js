@@ -6,7 +6,7 @@ module.exports = mongoose.model('Student', {
 		t_th : { type : String, default: '' },
 		f_th : { type : String, default: '' },
 		l_th : { type : String, default: '' },
-		t_th : { type : String, default: '' },
+		t_en : { type : String, default: '' },
 		f_en : { type : String, default: '' },
 		l_en : { type : String, default: '' }
 	},

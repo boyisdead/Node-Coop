@@ -6,12 +6,20 @@ studentModule.factory('StudentsService', ['$http',function($http) {
 				return $http.get('/api/students');
 			},
 			create : function(studentData) {
+				if (studentData.name){
+				    studentData.name.t_th =  studentData.title.t_th;
+            		studentData.name.t_en =  studentData.title.t_en;
+            	}
 				return $http.post('/api/students', studentData);
 			},
 			delete : function(id) {
 				return $http.delete('/api/students/' + id);
 			},
 			update : function(studentData) {
+				if (studentData.name){
+				    studentData.name.t_th =  studentData.title.t_th;
+            		studentData.name.t_en =  studentData.title.t_en;
+            	}
 				return $http.put('/api/students/', studentData);
 			},
 			find : function(id, mode) {

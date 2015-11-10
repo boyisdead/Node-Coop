@@ -2,10 +2,7 @@ teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance','Teacher
 
     $scope.getTeacherData = function() {
         TeachersService.find($scope.params.teacherId,'i').success(function(data){
-            console.log(data);
-            $scope.teacherData = data;
             $scope.formData = data;
-            console.log($scope.teacherData);
         });
     }
 
@@ -17,7 +14,7 @@ teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance','Teacher
 
     var getTitleName = function() {
         OthersService.getTitleName().success(function(titledata){
-            $scope.titleNameList = titledata;
+            $scope.titleNameList = titledata; 
         });
     };
 
@@ -26,9 +23,7 @@ teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance','Teacher
     $scope.getTeacherData();
 
     $scope.updateTeacher = function() {
-        console.log("Updating...");
-        // validate the formData to make sure that something is there
-        // if form is empty, nothing will happen
+        console.log("Updating...");  
         TeachersService.update($scope.formData).success(function(data) {
             alert("บันทึกแล้ว");
             $modalInstance.close();

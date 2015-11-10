@@ -9,7 +9,8 @@
                 </div>
                 <div class="form-group">
                     <label for="tname">คำนำหน้าชื่อ</label>
-                    <input type="text" id="tname"ng-model="formData.name.t" uib-typeahead="titleName as titleName.title_th for titleName in titleNameList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;">
+                    <select class="form-control" style="max-width:250px;" ng-model="formData.title" ng-options="titleName as titleName.t_th for titleName in titleNameList" ng-change="sexChange()" placeholder=" -- โปรดเลือก -- ">
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="fnameTh">ชื่อภาษาไทย</label>
@@ -37,15 +38,15 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="email">อีเมล์</label>
-                    <input type="text" class="form-control" ng-model="formData.contact_email" placeholder="Email" id="email" style="max-width:250px;">
+                    <input type="text" class="form-control" ng-model="formData.contact_email" placeholder="อีเมล์" id="email" style="max-width:250px;">
                 </div>
                 <div class="form-group">
                     <label for="tel">เบอร์โทรศัพท์</label>
-                    <input type="text" class="form-control" ng-model="formData.tel" placeholder="Telephone" id="tel" style="max-width:250px;">
+                    <input type="text" class="form-control" ng-model="formData.tel" placeholder="เบอร์โทรศัพท์" id="tel" style="max-width:250px;">
                 </div>
                 <div class="form-group">
                     <label for="pw">รหัสอาจารย์ที่ปรึกษา</label>
-                    <input type="text" ng-model="formData.advisor_id" uib-typeahead="advisor.staff_code as advisor.staff_code + ' ('+ advisor.first_name_th + ' ' + advisor.last_name_th +')' for advisor in advisorList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;" placeholder="อาจารย์ที่ปรึกษา">
+                    <input type="text" ng-model="formData.advisor_id" uib-typeahead="advisor.staff_code as advisor.staff_code + ' ('+ advisor.name.f_th + ' ' + advisor.name.l_th +')' for advisor in advisorList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;" placeholder="อาจารย์ที่ปรึกษา">
                 </div>
                 <div class="form-group">
                     <label for="newPw">รหัสผ่าน</label>

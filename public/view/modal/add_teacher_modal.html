@@ -4,21 +4,26 @@
         <form class="form-horizontal" style="margin-bottom:25px" ng-hide="allowPwChange">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="pw">คำนำหน้าชื่อ</label>
-                    <input type="text" ng-model="formData.titleName" uib-typeahead="titleName as titleName.title_th for titleName in titleNameList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;margin-top:10px">
+                    <label for="email">รหัสประจำตัว</label>
+                    <input type="text" class="form-control" ng-model="formData.staff_code" placeholder="รหัสประจำตัว" id="email" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="tname">คำนำหน้าชื่อ</label>
+                    <select class="form-control" style="max-width:250px;" ng-model="formData.title" ng-options="titleName as titleName.t_th for titleName in titleNameList" ng-change="sexChange()" placeholder=" -- โปรดเลือก -- ">
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="fnameTh">ชื่อภาษาไทย</label>
                     <div class="form-inline">
-                        <input type="text" class="form-control" ng-model="formData.first_name_th" placeholder="ชื่อ" for="fnameTh" style="max-width:250px">
-                        <input type="text" class="form-control" ng-model="formData.last_name_th" placeholder="นามสกุล" style="max-width:250px;margin-top:10px">
+                        <input type="text" class="form-control" ng-model="formData.name.f_th" placeholder="ชื่อ" id="fnameTh" style="max-width:250px">
+                        <input type="text" class="form-control" ng-model="formData.name.l_th" placeholder="นามสกุล" id="fnameEn" style="max-width:250px;margin-top:10px">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="fnameEn">ชื่อภาษาอังกฤษ</label>
                     <div class="form-inline">
-                        <input type="text" class="form-control" ng-model="formData.first_name_en" placeholder="First name" id="fnameEn" style="max-width:250px;">
-                        <input type="text" class="form-control" ng-model="formData.last_name_en" placeholder="Last name" id="lnameEn" style="max-width:250px;margin-top:10px">
+                        <input type="text" class="form-control" ng-model="formData.name.f_en" placeholder="First name" id="fnameEn" style="max-width:250px;">
+                        <input type="text" class="form-control" ng-model="formData.name.l_en" placeholder="Last name" id="lnameEn" style="max-width:250px;margin-top:10px">
                     </div>
                 </div>
 
@@ -33,7 +38,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="pw">ตำแหน่งทางวิชาการ</label>
-                    <input type="text" ng-model="formData.acade_pos" uib-typeahead="acadePos as acadePos.full_th for acadePos in acadePosList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;margin-top:10px">
+                    <input type="text" ng-model="formData.acade_pos" uib-typeahead="acadePos as acadePos.full_th for acadePos in acadePosList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;margin-top:10px" placeholder="ตำแหน่งทางวิชาการ">
                 </div>
                 <div class="form-group">
                     <label for="email">อีเมล์</label>
@@ -53,10 +58,11 @@
                     <br>
                     <span class="mini-red" ng-hide="formData.password==formData.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
                 </div>
-                <button type="submit" class="btn btn-success" ng-click="createTeacher()">บันทึก</button>
+                
+            </div>
+            <button type="submit" class="btn btn-success" ng-click="createTeacher()">บันทึก</button>
                 <button type="reset" class="btn btn-warning">ล้างค่า</button>
                 <button class="btn btn-default" ng-click="ok()">ปิด</button>
-            </div>
         </form>
     </div>
 </div>

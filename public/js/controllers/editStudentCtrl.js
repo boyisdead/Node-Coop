@@ -23,8 +23,6 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance','Student
 
     $scope.updateStudent = function() {
         console.log("Updating...");
-        // validate the formData to make sure that something is there
-        // if form is empty, nothing will happen
         StudentsService.update($scope.formData).success(function(data) {
             alert("บันทึกแล้ว");
             $modalInstance.close();

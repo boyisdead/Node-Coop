@@ -33,9 +33,9 @@
                 <tbody>
                     <tr ng-repeat="document in documents |orderBy: document.owner |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                         <th ng-bind="document.owner"></th>
-                        <td ng-bind="document.file_name"></td>
+                        <td ng-bind="document.description"></td>
                         <td ng-bind="document.file_type"></td>
-                        <td ng-bind="document.status"></td>
+                        <td><span ng-class="{'label-green':document.status,'label-red':!document.status}"></span></td>
                         <td>
                             <a ng-click="deleteDocument(document._id)"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>

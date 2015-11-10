@@ -32,7 +32,7 @@
                     <tr ng-repeat="teacher in teachers |orderBy: teacher.staff_code |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
 
                         <th ng-bind="teacher.staff_code"></th>
-                        <td ng-bind="teacher.title_name_th + ' ' + teacher.first_name_th + ' ' + teacher.last_name_th"></td>
+                        <td ng-bind="teacher.name.t_th + ' ' + teacher.name.f_th + ' ' + teacher.name.l_th"></td>
                         <td ng-bind="teacher.tel"></td>
                         <td>
                             <button ng-click="deleteTeacher(teacher._id)"><span class="glyphicon glyphicon-trash"></span></button>
