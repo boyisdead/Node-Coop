@@ -9,6 +9,7 @@ var multipartMiddleware = multipart();
 var flow = require('./../flow-node.js')('tmp');
 var multer = require('multer');
 var upload = multer({ dest: './uploads/documents/' });
+var passwordHash = require('password-hash');
 
 //============================ Authenticate function API ==============================
 function studentLogin(item, res, app) {
@@ -27,7 +28,7 @@ function studentLogin(item, res, app) {
             });
         } else if (student) {
             // check if password matches
-            if (student.password != item.password) {
+            if (!passwordHash.verify(student.password, item.password)) {
                 res.json({
                     success: false,
                     message: 'Authentication failed. Wrong password.',
@@ -48,7 +49,6 @@ function studentLogin(item, res, app) {
                     success: true,
                     display_name: student.stu_code,
                     access_id: student._id,
-                    access_type: 'student',
                     token: token
                 });
             }
@@ -71,8 +71,13 @@ function teacherLogin(item, res, app) {
                 tar_obj: teacher
             });
         } else if (teacher) {
+            console.log("Guesing...");
+            console.log(teacher.password);
+            console.log(passwordHash.generate(teacher.password));
+            console.log(item.password);
+
             // check if password matches
-            if (teacher.password != item.password) {
+            if (!passwordHash.verify(item.password, teacher.password)) {
                 res.json({
                     success: false,
                     message: 'Authentication failed. Wrong password.',
@@ -93,7 +98,6 @@ function teacherLogin(item, res, app) {
                     success: true,
                     display_name: teacher.staff_code,
                     access_id: teacher._id,
-                    access_type: 'teacher',
                     token: token
                 });
             }
@@ -132,13 +136,15 @@ function findStudentByCode(item, res) {
 function createStudent(item, res) {
     var newStudent = new Student({
         stu_code: item.stu_code,
-        name_th: item.first_name_th + " " + item.last_name_th,
-        name_en: item.first_name_en + " " + item.last_name_en,
+        first_name_th: item.first_name_th,
+        last_name_th: item.last_name_th,
+        first_name_en: item.first_name_en,
+        last_name_en: item.last_name_en,
         contact_email: item.contact_email,
         tel: item.tel,
         advisor_id: item.advisor_id,
         sex: item.sex,
-        password: "1234" // random pass algo here 
+        password: passwordHash.generate(item.password) // random pass algo here 
     });
 
     newStudent.save(function (err) {
@@ -175,7 +181,7 @@ function updateStudent(item, res){
             doc.contact = item.contact_email;
             doc.name_th = item.name_th;
             doc.name_en = item.name_en;
-            doc.password = item.password;
+            doc.password = passwordHash.generate(item.password);
             doc.save();
         } else console.log("Not found - not update");
         
@@ -230,6 +236,7 @@ function findTeacherByCode(item, res) {
 function createTeacher(item, res) {
     var newTeacher = new Teacher({
         staff_code: item.staff_code,
+        password: passwordHash.generate(item.password),
         acade_pos_th: item.acade_pos_th,
         acade_pos_en: item.acade_pos_en,
         title_name_th: item.title_name_th,
@@ -264,7 +271,7 @@ function updateTeacher(item, res){
             doc.last_name_en = item.last_name_en,
             doc.first_name_th = item.first_name_th,
             doc.last_name_th = item.last_name_th,
-            doc.password = item.password;
+            doc.password = passwordHash.generate(item.password);
             doc.save();
         } else console.log("Not found - not update");
 

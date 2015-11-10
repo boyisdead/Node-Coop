@@ -1,4 +1,5 @@
 module.exports = {
 	// JWT verify
-	'secret': 'nomansland'
+	'secret': 'nomansland',
+	'hashKey': 'somewhereibelong'
 }

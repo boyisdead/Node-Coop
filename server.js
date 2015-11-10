@@ -8,7 +8,7 @@ var mongoose = require('mongoose'); 					// mongoose for mongodb
 
 var database = require('./config/database'); 			// load the database config
 var authToken = require('./config/authenticate');
-
+var hashKey = require('./config/security');
 //var uuid = require('uuid');
 var multiparty = require('multiparty');
 
@@ -18,6 +18,7 @@ var methodOverride = require('method-override');
 // configuration ===============================================================
 mongoose.connect(database.url); 	// connect to mongoDB 
 app.set('secretToken',authToken.secret);
+app.set('secretHash',hashKey.star);
 app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile);
 
