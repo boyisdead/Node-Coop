@@ -1,35 +1,31 @@
-teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance','TeachersService','OthersService', function($scope, $modalInstance, TeachersService, OthersService) {
+studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance','StudentsService','OthersService', function($scope, $modalInstance, StudentsService, OthersService) {
 
-    $scope.getTeacherData = function() {
-        TeachersService.find($scope.params.teacherId,'i').success(function(data){
-            console.log(data);
-            $scope.teacherData = data;
+    $scope.getStudentData = function() {
+        StudentsService.find($scope.params.studentId,'i').success(function(data){
             $scope.formData = data;
-            console.log($scope.teacherData);
         });
     }
-
-    var getAcadePos = function() {
-        OthersService.getAcadePos().success(function(posdata){
-            $scope.acadePosList = posdata;
-        });
-    };
 
     var getTitleName = function() {
         OthersService.getTitleName().success(function(titledata){
             $scope.titleNameList = titledata;
         });
     };
+    var getAdvisor = function() {
+        OthersService.getAdvisor().success(function(advisors){
+            $scope.advisorList = advisors;
+        });
+    };
 
     getTitleName();
-    getAcadePos();
-    $scope.getTeacherData();
+    getAdvisor();
+    $scope.getStudentData();
 
-    $scope.updateTeacher = function() {
+    $scope.updateStudent = function() {
         console.log("Updating...");
         // validate the formData to make sure that something is there
         // if form is empty, nothing will happen
-        TeachersService.update($scope.formData).success(function(data) {
+        StudentsService.update($scope.formData).success(function(data) {
             alert("บันทึกแล้ว");
             $modalInstance.close();
         });
@@ -38,7 +34,7 @@ teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance','Teacher
     $scope.changPw = function (passwordData, id) {
         console.log("chng pw",passwordData,id);
         if(passwordData.newPassword==passwordData.password_confirm){
-            TeachersService.pwChange(passwordData,id).success(function(data) {
+            StudentsService.pwChange(passwordData,id).success(function(data) {
                 alert(data);
                 $modalInstance.close();
             });

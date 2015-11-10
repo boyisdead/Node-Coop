@@ -1,6 +1,8 @@
 var Student = require('./models/student');
 var Teacher = require('./models/teacher');
 var Document = require('./models/document');
+var Title_name = require('./models/titlename');
+var Acade_pos = require('./models/acadepos')
 
 var jwt = require('jsonwebtoken');
 var fs = require("fs");     
@@ -28,7 +30,7 @@ function studentLogin(item, res, app) {
             });
         } else if (student) {
             // check if password matches
-            if (!passwordHash.verify(student.password, item.password)) {
+            if (!passwordHash.verify(item.password, student.password)) {
                 res.json({
                     success: false,
                     message: 'Authentication failed. Wrong password.',
@@ -121,25 +123,33 @@ function getStudents(res) {
     });
 };
 
-function findStudentByCode(item, res) {
-    console.log("Find student with " + item);
-    Teacher.findOne({'stu_code':item},function (err, students) {
-
-        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-        if (err)
-            res.send(err)
-
-        res.json(students); // return all students in JSON format
-    });
+function findStudent(item, mode, res) {
+    if(mode ==  'i'){
+        Student.findOne({ _id : item },function (err, students) {
+            if (err)
+                res.send(err)
+            res.json(students);
+        });
+    } else if (mode == 'c' ){
+        Student.findOne({"stu_code" : item},function (err, students) {
+            if (err)
+                res.send(err)
+            res.json(students);
+        });
+    }
 };
 
 function createStudent(item, res) {
     var newStudent = new Student({
         stu_code: item.stu_code,
-        first_name_th: item.first_name_th,
-        last_name_th: item.last_name_th,
-        first_name_en: item.first_name_en,
-        last_name_en: item.last_name_en,
+        name : {
+            t_th: item.name.t_th,
+            f_th: item.name.f_th,
+            l_th: item.name.l_th,
+            t_en: item.name.t_en,
+            f_en: item.name.f_en,
+            l_en: item.name.l_en
+        },
         contact_email: item.contact_email,
         tel: item.tel,
         advisor_id: item.advisor_id,
@@ -175,19 +185,62 @@ function updateStudent(item, res){
     Student.findOne({ _id :item._id }, function (err, doc){
         if(doc!=null){ 
             console.log(doc);
-            doc.sex = item.sex;
-            doc.advisor = item.advisor_id;
-            doc.tel = item.tel;
-            doc.contact = item.contact_email;
-            doc.name_th = item.name_th;
-            doc.name_en = item.name_en;
-            doc.password = passwordHash.generate(item.password);
+            //for initiate new format
+            if(item.name){
+                if (typeof item.name.f_th != 'undefined')
+                    doc.name.f_th = item.name.f_th;
+                if (typeof item.name.l_th != 'undefined')
+                    doc.name.l_th = item.name.l_th;
+                if (typeof item.name.f_en != 'undefined')
+                    doc.name.f_en = item.name.f_en;
+                if (typeof item.name.l_en != 'undefined')
+                    doc.name.l_en = item.name.l_en;
+                if (typeof item.name.t_en != 'undefined')
+                    doc.name.t_en = item.name.t_en;
+                if (typeof item.name.t_th != 'undefined')
+                    doc.name.t_th = item.name.t_th;
+            }
+        
+            if (typeof item.sex != 'undefined')
+                doc.sex = item.sex;
+            if (typeof item.advisor_id != 'undefined')
+                doc.advisor_id = item.advisor_id;
+            if (typeof item.tel != 'undefined')
+                doc.tel = item.tel;
+            if (typeof item.contact_email != 'undefined')
+                doc.contact_email = item.contact_email;
+            console.log(doc.contact_email);
+            if (typeof item.password != 'undefined')
+                doc.password = passwordHash.generate(item.password);
             doc.save();
         } else console.log("Not found - not update");
         
         if (err)
             res.send(err);
         getStudents(res);
+    });
+}
+
+function pwChangeStudent(item, res){
+    console.log("param item", item);
+    Student.findOne({ _id: item._id }, function (err, doc){
+        if(doc!=null){
+
+            console.log(item.oldPassword, item.newPassword, doc.password);
+            console.log(passwordHash.generate(item.oldPassword));
+
+            if (passwordHash.verify(item.oldPassword, doc.password)){
+                doc.password = passwordHash.generate(item.newPassword);
+                doc.save();
+                msg = "Password changed";
+            } else 
+                msg = "Old password not match";
+        } else 
+            msg  = "Id not found - not update";
+
+        if(err)
+            res.send(err);
+        res.json(msg);    
     });
 }
 
@@ -215,30 +268,32 @@ function getTeacher(res) {
     });
 };
 
-function findTeacherById(item, res) {
-    console.log("Find teacher by Id with " + item);
-    Teacher.findOne({'_id':item},function(err, teachers) {
-        if (err)
-            res.send(err)
-        res.json(teachers); // return all teachers in JSON format
-    });
-};
-
-function findTeacherByCode(item, res) {
-    console.log("Find teacher by Code with " + item);
-    Teacher.findOne({'staff_code':item},function(err, teachers) {
-        if (err)
-            res.send(err)
-        res.json(teachers); 
-    });
+function findTeacher(item, mode, res) {
+    if(mode ==  'i'){
+        Teacher.findOne({ _id : item },function (err, teachers) {
+            console.log("id",item ,err, teachers);
+            if (err)
+                res.send(err)
+            res.json(teachers); // return all teachers in JSON format
+        });
+    } else if (mode == 'c' ){
+        Teacher.findOne({"staff_code" : item},function (err, teachers) {
+            console.log("code",item ,err, teachers);
+            if (err)
+                res.send(err)
+            res.json(teachers); // return all teachers in JSON format
+        });
+    }
 };
 
 function createTeacher(item, res) {
     var newTeacher = new Teacher({
         staff_code: item.staff_code,
         password: passwordHash.generate(item.password),
-        acade_pos_th: item.acade_pos_th,
-        acade_pos_en: item.acade_pos_en,
+        acade_pos_full_th: item.acade_pos.full_th,
+        acade_pos_full_en: item.acade_pos_full_en,
+        acade_pos_init_th: item.acade_pos.init_th,
+        acade_pos_init_en: item.acade_pos_init_en,
         title_name_th: item.title_name_th,
         title_name_en: item.title_name_en,
         first_name_th: item.first_name_th,
@@ -260,24 +315,78 @@ function createTeacher(item, res) {
 function updateTeacher(item, res){
     Teacher.findOne({ _id: item._id }, function (err, doc){
         if(doc!=null){
-            doc.sex = item.sex;
-            doc.tel = item.tel;
-            doc.contact_email = item.contact_email;
-            doc.acade_pos_th = item.acade_pos_th,
-            doc.acade_pos_en = item.acade_pos_en,
-            doc.title_name_th = item.title_name_th,
-            doc.title_name_en = item.title_name_en,
-            doc.first_name_en = item.first_name_en,
-            doc.last_name_en = item.last_name_en,
-            doc.first_name_th = item.first_name_th,
-            doc.last_name_th = item.last_name_th,
-            doc.password = passwordHash.generate(item.password);
+            if(typeof item.titleName == 'undefined'){
+
+                var title_fix = {
+                    title_th : item.title_name_th,
+                    title_en : item.title_name_en,
+                }
+
+                item.titleName = title_fix;
+            }
+            console.log("acade_pos", item.acade_pos_full_th);
+            if (typeof item.sex != 'undefined')
+                doc.sex = item.sex;
+            if (typeof item.tel != 'undefined')
+                doc.tel = item.tel;
+            if (typeof item.contact_email != 'undefined')
+                doc.contact_email = item.contact_email;
+            if (typeof item.acade_pos_th != 'undefined')
+                doc.acade_pos_th = item.acade_pos_th;
+            if (typeof item.acade_pos_en != 'undefined')
+                doc.acade_pos_en = item.acade_pos_en;
+            if (typeof item.title_name_th != 'undefined')
+                doc.title_name_th = item.titleName.title_th;
+            if (typeof item.title_name_en != 'undefined')
+                doc.title_name_en = item.titleName.title_en;
+            if (typeof item.first_name_en != 'undefined')
+                doc.first_name_en = item.first_name_en;
+            if (typeof item.last_name_en != 'undefined')
+                doc.last_name_en = item.last_name_en;
+            if (typeof item.first_name_th != 'undefined')
+                doc.first_name_th = item.first_name_th;
+            if (typeof item.last_name_th != 'undefined')
+                doc.last_name_th = item.last_name_th;
+            if (typeof item.password != 'undefined')
+                doc.password = passwordHash.generate(item.password);
+
+            if (typeof item.acade_pos_init_en != 'undefined')
+                doc.acade_pos_init_en = item.acade_pos_init_en;
+            if (typeof item.acade_pos_init_th != 'undefined')
+                doc.acade_pos_init_th = item.acade_pos_init_th;
+            if (typeof item.acade_pos_full_en != 'undefined')
+                doc.acade_pos_full_en = item.acade_pos_full_en;
+            if (typeof item.acade_pos_full_th != 'undefined')
+                doc.acade_pos_full_th = item.acade_pos_full_th;
+
             doc.save();
         } else console.log("Not found - not update");
 
         if(err)
             res.send(err);
         getTeacher(res);     
+    });
+}
+
+function pwChangeTeacher(item, res){
+    console.log("param item", item);
+    Teacher.findOne({ _id: item._id }, function (err, doc){
+        if(doc!=null){
+
+            console.log(item.oldPassword, item.newPassword, doc.password);
+            console.log(passwordHash.generate(item.oldPassword));
+
+           if (passwordHash.verify(item.oldPassword, doc.password)){
+                doc.password = passwordHash.generate(item.newPassword);
+                doc.save();
+                msg = "Password changed";
+           } else msg = "Old password not match";
+            
+        } else msg  = "Id not found - not update";
+
+        if(err)
+            res.send(err);
+        res.json(msg);    
     });
 }
 
@@ -433,8 +542,8 @@ module.exports = function(app) {
         getStudents(res);
     });
 
-    app.get('/api/students/:staff_code', function (req, res) {
-        findStudentByCode(req.params.stu_code, res);
+    app.get('/api/students/item/:item/mode/:mode', function (req, res) {
+        findStudent(req.params.item,req.params.mode, res);
     });
 
     // create student and send back all students after creation
@@ -449,6 +558,10 @@ module.exports = function(app) {
         updateStudent(req.body, res);
     });
 
+    app.put('/api/students/pw_change', function (req, res) {
+        pwChangeStudent(req.body, res);
+    })
+
     // delete a student
     app.delete('/api/students/:student_id', function (req, res) {
         delStudent(req.params.student_id, res);
@@ -461,24 +574,20 @@ module.exports = function(app) {
     });
 
     app.get('/api/teachers/item/:item/mode/:mode', function(req, res) {
-        console.log(req.params);
-        if (req.params.mode == 'i'){ // 1 for By Id 2 for By Code
-            findTeacherById(req.params.item, res);
-        } else if (req.params.mode == 'c'){
-            findTeacherByCode(req.params.item, res);
-        } else {
-            console.log("Mode not found");
-            res.json("Invalid Mode");
-        }
+        findTeacher(req.params.item, req.params.mode, res);
     });
 
-    // create teacher and send back all teachers after creation
     app.post('/api/teachers', function (req, res) {
         createTeacher(req.body, res);
     });
     // update a teacher
     app.put('/api/teachers', function (req, res) {
         updateTeacher(req.body, res);
+    })
+
+    app.put('/api/teachers/pw_change', function (req, res) {
+        console.log("pw chng");
+        pwChangeTeacher(req.body, res);
     })
 
     // delete a teacher
@@ -544,6 +653,33 @@ module.exports = function(app) {
     });
 
 
+    // -----------------------------------Other  routes ----------------------------------------------------
+    app.get('/api/typehead/title_name', function (req, res) {
+        Title_name.find(function (err, titleName) {
+            if (err)
+                res.send(err)
+            res.json(titleName);
+        });
+    });
+
+    app.get('/api/typehead/acade_pos', function (req, res) {
+        Acade_pos.find(function (err, acadePos) {
+            if (err)
+                res.send(err)
+            res.json(acadePos);
+        });
+    });
+    
+    app.get('/api/typehead/advisor', function (req, res) {
+
+        Teacher.find(function (err, acadePos) {
+            if (err)
+                res.send(err)
+            res.json(acadePos);
+        })
+        .sort('-staff_code')
+        .select('staff_code first_name_th last_name_th');
+    });
 
     // application -------------------------------------------------------------
     app.get('*', function (req, res) {

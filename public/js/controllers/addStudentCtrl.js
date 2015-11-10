@@ -1,4 +1,4 @@
-teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','StudentsService', function($scope, $modalInstance, StudentsService) {
+teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','StudentsService','OthersService', function($scope, $modalInstance, StudentsService, OthersService) {
 
 	
     // CREATE ==================================================================
@@ -10,7 +10,9 @@ teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
         // if form is empty, nothing will happen
         if ($scope.formData.stu_code != undefined) {
             $scope.loading = true;
-
+            $scope.formData.name.t_th =  $scope.formData.name.t.title_th;
+            $scope.formData.name.t_en =  $scope.formData.name.t.title_en;
+            console.log($scope.formData);
             // call the create function from our service (returns a promise object)
             StudentsService.create($scope.formData)
 
@@ -24,14 +26,28 @@ teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
         }
     };
 
+    var getTitleName = function() {
+        OthersService.getTitleName().success(function(titledata){
+            $scope.titleNameList = titledata;
+        });
+    };
 
-  $scope.ok = function () {
+    var getAdvisor = function() {
+        OthersService.getAdvisor().success(function(advisors){
+            $scope.advisorList = advisors;
+        });
+    };
+
+    getTitleName();
+    getAdvisor();
+
+    $scope.ok = function () {
   	//can return something
-    $modalInstance.close();
-  };
+        $modalInstance.close();
+    };
 
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
 
 }]);

@@ -1,4 +1,4 @@
-teacherModule.controller('addTeacherCtrl', ['$scope', '$modalInstance','TeachersService', function($scope, $modalInstance, TeachersService) {
+teacherModule.controller('addTeacherCtrl', ['$scope', '$modalInstance','TeachersService', 'OthersService', function($scope, $modalInstance, TeachersService, OthersService) {
 
 	
     // CREATE ==================================================================
@@ -10,8 +10,6 @@ teacherModule.controller('addTeacherCtrl', ['$scope', '$modalInstance','Teachers
         // if form is empty, nothing will happen
         if ($scope.formData.staff_code != undefined) {
             $scope.loading = true;
-
-            // call the create function from our service (returns a promise object)
             TeachersService.create($scope.formData)
 
             // if successful creation, call our get function to get all the new teachers
@@ -24,14 +22,28 @@ teacherModule.controller('addTeacherCtrl', ['$scope', '$modalInstance','Teachers
         }
     };
 
+    var getTitleName = function() {
+        OthersService.getTitleName().success(function(titledata){
+            $scope.titleNameList = titledata;
+            console.log($scope.titleNameList[0].title_th);
+        });
+    };
+    var getAcadePos = function() {
+        OthersService.getAcadePos().success(function(posdata){
+            $scope.acadePosList = posdata;
+        });
+    };
 
-  $scope.ok = function () {
+    getAcadePos();
+    getTitleName()
+
+    $scope.ok = function () {
   	//can return something
-    $modalInstance.close();
-  };
+        $modalInstance.close();
+    };
 
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
 
 }]);

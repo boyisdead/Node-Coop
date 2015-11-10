@@ -1,32 +1,28 @@
 <div class="container" style="margin:20px">
     <div class="row">
-        <h1>แก้ไขข้อมูลอาจารย์ผู้ประสานงาน <small><span ng-bind="formData.staff_code"></span></small></h1>
+        <h1>แก้ไขข้อมูลนักศึกษา <small><span ng-bind="formData.stu_code"></span></small></h1>
         <form class="form-horizontal" style="margin-bottom:25px" ng-hide="allowPwChange">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="pw">คำนำหน้าชื่อ</label>
-                    <input type="text" ng-model="formData.titleName" uib-typeahead="titleName as titleName.title_th for titleName in titleNameList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;margin-top:10px">
+                    <label for="tname">คำนำหน้าชื่อ</label>
+                    <input type="text" id="tname"ng-model="formData.name.t" uib-typeahead="titleName as titleName.title_th for titleName in titleNameList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;">
                 </div>
                 <div class="form-group">
                     <label for="fnameTh">ชื่อภาษาไทย</label>
                     <div class="form-inline">
-                        <input type="text" class="form-control" ng-model="formData.first_name_th" placeholder="ชื่อ" for="fnameTh" style="max-width:250px">
-                        <input type="text" class="form-control" ng-model="formData.last_name_th" placeholder="นามสกุล" style="max-width:250px;margin-top:10px">
+                        <input type="text" class="form-control" ng-model="formData.name.f_th" placeholder="ชื่อ" for="fnameTh" style="max-width:250px">
+                        <input type="text" class="form-control" ng-model="formData.name.l_th" placeholder="นามสกุล" style="max-width:250px;margin-top:10px">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="fnameEn">ชื่อภาษาอังกฤษ</label>
                     <div class="form-inline">
-                        <input type="text" class="form-control" ng-model="formData.first_name_en" placeholder="First name" id="fnameEn" style="max-width:250px;">
-                        <input type="text" class="form-control" ng-model="formData.last_name_en" placeholder="Last name" id="lnameEn" style="max-width:250px;margin-top:10px">
+                        <input type="text" class="form-control" ng-model="formData.name.f_en" placeholder="First name" id="fnameEn" style="max-width:250px;">
+                        <input type="text" class="form-control" ng-model="formData.name.l_en" placeholder="Last name" id="lnameEn" style="max-width:250px;margin-top:10px">
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="pw">ตำแหน่งทางวิชาการ</label>
-                    <input type="text" ng-model="formData.acade_pos" uib-typeahead="acadePos as acadePos.full_th for acadePos in acadePosList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;margin-top:10px">
-                </div>
                 <div class="form-group">
                     <label for="email">อีเมล์</label>
                     <input type="text" class="form-control" ng-model="formData.contact_email" placeholder="Email" id="email" style="max-width:250px;">
@@ -34,6 +30,10 @@
                 <div class="form-group">
                     <label for="tel">เบอร์โทรศัพท์</label>
                     <input type="text" class="form-control" ng-model="formData.tel" placeholder="Telephone" id="tel" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="pw">รหัสอาจารย์ที่ปรึกษา</label>
+                    <input type="text" ng-model="formData.advisor_id" uib-typeahead="advisor.staff_code as advisor.staff_code + ' ('+ advisor.first_name_th + ' ' + advisor.last_name_th +')' for advisor in advisorList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;" placeholder="อาจารย์ที่ปรึกษา">
                 </div>
                 <button type="submit" class="btn btn-success" ng-click="updateStudent()">บันทึก</button>
                 <button type="button" class="btn btn-warning" ng-click="getStudentData()">คืนค่า</button>

@@ -7,53 +7,53 @@
 }*/
 
 .mini-red {
-	font-size: 0.7em;
-	font-style: italic;
-	color :#CC0000;
+    font-size: 0.7em;
+    font-style: italic;
+    color: #CC0000;
 }
 
 .little-frame {
     background-color: #fff;
     border-radius: 20px;
-	padding: 15px 15px 15px 15px;
-	margin: 15px 15px 15px 15px;
-	border: 1px dashed #eee;
+    padding: 15px 15px 15px 15px;
+    margin: 15px 15px 15px 15px;
+    border: 1px dashed #eee;
 }
 
 .label-green {
-	text-shadow: 1px 1px #AEAEAE;
-	background-color: #35D400;
-	padding: 2px 5px 2px 5px;
-	color: white;
-	font-weight: 800;
-	border-radius: 5px;
+    text-shadow: 1px 1px #AEAEAE;
+    background-color: #35D400;
+    padding: 2px 5px 2px 5px;
+    color: white;
+    font-weight: 800;
+    border-radius: 5px;
 }
 
 .label-orange {
-	text-shadow: 1px 1px #AEAEAE;
-	background-color: #FF8914;
-	padding: 2px 5px 2px 5px;
-	color: white;
-	font-weight: 800;
-	border-radius: 5px;
+    text-shadow: 1px 1px #AEAEAE;
+    background-color: #FF8914;
+    padding: 2px 5px 2px 5px;
+    color: white;
+    font-weight: 800;
+    border-radius: 5px;
 }
 
 .label-red {
-	text-shadow: 1px 1px #AEAEAE;
-	background-color: #FF1A1A;
-	padding: 2px 5px 2px 5px;
-	color: white;
-	font-weight: 800;
-	border-radius: 5px;
+    text-shadow: 1px 1px #AEAEAE;
+    background-color: #FF1A1A;
+    padding: 2px 5px 2px 5px;
+    color: white;
+    font-weight: 800;
+    border-radius: 5px;
 }
 
 .label-yellow {
-	text-shadow: 1px 1px #AEAEAE;
-	background-color: #FFFF00;
-	padding: 2px 5px 2px 5px;
-	color: white;
-	font-weight: 800;
-	border-radius: 5px;
+    text-shadow: 1px 1px #AEAEAE;
+    background-color: #FFFF00;
+    padding: 2px 5px 2px 5px;
+    color: white;
+    font-weight: 800;
+    border-radius: 5px;
 }
 
 .label {
@@ -61,9 +61,32 @@
 }
 
 li .label {
-	margin: 5px 5px 5px 5px;
-	float:left;
+    margin: 5px 5px 5px 5px;
+    float: left;
 }
 
+.typeahead .custom-popup-wrapper {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    background-color: #f9f9f9;
+}
 
+.typeahead .custom-popup-wrapper > .message {
+    padding: 0px 20px;
+    border-bottom: 1px solid #ddd;
+    color: #868686;
+}
 
+.typeahead .custom-popup-wrapper > .dropdown-menu {
+    position: static;
+    float: none;
+    display: block;
+    min-width: 160px;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}

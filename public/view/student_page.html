@@ -25,19 +25,27 @@
                     <tr>
                         <th>รหัสนักศึกษา</th>
                         <th>ชื่อไทย</th>
-                        <th>ชื่ออังกฤษ</th>
-                        <th>เพศ</th>
+                        <th>สถานะ</th>
                         <th>ลบ</th>
+                        <th>แก้ไข</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="student in students |orderBy: student.stu_code |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                         <th ng-bind="student.stu_code"></th>
-                        <td ng-bind="student.name_th"></td>
-                        <td ng-bind="student.name_en"></td>
-                        <td ng-bind="student.sex"></td>
+                        <td ng-bind="student.name.t_th + ' ' + student.name.f_th + ' ' + student.name.l_th"></td>
+                        <td> 
+                            <span ng-class="{'label-green':student.status.profile,'label-red':!student.status.profile}"></span>
+                            <span ng-class="{'label-green':student.status.document,'label-red':!student.status.document}"></span>
+                            <span ng-class="{'label-green':student.status.apply,'label-red':!student.status.apply}"></span>
+                            <span ng-class="{'label-green':student.status.accept,'label-red':!student.status.accept}"></span>
+
+                        </td>
                         <td>
-                            <a ng-click="deleteStudent(student._id)"><span class="glyphicon glyphicon-trash"></span></a>
+                            <button ng-click="deleteStudent(student._id)"><span class="glyphicon glyphicon-trash"></span></button>
+                        </td>
+                        <td>
+                            <button ng-click="openEditStudent(student._id)"><span class="glyphicon glyphicon-pencil"></span></button>
                         </td>
                     </tr>
                 </tbody>

@@ -1,4 +1,4 @@
-studentModule.controller('studentCtrl', ['$scope', '$http', '$uibModal','$log','StudentsService', function($scope, $http, $uibModal, $log, StudentsService) {
+studentModule.controller('studentCtrl', ['$scope','$rootScope', '$http', '$uibModal','$log','StudentsService', function($scope,$rootScope, $http, $uibModal, $log, StudentsService) {
 
     $scope.loading = true;
 
@@ -59,6 +59,23 @@ studentModule.controller('studentCtrl', ['$scope', '$http', '$uibModal','$log','
             templateUrl: 'view/modal/add_student_modal.html',
             controller: 'addStudentCtrl',
             size: 'lg'
+        });
+
+        modalInstance.result.then(function() {
+            $log.info('Modal dismissed at: ' + new Date());
+            getStudent();
+        });
+    };
+
+    $scope.openEditStudent = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {studentId: id};
+        var modalInstance = $uibModal.open({
+            scope : scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_student_modal.html',
+            controller: 'editStudentCtrl',
+            size : 'lg'
         });
 
         modalInstance.result.then(function() {

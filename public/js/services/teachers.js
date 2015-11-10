@@ -6,7 +6,6 @@ teacherModule.factory('TeachersService', ['$http',function($http) {
 				return $http.get('/api/teachers');
 			},
 			create : function(teacherData) {
-				console.log("before post " + teacherData);
 				return $http.post('/api/teachers', teacherData);
 			},
 			delete : function(id) {
@@ -17,6 +16,10 @@ teacherModule.factory('TeachersService', ['$http',function($http) {
 			},
 			find : function(id, mode) {
 				return $http.get('/api/teachers/item/' + id + '/mode/' + mode);
+			},
+			pwChange : function(pwData,id) {
+				pwData._id = id;
+				return $http.put('/api/teachers/pw_change',pwData);
 			}
 		}
 	}]);

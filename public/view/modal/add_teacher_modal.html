@@ -1,21 +1,11 @@
-
 <div class="container" style="margin:20px">
     <div class="row">
-        <div class="col-sm-8 col-sm-offset-2">
-            <h1>เพิ่มอาจารย์ผู้ประสานงาน</h1>
-            <form class="form-horizontal" style="margin-bottom:25px">
-
+        <h1>เพิ่มอาจารย์ผู้ประสานงาน <small><span ng-bind="formData.staff_code"></span></small></h1>
+        <form class="form-horizontal" style="margin-bottom:25px" ng-hide="allowPwChange">
+            <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="scode">รหัสประจำตัว</label>
-                    <input type="text" class="form-control" ng-model="formData.staff_code" placeholder="รหัสประจำตัว" id="scode" style="max-width:250px;">
-                </div>
-                <div class="form-group">
-                    <label for="pw">รหัสผ่าน</label>
-                    <input type="password" class="form-control" ng-model="formData.password" placeholder="รหัสผ่าน" id="pw" style="max-width:250px;">
-                </div>
-                <div class="form-group">
-                    <label for="pw">ยืนยันรหัสผ่าน</label>
-                    <input type="password" class="form-control" ng-model="formData.password_confirm" placeholder="รหัสผ่าน" id="pw" style="max-width:250px;">
+                    <label for="pw">คำนำหน้าชื่อ</label>
+                    <input type="text" ng-model="formData.titleName" uib-typeahead="titleName as titleName.title_th for titleName in titleNameList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;margin-top:10px">
                 </div>
                 <div class="form-group">
                     <label for="fnameTh">ชื่อภาษาไทย</label>
@@ -31,6 +21,20 @@
                         <input type="text" class="form-control" ng-model="formData.last_name_en" placeholder="Last name" id="lnameEn" style="max-width:250px;margin-top:10px">
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="sex">เพศ</label>
+                    <div class="btn-group" style="margin-left:15px" id="inputTypee">
+                        <label class="btn btn-default" ng-model="formData.sex" uib-btn-radio="'ชาย'" uncheckable>ชาย</label>
+                        <label class="btn btn-default" ng-model="formData.sex" uib-btn-radio="'หญิง'" uncheckable>หญิง</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="pw">ตำแหน่งทางวิชาการ</label>
+                    <input type="text" ng-model="formData.acade_pos" uib-typeahead="acadePos as acadePos.full_th for acadePos in acadePosList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;margin-top:10px">
+                </div>
                 <div class="form-group">
                     <label for="email">อีเมล์</label>
                     <input type="text" class="form-control" ng-model="formData.contact_email" placeholder="Email" id="email" style="max-width:250px;">
@@ -40,17 +44,19 @@
                     <input type="text" class="form-control" ng-model="formData.tel" placeholder="Telephone" id="tel" style="max-width:250px;">
                 </div>
                 <div class="form-group">
-                    <label for="sex">เพศ</label>
-                    <label class="radio-inline" id="sex">
-                        <input type="radio" ng-model="formData.sex" value="ชาย"></label><span>ชาย</span>
-                    <label class="radio-inline">
-                        <input type="radio" ng-model="formData.sex" value="หญิง"></label><span>หญิง</span>
+                    <label for="newPw">รหัสผ่านใหม่</label>
+                    <input type="password" class="form-control" ng-model="formData.password" placeholder="รหัสผ่าน" id="newPw" style="max-width:250px;">
                 </div>
-                <!-- class table -->
-                <button type="submit" class="btn btn-primary btn-lg " ng-click="createTeacher()">Add</button>
-                <button  class="btn btn-warning btn-lg " ng-click="ok()">Close</button>
-            </form>
-        </div>
+                <div class="form-group">
+                    <label for="conPw">ยืนยันรหัสผ่านใหม่</label>
+                    <input type="password" class="form-control" ng-model="formData.password_confirm" placeholder="รหัสผ่าน" id="conPw" style="max-width:250px;">
+                    <br>
+                    <span class="mini-red" ng-hide="formData.password==formData.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
+                </div>
+                <button type="submit" class="btn btn-success" ng-click="createTeacher()">บันทึก</button>
+                <button type="reset" class="btn btn-warning">ล้างค่า</button>
+                <button class="btn btn-default" ng-click="ok()">ปิด</button>
+            </div>
+        </form>
     </div>
 </div>
-
