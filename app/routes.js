@@ -2,7 +2,8 @@ var Student = require('./models/student');
 var Teacher = require('./models/teacher');
 var Document = require('./models/document');
 var Title_name = require('./models/titlename');
-var Acade_pos = require('./models/acadepos')
+var Acade_pos = require('./models/acadepos');
+var Company = require('./models/company');
 
 var jwt = require('jsonwebtoken');
 var fs = require("fs");
@@ -110,6 +111,15 @@ function teacherLogin(item, res, app) {
 }
 
 //============================ Student function API ==============================
+//  $$$$$$\ $$$$$$$$\ $$\   $$\ $$$$$$$\  $$$$$$$$\ $$\   $$\ $$$$$$$$\ 
+// $$  __$$\\__$$  __|$$ |  $$ |$$  __$$\ $$  _____|$$$\  $$ |\__$$  __|
+// $$ /  \__|  $$ |   $$ |  $$ |$$ |  $$ |$$ |      $$$$\ $$ |   $$ |   
+// \$$$$$$\    $$ |   $$ |  $$ |$$ |  $$ |$$$$$\    $$ $$\$$ |   $$ |   
+//  \____$$\   $$ |   $$ |  $$ |$$ |  $$ |$$  __|   $$ \$$$$ |   $$ |   
+// $$\   $$ |  $$ |   $$ |  $$ |$$ |  $$ |$$ |      $$ |\$$$ |   $$ |   
+// \$$$$$$  |  $$ |   \$$$$$$  |$$$$$$$  |$$$$$$$$\ $$ | \$$ |   $$ |   
+//  \______/   \__|    \______/ \_______/ \________|\__|  \__|   \__|  
+//=================================================================================
 
 function getStudents(res) {
     console.log("get student list");
@@ -268,6 +278,15 @@ function delStudent(item, res) {
 };
 
 //============================ Teacher function API ==============================
+// $$$$$$$$\ $$$$$$$$\  $$$$$$\   $$$$$$\  $$\   $$\ $$$$$$$$\ $$$$$$$\  
+// \__$$  __|$$  _____|$$  __$$\ $$  __$$\ $$ |  $$ |$$  _____|$$  __$$\ 
+//    $$ |   $$ |      $$ /  $$ |$$ /  \__|$$ |  $$ |$$ |      $$ |  $$ |
+//    $$ |   $$$$$\    $$$$$$$$ |$$ |      $$$$$$$$ |$$$$$\    $$$$$$$  |
+//    $$ |   $$  __|   $$  __$$ |$$ |      $$  __$$ |$$  __|   $$  __$$< 
+//    $$ |   $$ |      $$ |  $$ |$$ |  $$\ $$ |  $$ |$$ |      $$ |  $$ |
+//    $$ |   $$$$$$$$\ $$ |  $$ |\$$$$$$  |$$ |  $$ |$$$$$$$$\ $$ |  $$ |
+//    \__|   \________|\__|  \__| \______/ \__|  \__|\________|\__|  \__|
+//================================================================================
 
 function getTeacher(res) {
     Teacher.find(function(err, teachers) {
@@ -415,28 +434,22 @@ function delTeacher(item, res) {
     })
 };
 
-//============================ Document function API ==============================
+//============================== Document function API ===============================
+// $$$$$$$\   $$$$$$\   $$$$$$\  $$\   $$\ $$\      $$\ $$$$$$$$\ $$\   $$\ $$$$$$$$\ 
+// $$  __$$\ $$  __$$\ $$  __$$\ $$ |  $$ |$$$\    $$$ |$$  _____|$$$\  $$ |\__$$  __|
+// $$ |  $$ |$$ /  $$ |$$ /  \__|$$ |  $$ |$$$$\  $$$$ |$$ |      $$$$\ $$ |   $$ |   
+// $$ |  $$ |$$ |  $$ |$$ |      $$ |  $$ |$$\$$\$$ $$ |$$$$$\    $$ $$\$$ |   $$ |   
+// $$ |  $$ |$$ |  $$ |$$ |      $$ |  $$ |$$ \$$$  $$ |$$  __|   $$ \$$$$ |   $$ |   
+// $$ |  $$ |$$ |  $$ |$$ |  $$\ $$ |  $$ |$$ |\$  /$$ |$$ |      $$ |\$$$ |   $$ |   
+// $$$$$$$  | $$$$$$  |\$$$$$$  |\$$$$$$  |$$ | \_/ $$ |$$$$$$$$\ $$ | \$$ |   $$ |   
+// \_______/  \______/  \______/  \______/ \__|     \__|\________|\__|  \__|   \__| 
+//====================================================================================
 
 function getDocument(res) {
     var query = Document.find().sort({
         file_name: 1
     });
-    var queryGroup = Document.aggregate([{
-        $sort: {
-            owner: 1
-        }
-    }, {
-        "$group": {
-            "_id": "$owner",
-            "files": {
-                "$push": {
-                    "file_name": "$file_name",
-                    "file_type": "$file_type",
-                    "comment": "$comment"
-                }
-            }
-        }
-    }]);
+    var queryGroup = Document.aggregate([{$sort: {owner: 1}}, {"$group": {"_id": "$owner","files": {"$push": {"file_name": "$file_name","file_type": "$file_type", "comment": "$comment"}}}}]);
     query.exec(function(err, documents) {
 
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
@@ -517,9 +530,151 @@ function delDocument(item, res) {
     })
 }
 
+//================================ Company ====================================
+//   ______    ______   __       __  _______    ______   __    __  __      __ 
+//  /      \  /      \ |  \     /  \|       \  /      \ |  \  |  \|  \    /  \
+//  |  $$$$$$\|  $$$$$$\| $$\   /  $$| $$$$$$$\|  $$$$$$\| $$\ | $$ \$$\  /  $$
+//  | $$   \$$| $$  | $$| $$$\ /  $$$| $$__/ $$| $$__| $$| $$$\| $$  \$$\/  $$ 
+//  | $$      | $$  | $$| $$$$\  $$$$| $$    $$| $$    $$| $$$$\ $$   \$$  $$  
+//  | $$   __ | $$  | $$| $$\$$ $$ $$| $$$$$$$ | $$$$$$$$| $$\$$ $$    \$$$$   
+//  | $$__/  \| $$__/ $$| $$ \$$$| $$| $$      | $$  | $$| $$ \$$$$    | $$    
+//   \$$    $$ \$$    $$| $$  \$ | $$| $$      | $$  | $$| $$  \$$$    | $$    
+//    \$$$$$$   \$$$$$$  \$$      \$$ \$$       \$$   \$$ \$$   \$$     \$$                                                                       
+//                                                       
+//=============================================================================
+
+function getCompany(res){
+    Company.find(function(err, companies) {
+        if (err)
+            res.send(err)
+        res.json(companies); 
+    });
+}
+
+// function findCompany(item, mode, res) {
+//     Company.findOne({
+//         "name"."full" : item
+//     }, function(err, companies) {
+//         console.log("code", item, err, companies);
+//         if (err)
+//             res.send(err)
+//         res.json(companies); // return all companies in JSON format
+//     });
+// };
+
+function createCompany(item, res) {
+    var newCompany = new Company({
+        name : {
+            full : item.name.full,
+            init : item.name.init
+        },
+        part_year: item.part_year,
+        tel: item.tel,
+        fax: item.fax,
+        email: item.email,
+        website: item.website
+    });
+    if(item.contact)
+        newCompany.contact = item.contact;
+    if(item.coordinator)
+        newCompany.coordinator = item.coordinator;
+
+    newCompany.save(function(err) {
+        if (err)
+            res.send(err);
+        getCompany(res);
+    })
+};
+
+function updateCompany(item, res) {
+    Company.findOne({
+        _id: item._id
+    }, function(err, doc) {
+        if (doc != null) {
+            if (item.name) {
+                if (typeof item.name.full != 'undefined')
+                    doc.name.full = item.name.full;
+                if (typeof item.name.init != 'undefined')
+                    doc.name.init = item.name.init;
+            }
+            if(item.contact){
+                doc.contact = item.contact;
+                // if(item.contact.name){
+                //     if (typeof item.contact.name.f_th != 'undefined')
+                //         doc.contact.name.f_th = item.contact.name.f_th;
+                //     if (typeof item.contact.name.l_th != 'undefined')
+                //         doc.contact.name.l_th = item.contact.name.l_th;
+                //     if (typeof item.contact.name.t_th != 'undefined')
+                //         doc.contact.name.t_th = item.contact.name.t_th;
+                //     if (typeof item.contact.name.f_en != 'undefined')
+                //         doc.contact.name.f_en = item.contact.name.f_en;
+                //     if (typeof item.contact.name.l_en != 'undefined')
+                //         doc.contact.name.l_en = item.contact.name.l_en;
+                //     if (typeof item.contact.name.t_en != 'undefined')
+                //         doc.contact.name.t_en = item.contact.name.t_en;
+                // }
+                // if (typeof item.contact.pos != 'undefined')
+                //     doc.contact.pos = item.contact.pos;
+                // if (typeof item.contact.tel != 'undefined')
+                //     doc.contact.tel = item.contact.tel;
+                // if (typeof item.contact.email != 'undefined')
+                //     doc.contact.email = item.contact.email;
+            }
+
+            if(item.coordinator)
+                doc.coordinator = item.coordinator;
+
+            if (typeof item.part_year != 'undefined')
+                doc.part_year = item.part_year;
+            if (typeof item.tel != 'undefined')
+                doc.tel = item.tel;
+            if (typeof item.fax != 'undefined')
+                doc.fax = item.fax;
+            if (typeof item.email != 'undefined')
+                doc.email = item.email;
+            if (typeof item.website != 'undefined')
+                doc.website = item.website;
+
+            doc.save();
+        } else console.log("Not found - not update");
+
+        if (err)
+            res.send(err);
+        getCompany(res);
+    });
+}
+
+function updateCompanyContact(item, res){
+    Company.findOne({
+        _id: item._id
+    }, function(err, doc) {
+        if (doc != null) {
+            if(item.contact)
+                doc.contact = item.contact;
+        }
+    })
+}
+
+function delDocument(item, res) {
+    Company.remove({
+        _id: item
+    }, function(err) {
+        if (err)
+            res.send(err);
+        getCompany(res);
+    })
+}
 
 //================================ Routes ====================================
-
+//       $$$$$$$\   $$$$$$\  $$\   $$\ $$$$$$$$\ $$$$$$$$\  $$$$$$\  
+//       $$  __$$\ $$  __$$\ $$ |  $$ |\__$$  __|$$  _____|$$  __$$\ 
+//       $$ |  $$ |$$ /  $$ |$$ |  $$ |   $$ |   $$ |      $$ /  \__|
+//       $$$$$$$  |$$ |  $$ |$$ |  $$ |   $$ |   $$$$$\    \$$$$$$\  
+//       $$  __$$< $$ |  $$ |$$ |  $$ |   $$ |   $$  __|    \____$$\ 
+//       $$ |  $$ |$$ |  $$ |$$ |  $$ |   $$ |   $$ |      $$\   $$ |
+//       $$ |  $$ | $$$$$$  |\$$$$$$  |   $$ |   $$$$$$$$\ \$$$$$$  |
+//       \__|  \__| \______/  \______/    \__|   \________| \______/ 
+//=============================================================================
 module.exports = function(app) {
 
     // authenticate to obtains token
@@ -686,6 +841,20 @@ module.exports = function(app) {
     app.delete('/api/documents/:document_id', function(req, res) {
 
         delDocument(req.params.document_id, res);
+    });
+    
+    // ----------------------------------- Company --------------------------------------- 
+    app.get('/api/companies', function(req, res) {
+        getCompany(res);
+    });
+    app.post('/api/companies', function(req, res) {
+        createCompany(req.body, res);
+    });
+    app.put('/api/companies', function(req, res) {
+        updateCompany(req.body, res);
+    });
+    app.put('/api/companies/contact', function(req, res) {
+        updateCompanyContact(req.body, res);
     });
 
 
