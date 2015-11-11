@@ -11,7 +11,8 @@ var mainModule = angular.module('coopEdAssist', [
     'coopEdAssist.document',
 
     'ng-sweet-alert',
-    'flow',
+    // 'flow',
+    // 'angular-jwt',
 
     
 ]);
@@ -23,7 +24,7 @@ var authenticationModule = angular.module('coopEdAssist.authentication', []);
 var documentModule = angular.module('coopEdAssist.document', []);
 
 
-mainModule.config(function($stateProvider, $urlRouterProvider, flowFactoryProvider) {
+mainModule.config(function($stateProvider, $urlRouterProvider) {
 
     $urlRouterProvider.otherwise("home");
 
@@ -54,7 +55,7 @@ mainModule.config(function($stateProvider, $urlRouterProvider, flowFactoryProvid
             controller: "teacherCtrl",
             data: {
                 // just for now
-                requireLogin: false,
+                requireLogin: true,
                 accessType: 'teacher'
             }
         })
@@ -64,7 +65,7 @@ mainModule.config(function($stateProvider, $urlRouterProvider, flowFactoryProvid
             controller: "studentCtrl",
             data: {
                 // just for now
-                requireLogin: false,
+                requireLogin: true,
                 accessType: 'teacher'
             }
         })
@@ -74,7 +75,7 @@ mainModule.config(function($stateProvider, $urlRouterProvider, flowFactoryProvid
             controller: "studentDetailCtrl",
             data: {
                 // just for now
-                requireLogin: false,
+                requireLogin: true,
                 accessType: 'student'
             }
         })
@@ -84,38 +85,57 @@ mainModule.config(function($stateProvider, $urlRouterProvider, flowFactoryProvid
             controller: "documentCtrl",
             data: {
                 // just for now
-                requireLogin: false,
+                requireLogin: true,
                 accessType: 'teacher'
             }
         });
 
-    flowFactoryProvider.defaults = {
-        target: '/upload',
-        permanentErrors:[404, 500, 501],
+    // flowFactoryProvider.defaults = {
+    //     target: '/upload',
+    //     permanentErrors:[404, 500, 501],
         
-    };
+    // };
+
+    // jwtInterceptorProvider.tokenGetter = ['myService', function(myService) {
+    //     //myService.doSomething();
+    //     return localStorage.getItem('id_token');
+    // }];
+
+    //$httpProvider.interceptors.push('jwtInterceptor');
 });
 
 mainModule.run(function($rootScope,$state, loginModal) {
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
         var requireLogin = toState.data.requireLogin;
+        var accessType = toState.data.accessType;
 
-        if (requireLogin && typeof $rootScope.currentUser === 'undefined') {
+        if (requireLogin && typeof $rootScope.currentUser === 'undefined' ) {
             event.preventDefault();
-            alert("Log in first!");
-            $state.go('login');
-            // get me a login modal!
-            // loginModal()
-            //     .then(function() {
-            //         return $state.go(toState.name, toParams);
-            //     })
-            //     .catch(function() {
-            //         return $state.go('home');
-            //     });
-            //alert("Log in first!");
+            swal({
+                title:"กรุณาเข้าสู่ระบบ!",
+                type:"error",
+                showCancelButton: true,
+                confirmButtonText:"เข้าสู่ระบบ",
+                cancelButtonText: "หน้าแรก",
+            },
+                function(isConfirm){
+                    if(isConfirm)
+                        $state.go('login');
+                    else
+                        $state.go('home');
+                }
+            );
         } else {
-
+            if(accessType != $rootScope.currentUser.accessType && accessType != "any" ){
+                event.preventDefault();
+                swal({
+                    title:"เข้าไม่ได้!",
+                    text:"คุณไม่ได้รับอนุญาตให้เข้าถึงหน้านี้!", 
+                    type:"error",
+                    confirmButtonText:"ตกลง",
+                });                
+            }
         }
     });
 });

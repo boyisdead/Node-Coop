@@ -44,7 +44,7 @@ function studentLogin(item, res, app) {
                 // create a token
                 var token = jwt.sign({
                     "stu_code": student.stu_code,
-                    access_type: "student"
+                    
                 }, app.get('secretToken'), {
                     expiresInMinutes: 3 // expires in 3 hours
                 });
@@ -53,6 +53,7 @@ function studentLogin(item, res, app) {
                 res.json({
                     success: true,
                     display_name: student.stu_code,
+                    access_type: "student",
                     access_id: student._id,
                     token: token
                 });
@@ -93,7 +94,7 @@ function teacherLogin(item, res, app) {
                 // create a token
                 var token = jwt.sign({
                     "staff_code": teacher.staff_code,
-                    access_type: "teacher"
+                    
                 }, app.get('secretToken'), {
                     expiresInMinutes: 180 // expires in 3 hours
                 });
@@ -103,6 +104,7 @@ function teacherLogin(item, res, app) {
                     success: true,
                     display_name: teacher.staff_code,
                     access_id: teacher._id,
+                    access_type: "teacher",
                     token: token
                 });
             }
@@ -699,7 +701,6 @@ module.exports = function(app) {
 
     //     // decode token
     //     if (token) {
-
     //         // verifies secret and checks exp
     //         jwt.verify(token, app.get('secretToken'), function(err, decoded) {
     //             if (err) {
