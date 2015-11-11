@@ -2,6 +2,7 @@ var mainModule = angular.module('coopEdAssist', [
 
     'ui.router',
     'ui.bootstrap',
+    'ngCookies',
 
 
     'coopEdAssist.home',
@@ -12,7 +13,7 @@ var mainModule = angular.module('coopEdAssist', [
 
     'ng-sweet-alert',
     // 'flow',
-    // 'angular-jwt',
+    'angular-jwt',
 
     
 ]);
@@ -90,12 +91,6 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
             }
         });
 
-    // flowFactoryProvider.defaults = {
-    //     target: '/upload',
-    //     permanentErrors:[404, 500, 501],
-        
-    // };
-
     // jwtInterceptorProvider.tokenGetter = ['myService', function(myService) {
     //     //myService.doSomething();
     //     return localStorage.getItem('id_token');
@@ -104,7 +99,7 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
     //$httpProvider.interceptors.push('jwtInterceptor');
 });
 
-mainModule.run(function($rootScope,$state, loginModal) {
+mainModule.run(function($rootScope,$state) {
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
         var requireLogin = toState.data.requireLogin;
