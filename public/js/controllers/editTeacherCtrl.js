@@ -1,20 +1,20 @@
-teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance','TeachersService','OthersService', function($scope, $modalInstance, TeachersService, OthersService) {
+teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance', 'TeachersService', 'OthersService', function($scope, $modalInstance, TeachersService, OthersService) {
 
     $scope.getTeacherData = function() {
-        TeachersService.find($scope.params.teacherId,'i').success(function(data){
+        TeachersService.find($scope.params.teacherId, 'i').success(function(data) {
             $scope.formData = data;
         });
     }
 
     var getAcadePos = function() {
-        OthersService.getAcadePos().success(function(posdata){
+        OthersService.getAcadePos().success(function(posdata) {
             $scope.acadePosList = posdata;
         });
     };
 
     var getTitleName = function() {
-        OthersService.getTitleName().success(function(titledata){
-            $scope.titleNameList = titledata; 
+        OthersService.getTitleName().success(function(titledata) {
+            $scope.titleNameList = titledata;
         });
     };
 
@@ -23,31 +23,46 @@ teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance','Teacher
     $scope.getTeacherData();
 
     $scope.updateTeacher = function() {
-        console.log("Updating...");  
+        console.log("Updating...");
         TeachersService.update($scope.formData).success(function(data) {
-            alert("บันทึกแล้ว");
+            swal({
+                title: "บันทึก!",
+                type: "success",
+                confirmButtonText: "ปิด"
+            });
             $modalInstance.close();
         });
     };
 
-    $scope.changPw = function (passwordData, id) {
-        console.log("chng pw",passwordData,id);
-        if(passwordData.newPassword==passwordData.password_confirm){
-            TeachersService.pwChange(passwordData,id).success(function(data) {
-                alert(data);
+    $scope.changPw = function(passwordData, id) {
+        console.log("chng pw", passwordData, id);
+        if (passwordData.newPassword == passwordData.password_confirm) {
+            TeachersService.pwChange(passwordData, id).success(function(data) {
+                swal({
+                    title: "ดำเนินการ!",
+                    text: data,
+                    type: "success",
+                    confirmButtonText: "ปิด"
+                });
                 $modalInstance.close();
             });
-        } else alert("การยืนยันรหัสผ่านใหม่ไม่ถูกต้อง");
-              
+        } else {
+            swal({
+                title: "การยืนยันรหัสผ่านไม่ถูกต้อง!",
+                type: "error",
+                confirmButtonText: "ปิด"
+            });
+        }
+
     }
 
 
-    $scope.ok = function () {
-  	 //can return something
+    $scope.ok = function() {
+        //can return something
         $modalInstance.close();
     };
 
-    $scope.cancel = function () {
+    $scope.cancel = function() {
         $modalInstance.dismiss('cancel');
     };
 
