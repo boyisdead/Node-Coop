@@ -1,4 +1,4 @@
-teacherModule.controller('teacherCtrl', ['$scope','$rootScope', '$uibModal','$log','TeachersService', function($scope, $rootScope, $uibModal, $log, TeachersService) {
+teacherModule.controller('teacherCtrl', ['$scope','$rootScope', '$cookies', 'jwtHelper','$uibModal', '$log', 'TeachersService', function($scope, $rootScope, $cookies,  jwtHelper, $uibModal, $log, TeachersService) {
 
     $scope.loading = true;
 
@@ -7,21 +7,19 @@ teacherModule.controller('teacherCtrl', ['$scope','$rootScope', '$uibModal','$lo
         ,$scope.numPerPage = 10
         ,$scope.maxSize = 5;
 
-    // GET =====================================================================
-    // when landing on the page, get all teachers and show them
-
     var getTeacher = function () {
         TeachersService.get().success(function(data) {
             $scope.teachers = data;
             $scope.loading = false;
             console.log($scope.teachers);
         });
-    } 
+    }
 
     getTeacher();
 
     // DELETE ==================================================================
     // delete a teacher after click it
+    
     $scope.deleteTeacher = function(id) {
 
         swal({

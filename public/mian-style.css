@@ -23,7 +23,7 @@
 .label-green {
     text-shadow: 1px 1px #AEAEAE;
     background-color: #35D400;
-    padding: 2px 5px 2px 5px;
+    padding: 0px 5px 0px 5px;
     color: white;
     font-weight: 800;
     border-radius: 5px;
@@ -32,7 +32,7 @@
 .label-orange {
     text-shadow: 1px 1px #AEAEAE;
     background-color: #FF8914;
-    padding: 2px 5px 2px 5px;
+    padding: 0px 5px 2px 5px;
     color: white;
     font-weight: 800;
     border-radius: 5px;
@@ -41,7 +41,7 @@
 .label-red {
     text-shadow: 1px 1px #AEAEAE;
     background-color: #FF1A1A;
-    padding: 2px 5px 2px 5px;
+    padding: 0px 5px 0px 5px;
     color: white;
     font-weight: 800;
     border-radius: 5px;

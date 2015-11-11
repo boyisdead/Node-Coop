@@ -39,22 +39,16 @@ function studentLogin(item, res, app) {
                     message: 'Authentication failed. Wrong password.',
                 });
             } else {
-
-                // if student is found and password is right
-                // create a token
                 var token = jwt.sign({
-                    "stu_code": student.stu_code,
-                    
+                    "display_name": student.stu_code,
+                    "access_type": "student",
+                    "access_id": student._id,
+                    "success": true,
                 }, app.get('secretToken'), {
-                    expiresInMinutes: 3 // expires in 3 hours
+                    expiresInMinutes: 180 // expires in 3 hours
                 });
-
-                // return the information including token as JSON
+                console.log(token);
                 res.json({
-                    success: true,
-                    display_name: student.stu_code,
-                    access_type: "student",
-                    access_id: student._id,
                     token: token
                 });
             }
@@ -89,22 +83,16 @@ function teacherLogin(item, res, app) {
                     message: 'Authentication failed. Wrong password.',
                 });
             } else {
-
-                // if teacher is found and password is right
-                // create a token
                 var token = jwt.sign({
-                    "staff_code": teacher.staff_code,
-                    
+                    "display_name": teacher.staff_code,
+                    "access_type": "teacher",
+                    "access_id": teacher._id,
+                    "success": true,
                 }, app.get('secretToken'), {
                     expiresInMinutes: 180 // expires in 3 hours
                 });
-
-                // return the information including token as JSON
+                console.log(token);
                 res.json({
-                    success: true,
-                    display_name: teacher.staff_code,
-                    access_id: teacher._id,
-                    access_type: "teacher",
                     token: token
                 });
             }

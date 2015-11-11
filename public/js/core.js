@@ -15,7 +15,7 @@ var mainModule = angular.module('coopEdAssist', [
     // 'flow',
     'angular-jwt',
 
-    
+
 ]);
 
 var homeModule = angular.module('coopEdAssist.home', []);
@@ -91,6 +91,8 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
             }
         });
 
+
+
     // jwtInterceptorProvider.tokenGetter = ['myService', function(myService) {
     //     //myService.doSomething();
     //     return localStorage.getItem('id_token');
@@ -99,37 +101,98 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
     //$httpProvider.interceptors.push('jwtInterceptor');
 });
 
-mainModule.run(function($rootScope,$state) {
+mainModule.run(function($rootScope, $state, $cookies, jwtHelper) {
+
+    var token = $cookies.get('tokenJWT');
+    console.log(token);
+    if (token && typeof token !== 'undefined') {
+        if (jwtHelper.isTokenExpired(token)) {
+            console.log("Expired!");
+            $cookies.remove('tokenJWT');
+            delete $rootScope.currentUser;
+        } else {
+            $rootScope.currentUser = jwtHelper.decodeToken(token);
+            console.log($rootScope.currentUser);
+        }
+    }
+    console.log("Hello!");
 
     $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+        var token = $cookies.get('tokenJWT');
         var requireLogin = toState.data.requireLogin;
         var accessType = toState.data.accessType;
 
-        if (requireLogin && typeof $rootScope.currentUser === 'undefined' ) {
-            event.preventDefault();
-            swal({
-                title:"กรุณาเข้าสู่ระบบ!",
-                type:"error",
-                showCancelButton: true,
-                confirmButtonText:"เข้าสู่ระบบ",
-                cancelButtonText: "หน้าแรก",
-            },
-                function(isConfirm){
-                    if(isConfirm)
+        console.log("on", $rootScope.currentUser);
+
+        if (requireLogin) {
+            if (token && typeof $rootScope.currentUser !== 'undefined') { //user has logon
+                if (jwtHelper.isTokenExpired(token)) {
+                    event.preventDefault();
+                    console.log("Expired");
+                    $cookies.remove('tokenJWT');
+                    delete $rootScope.currentUser;
+                    swal({
+                            title: "หมดเวลา!",
+                            text: "ระยะเวลาเข้าสู่ระบบของคุณหมดอายุ\nกรุณาเข้าสู่ระบบใหม่อีกครั้ง",
+                            type: "error",
+                            showCancelButton: true,
+                            confirmButtonText: "เข้าสู่ระบบ",
+                            cancelButtonText: "หน้าแรก",
+                        },
+                        function(isConfirm) {
+                            if (isConfirm)
+                                $state.go('login');
+                            else
+                                $state.go('home');
+                        }
+                    );
+                } else {
+                    if (accessType != 'any') {
+                        if (typeof $rootScope.currentUser.access_type !== 'undefined') {
+                            if ($rootScope.currentUser.access_type != accessType) {
+                                event.preventDefault();
+                                console.log("Access denied!");
+                                swal({
+                                    title: "เข้าไม่ได้!",
+                                    text: "คุณไม่ได้รับอนุญาตให้เข้าถึงหน้านี้!",
+                                    type: "error",
+                                    confirmButtonText: "ตกลง",
+                                });
+                            }
+                        } else { // there's somthing wrong try re-log-in
+                            swal({
+                            title: "ผิดพลาด!",
+                            text: "มีบางอย่างผิดพลาด\nกรุณาเข้าสู่ระบบใหม่อีกครั้ง",
+                            type: "error",
+                            showCancelButton: true,
+                            confirmButtonText: "เข้าสู่ระบบ",
+                            cancelButtonText: "หน้าแรก",
+                        },
+                        function(isConfirm) {
+                            if (isConfirm)
+                                $state.go('login');
+                            else
+                                $state.go('home');
+                        }
+                    );
+                        }
+                    }
+                }
+            } else { // user ont logon
+                event.preventDefault();
+                console.log("Stranger!");
+                swal({
+                    title: "กรุณาเข้าสู่ระบบ!",
+                    type: "error",
+                    showCancelButton: true,
+                    confirmButtonText: "เข้าสู่ระบบ",
+                    cancelButtonText: "หน้าแรก",
+                }, function(isConfirm) {
+                    if (isConfirm)
                         $state.go('login');
                     else
                         $state.go('home');
-                }
-            );
-        } else {
-            if(accessType != $rootScope.currentUser.accessType && accessType != "any" ){
-                event.preventDefault();
-                swal({
-                    title:"เข้าไม่ได้!",
-                    text:"คุณไม่ได้รับอนุญาตให้เข้าถึงหน้านี้!", 
-                    type:"error",
-                    confirmButtonText:"ตกลง",
-                });                
+                });
             }
         }
     });
