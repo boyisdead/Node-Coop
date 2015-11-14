@@ -9,5 +9,8 @@ mainModule.factory('OthersService', ['$http', function($http){
 		getAdvisor : function (){
 			return $http.get('/api/typehead/advisor');
 		},
+		getAcaYrs : function() {
+			return $http.get('/api/acaYrs');
+		}
 	};
 }])

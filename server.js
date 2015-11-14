@@ -30,8 +30,6 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-Method-Override header in the request
 
 
-
-
 // routes ======================================================================
 require('./app/routes.js')(app);
 

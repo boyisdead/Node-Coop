@@ -2,7 +2,13 @@
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <div class="page-header">
-                <h1>จัดการนักศึกษา </h1>
+                <h1>
+                    จัดการนักศึกษา 
+                    <small>
+                        ปีการศึกษา <span ng-click="openEditAcademicYear()" ng-bind="academicYear"></span>
+                        
+                    </small>
+                </h1>
             </div>
         </div>
         <div class="col-xs-12 col-sm-6" style="position:relative;min-height:90px;">
@@ -34,12 +40,11 @@
                     <tr ng-repeat="student in students |orderBy: student.stu_code |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                         <th ng-bind="student.stu_code"></th>
                         <td ng-bind="student.name.t_th + ' ' + student.name.f_th + ' ' + student.name.l_th"></td>
-                        <td> 
+                        <td>
                             <span ng-class="{'label-green':student.status.profile,'label-red':!student.status.profile}"></span>
                             <span ng-class="{'label-green':student.status.document,'label-red':!student.status.document}"></span>
                             <span ng-class="{'label-green':student.status.apply,'label-red':!student.status.apply}"></span>
                             <span ng-class="{'label-green':student.status.accept,'label-red':!student.status.accept}"></span>
-
                         </td>
                         <td>
                             <button ng-click="deleteStudent(student._id)"><span class="glyphicon glyphicon-trash"></span></button>

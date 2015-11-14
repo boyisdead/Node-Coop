@@ -2,8 +2,13 @@
 	// each function returns a promise object 
 studentModule.factory('StudentsService', ['$http',function($http) {
 		return {
-			get : function() {
-				return $http.get('/api/students');
+			get : function(acaYr) {
+				if(typeof acaYr === "undefined" || acaYr == "ทั้งหมด") {
+					return $http.get('/api/students');
+				} else {
+					return $http.get('/api/students/acaYr/' + acaYr);
+				}
+				
 			},
 			create : function(studentData) {
 				if (studentData.name){

@@ -27,6 +27,7 @@ function studentLogin(item, res, app) {
         if (!student) {
             res.json({
                 success: false,
+                err_code : 11, // not found
                 message: 'Authentication failed. Student not found.',
                 obj: item,
                 tar_obj: student
@@ -36,6 +37,7 @@ function studentLogin(item, res, app) {
             if (!passwordHash.verify(item.password, student.password)) {
                 res.json({
                     success: false,
+                    err_code : 12, // wrong password
                     message: 'Authentication failed. Wrong password.',
                 });
             } else {
@@ -45,7 +47,7 @@ function studentLogin(item, res, app) {
                     "access_id": student._id,
                     "success": true,
                 }, app.get('secretToken'), {
-                    expiresInMinutes: 180 // expires in 3 hours
+                    expiresInMinutes: 99999 // expires in 3 hours
                 });
                 console.log(token);
                 res.json({
@@ -89,7 +91,7 @@ function teacherLogin(item, res, app) {
                     "access_id": teacher._id,
                     "success": true,
                 }, app.get('secretToken'), {
-                    expiresInMinutes: 180 // expires in 3 hours
+                    expiresInMinutes: 99999 // expires in 3 hours
                 });
                 console.log(token);
                 res.json({
@@ -114,6 +116,22 @@ function teacherLogin(item, res, app) {
 function getStudents(res) {
     console.log("get student list");
     var query = Student.find().sort({
+        stu_code: 1
+    });
+
+    query.exec(function(err, students) {
+
+        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+        if (err)
+            res.send(err)
+
+        res.json(students); // return all students in JSON format
+    });
+};
+
+function getStudentsByAcaYr(res, acaYr) {
+    console.log("get student by acaYr");
+    var query = Student.find({ academic_year : acaYr }).sort({
         stu_code: 1
     });
 
@@ -645,7 +663,7 @@ function updateCompanyContact(item, res){
     })
 }
 
-function delDocument(item, res) {
+function delCompany(item, res) {
     Company.remove({
         _id: item
     }, function(err) {
@@ -653,6 +671,27 @@ function delDocument(item, res) {
             res.send(err);
         getCompany(res);
     })
+}
+
+//================================ Others ====================================
+//      $$$$$$\ $$$$$$$$\ $$\   $$\ $$$$$$$$\ $$$$$$$\  
+//     $$  __$$\\__$$  __|$$ |  $$ |$$  _____|$$  __$$\ 
+//     $$ /  $$ |  $$ |   $$ |  $$ |$$ |      $$ |  $$ |
+//     $$ |  $$ |  $$ |   $$$$$$$$ |$$$$$\    $$$$$$$  |
+//     $$ |  $$ |  $$ |   $$  __$$ |$$  __|   $$  __$$< 
+//     $$ |  $$ |  $$ |   $$ |  $$ |$$ |      $$ |  $$ |
+//      $$$$$$  |  $$ |   $$ |  $$ |$$$$$$$$\ $$ |  $$ |
+//      \______/   \__|   \__|  \__|\________|\__|  \__|
+//============================================================================
+
+function getAcaYrs(res){
+    var queryGroup = Student.distinct("academic_year");
+    queryGroup.exec(function(err, acaYrs) {
+        if (err)
+            res.send(err)
+
+        res.json(acaYrs);
+    });
 }
 
 //================================ Routes ====================================
@@ -720,6 +759,10 @@ module.exports = function(app) {
     // get all students
     app.get('/api/students', function(req, res) {
         getStudents(res);
+    });
+
+    app.get('/api/students/acaYr/:acaYr', function(req, res) {
+        getStudentsByAcaYr(res,req.params.acaYr);
     });
 
     app.get('/api/students/item/:item/mode/:mode', function(req, res) {
@@ -873,6 +916,10 @@ module.exports = function(app) {
             })
             .sort('-staff_code')
             .select('staff_code first_name_th last_name_th');
+    });
+
+    app.get('/api/acaYrs', function(req, res) {
+        getAcaYrs(res);
     });
 
     // application -------------------------------------------------------------
