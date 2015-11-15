@@ -145,19 +145,22 @@ function getStudentsByAcaYr(res, acaYr) {
     });
 };
 
-function findStudent(item, mode, res) {
-    if (mode == 'i') {
+function findStudent(data, res) {
+    console.log(data);
+    if (data.mode == 'i') {
         Student.findOne({
-            _id: item
+            _id: data.id
         }, function(err, students) {
+            console.log(students);
             if (err)
                 res.send(err)
             res.json(students);
         });
-    } else if (mode == 'c') {
+    } else if (data.mode == 'c') {
         Student.findOne({
-            "stu_code": item
+            "stu_code": data.id
         }, function(err, students) {
+            console.log(students);
             if (err)
                 res.send(err)
             res.json(students);
@@ -187,28 +190,13 @@ function createStudent(item, res) {
     newStudent.save(function(err) {
         if (err) {
             res.send(err);
+        } else {
+            res.json({success:true});
         }
-        getStudents(res);
     })
 };
 
-// function updateStudent(item, res){
-//     var condition = {_id:item._id },
-//         update = { 
-//             sex: item.sex,
-//             advisor_id: item.advisor_id,
-//             tel: item.tel,
-//             contact_email: item.contact_email,
-//             name_th: item.name_th,
-//             name_en: item.name_en,
-//         },
-//         option = { multi:true };
-//     Student.update(condition, update, option, callback);
-// }
-
 function updateStudent(item, res) {
-    console.log("update item with ");
-    console.log(item);
     Student.findOne({
         _id: item._id
     }, function(err, doc) {
@@ -241,37 +229,116 @@ function updateStudent(item, res) {
             console.log(doc.contact_email);
             if (typeof item.password != 'undefined')
                 doc.password = passwordHash.generate(item.password);
+
+            doc.profileLock = false;
             doc.save();
-        } else console.log("Not found - not update");
+            msg= {success:true};
+        } else {
+            msg= {success:false,reason:"Student not found",err_code:44};
+        }
 
         if (err)
             res.send(err);
-        getStudents(res);
+        else
+            res.json(msg);
+    });
+}
+
+function lockStuProfile(id, res){  // set up a lock on student status
+
+    Student.findOne({
+        _id: id
+    }, function(err, doc) {
+        console.log(doc);
+        if (doc != null) {
+            doc.status.profile = true;
+            if(typeof doc.name == 'undefined'){
+                if (typeof doc.name.f_th == 'undefined' || doc.name.f_th == '')
+                    doc.status.profile = false; 
+                if (typeof doc.name.l_th == 'undefined' || doc.name.l_th == '')
+                    doc.status.profile = false; 
+                if (typeof doc.name.f_en == 'undefined' || doc.name.f_en == '')
+                    doc.status.profile = false; 
+                if (typeof doc.name.l_en == 'undefined' || doc.name.l_en == '')
+                    doc.status.profile = false; 
+                if (typeof doc.name.t_en == 'undefined' || doc.name.t_th == '')
+                    doc.status.profile = false; 
+                if (typeof doc.name.t_th == 'undefined' || doc.name.t_th == '')
+                    doc.status.profile = false; 
+            }
+            if (typeof doc.academic_year == 'undefined'|| doc.academic_year == '')
+                doc.status.profile = false; 
+            if (typeof doc.sex == 'undefined' || doc.sex == '')
+                doc.status.profile = false; 
+            if (typeof doc.advisor_id == 'undefined' || doc.advisor_id == '')
+                doc.status.profile = false; 
+            if (typeof doc.tel == 'undefined' || doc.tel == '')
+                doc.status.profile = false; 
+            if (typeof doc.contact_email == 'undefined' || doc.contact_email == '')
+                doc.status.profile = false; 
+            if (typeof doc.password == 'undefined' || doc.password == '')
+                doc.status.profile = false; 
+
+            if (doc.status.profile){
+                doc.profileLock = true;
+                msg = {success:true};
+            } else {
+                doc.profileLock = false;
+                msg = {success:false,reason:"Profile's not complete.",err_code:40};
+            }
+
+            doc.save();
+        } else {
+            console.log("Not found - status not set",id);
+            msg = {success:false,reason:"Profile's not found.",err_code:44};
+        }
+
+        if (err)
+            res.send(err);
+        else 
+            res.json(msg);
+    });
+
+}
+
+function unLockStuProfile(id, res){  // set up a lock on student status
+
+    Student.findOne({
+        _id: id
+    }, function(err, doc) {
+        if (doc != null) {
+            doc.profileLock = false;
+            msg = {success:true};
+            doc.save();
+        } else {
+            msg = {success:false,reason:"Student not found",err_code:44};
+        }
+        if (err)
+            res.send(err);
+        else
+            res.json(msg);
     });
 }
 
 function pwChangeStudent(item, res) {
-    console.log("param item", item);
     Student.findOne({
         _id: item._id
     }, function(err, doc) {
         if (doc != null) {
-
-            console.log(item.oldPassword, item.newPassword, doc.password);
-            console.log(passwordHash.generate(item.oldPassword));
-
             if (passwordHash.verify(item.oldPassword, doc.password)) {
                 doc.password = passwordHash.generate(item.newPassword);
                 doc.save();
-                msg = "Password changed";
+                msg = {success:true};
             } else
-                msg = "Old password not match";
-        } else
-            msg = "Id not found - not update";
+                msg = {success:false,reason:"Invalid old-password",err_code:41};
+        } else {
+            msg = {success:false,reason:"Student not found",err_code:44};
+        }
 
         if (err)
             res.send(err);
-        res.json(msg);
+        else 
+            res.json(msg);
     });
 }
 
@@ -766,8 +833,8 @@ module.exports = function(app) {
         getStudentsByAcaYr(res,req.params.acaYr);
     });
 
-    app.get('/api/students/item/:item/mode/:mode', function(req, res) {
-        findStudent(req.params.item, req.params.mode, res);
+    app.post('/api/students/find', function(req, res) {
+        findStudent(req.body, res);
     });
 
     // create student and send back all students after creation
@@ -780,6 +847,14 @@ module.exports = function(app) {
     app.put('/api/students', function(req, res) {
         console.log("Updating...");
         updateStudent(req.body, res);
+    });
+
+    app.put('/api/students/unlock_profile', function(req, res) {
+        unLockStuProfile(req.body.id, res);
+    });
+
+    app.put('/api/students/lock_profile', function(req, res) {
+        lockStuProfile(req.body.id, res);
     });
 
     app.put('/api/students/pw_change', function(req, res) {

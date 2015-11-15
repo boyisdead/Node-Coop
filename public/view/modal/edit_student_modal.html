@@ -4,11 +4,6 @@
         <form class="form-horizontal" style="margin-bottom:25px" ng-hide="allowPwChange">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="tname">คำนำหน้าชื่อ</label>
-                    <select class="form-control" style="max-width:250px;" ng-model="formData.title" ng-options="titleName as titleName.t_th for titleName in titleNameList" ng-change="sexChange()" placeholder=" -- โปรดเลือก -- ">
-                    </select>
-                </div>
-                <div class="form-group">
                     <label for="fnameTh">ชื่อภาษาไทย</label>
                     <div class="form-inline">
                         <input type="text" class="form-control" ng-model="formData.name.f_th" placeholder="ชื่อ" for="fnameTh" style="max-width:250px">
@@ -36,6 +31,8 @@
                     <label for="pw">รหัสอาจารย์ที่ปรึกษา</label>
                     <input type="text" ng-model="formData.advisor_id" uib-typeahead="advisor.staff_code as advisor.staff_code + ' ('+ advisor.name.f_th + ' ' + advisor.name.l_th +')' for advisor in advisorList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;" placeholder="อาจารย์ที่ปรึกษา">
                 </div>
+            </div>
+            <div class="col-md-6 col-md-offset-6">
                 <button type="submit" class="btn btn-success" ng-click="updateStudent()">บันทึก</button>
                 <button type="button" class="btn btn-warning" ng-click="getStudentData()">คืนค่า</button>
                 <button class="btn btn-default" ng-click="ok()">ปิด</button>
@@ -44,26 +41,29 @@
     </div>
     <div class="col-sm-12">
         <h3>เปลี่ยนรหัสผ่าน</h3>
-        <div class="form-group">
-            <button type="button" class="form-control btn btn-danger center-block" ng-init="{allowPwChange:false}" ng-click="allowPwChange = !allowPwChange" placeholder="รหัสผ่าน" id="changePass" style="max-width:250px;"><span ng-hide="allowPwChange">ใช่ ฉันต้องการเปลี่ยนรหัสผ่าน</span><span ng-show="allowPwChange">ยกเลิก และกลับไปแก้ไขข้อมูลส่วนตัว</span></button>
-        </div>
-        <div class="well" ng-show="allowPwChange">
+        <form class="form-horizontal">
             <div class="form-group">
-                <label for="oldPw">รหัสผ่านเก่า</label>
-                <input type="password" class="form-control" ng-model="formData.pw.oldPassword" placeholder="รหัสผ่าน" id="oldPw" style="max-width:250px;">
+                <button type="reset" class="form-control btn btn-danger center-block" ng-init="{allowPwChange:false}" ng-click="allowPwChange = !allowPwChange" placeholder="รหัสผ่าน" id="changePass" style="max-width:250px;"><span ng-hide="allowPwChange">ใช่ ฉันต้องการเปลี่ยนรหัสผ่าน</span><span ng-show="allowPwChange">ยกเลิก และกลับไปแก้ไขข้อมูลส่วนตัว</span></button>
             </div>
-            <div class="form-group">
-                <label for="newPw">รหัสผ่านใหม่</label>
-                <input type="password" class="form-control" ng-model="formData.pw.newPassword" placeholder="รหัสผ่าน" id="newPw" style="max-width:250px;">
+            <div class="well" ng-show="allowPwChange">
+                <div class="form-group">
+                    <label for="oldPw">รหัสผ่านเก่า</label>
+                    <input type="password" class="form-control" ng-model="formData.pw.oldPassword" placeholder="รหัสผ่าน" id="oldPw" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="newPw">รหัสผ่านใหม่</label>
+                    <input type="password" class="form-control" ng-model="formData.pw.newPassword" placeholder="รหัสผ่าน" id="newPw" style="max-width:250px;">
+                </div>
+                <div class="form-group">
+                    <label for="conPw">ยืนยันรหัสผ่านใหม่</label>
+                    <input type="password" class="form-control" ng-model="formData.pw.password_confirm" placeholder="รหัสผ่าน" id="conPw" style="max-width:250px;">
+                    <br>
+                    <span class="mini-red" ng-hide="formData.pw.newPassword==formData.pw.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
+                </div>
+                <button type="submit" class="btn btn-success" ng-click="changPw(formData.pw,formData._id)">บันทึก</button>
+                <button type="reset" class="btn btn-warning" ng-click="allowPwChange = !allowPwChange">คืนค่า</button>
             </div>
-            <div class="form-group">
-                <label for="conPw">ยืนยันรหัสผ่านใหม่</label>
-                <input type="password" class="form-control" ng-model="formData.pw.password_confirm" placeholder="รหัสผ่าน" id="conPw" style="max-width:250px;">
-                <br>
-                <span class="mini-red" ng-hide="formData.pw.newPassword==formData.pw.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
-            </div>
-            <button type="submit" class="btn btn-success" ng-click="changPw(formData.pw,formData._id)">บันทึก</button>
-        </div>
+        </form>
     </div>
     <!-- class table -->
 </div>

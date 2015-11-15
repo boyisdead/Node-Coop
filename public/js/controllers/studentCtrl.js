@@ -113,7 +113,17 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             console.log($scope.academicYear);
             console.log($scope.acaYrs);
         });
+    }
 
-        
+    $scope.unlockProfile = function(id){
+        StudentsService.unlockProfile(id).success(function(data){
+            if(data.success) {
+                swal({
+                    type: 'success',
+                    title : "Unlock!"
+                });
+            }
+            getStudent($scope.academicYear);
+        });
     }
 }]);

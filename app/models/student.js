@@ -16,6 +16,7 @@ module.exports = mongoose.model('Student', {
 	sex : {type : String, default: ''},
 	password : {type : String, default: ''},
 	academic_year : {type : String, default: ''},
+	profileLock : {type:Boolean, default: false},
 	status : {
 		"profile":  {type : Boolean, default: false},
 		"document":  {type : Boolean, default: false},

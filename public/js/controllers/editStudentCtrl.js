@@ -37,15 +37,23 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
         console.log("chng pw", passwordData, id);
         if (passwordData.newPassword == passwordData.password_confirm) {
             StudentsService.pwChange(passwordData, id).success(function(data) {
-                swal({
-                    title: "ดำเนินการ!",
-                    text: data,
-                    type: "success",
-                    confirmButtonText: "ปิด"
-                });
-                $modalInstance.close();
+                if(data.success) { 
+                    swal({
+                        title: "ดำเนินการ!",
+                        text: "รหัสผ่านถูกเปลี่ยนแล้ว",
+                        type: "success",
+                        confirmButtonText: "ปิด"
+                    });
+                } else {
+                    swal({
+                        title: "ล้มเหลว!",
+                        text: data.reason + '(' + data.err_code + ')',
+                        type: "error",
+                        confirmButtonText: "ปิด"
+                    });
+                }
+                    $modalInstance.close();
             });
-
         } else {
             swal({
                 title: "การยืนยันรหัสผ่านไม่ถูกต้อง!",
@@ -53,10 +61,7 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
                 confirmButtonText: "ปิด"
             });
         }
-
     }
-
-
 
     $scope.ok = function() {
         //can return something

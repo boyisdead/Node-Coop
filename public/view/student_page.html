@@ -49,8 +49,9 @@
                         <td>
                             <button ng-click="deleteStudent(student._id)"><span class="glyphicon glyphicon-trash"></span></button>
                         </td>
-                        <td>
-                            <button ng-click="openEditStudent(student._id)"><span class="glyphicon glyphicon-pencil"></span></button>
+                        <td> 
+                            <button ng-hide="student.profileLock" ng-click="openEditStudent(student._id)"><span class="glyphicon glyphicon-pencil"></span></button>
+                            <button ng-show="student.profileLock" ng-click="unlockProfile(student._id)"><span class="glyphicon glyphicon-lock"></span></button>
                         </td>
                     </tr>
                 </tbody>

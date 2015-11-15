@@ -25,14 +25,24 @@ studentModule.factory('StudentsService', ['$http',function($http) {
 				    studentData.name.t_th =  studentData.title.t_th;
             		studentData.name.t_en =  studentData.title.t_en;
             	}
-				return $http.put('/api/students/', studentData);
+				return $http.put('/api/students', studentData);
 			},
 			find : function(id, mode) {
-				return $http.get('/api/students/item/' + id + '/mode/' + mode);
+				criteria = {id : id, mode : mode}
+				console.log(criteria);
+				return $http.post('/api/students/find', criteria);
 			},
 			pwChange : function(pwData,id) {
 				pwData._id = id;
 				return $http.put('/api/students/pw_change',pwData);
+			},
+			unlockProfile : function(id) {
+				var student = {id : id}
+				return $http.put('/api/students/unlock_profile', student);
+			},
+			lockProfile : function(id) {
+				var student = {id : id}
+				return $http.put('/api/students/lock_profile', student);
 			}
 		}
 	}]);

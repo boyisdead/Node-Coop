@@ -3,6 +3,7 @@
         <h1>เพิ่มนักศึกษา<small><span ng-bind="formData.staff_code"></span></small></h1>
         <form class="form-horizontal" style="margin-bottom:25px" ng-hide="allowPwChange">
             <div class="col-sm-6">
+
                 <div class="form-group">
                     <label for="scode">รหัสนักศึกษา</label>
                     <input type="text" class="form-control" ng-model="formData.stu_code" placeholder="รหัสนักศึกษา" id="scode" style="max-width:250px;">
@@ -26,7 +27,6 @@
                         <input type="text" class="form-control" ng-model="formData.name.l_en" placeholder="Last name" id="lnameEn" style="max-width:250px;margin-top:10px">
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="sex">เพศ</label>
                     <div class="btn-group" style="margin-left:15px" id="inputTypee">
@@ -36,6 +36,10 @@
                 </div>
             </div>
             <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="scode">ปีที่สมัคร</label>
+                    <input type="text" class="form-control" ng-model="formData.academic_year" placeholder="25xx" id="acaYr" style="max-width:250px;">
+                </div>
                 <div class="form-group">
                     <label for="email">อีเมล์</label>
                     <input type="text" class="form-control" ng-model="formData.contact_email" placeholder="อีเมล์" id="email" style="max-width:250px;">
@@ -58,10 +62,14 @@
                     <br>
                     <span class="mini-red" ng-hide="formData.password==formData.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
                 </div>
-                <button type="submit" class="btn btn-success" ng-click="createStudent()">บันทึก</button>
-                <button type="reset" class="btn btn-warning">ล้างค่า</button>
-                <button class="btn btn-default" ng-click="ok()">ปิด</button>
             </div>
         </form>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-6">
+            <button type="submit" class="btn btn-success" ng-click="createStudent()">บันทึก</button>
+            <button type="reset" class="btn btn-warning">ล้างค่า</button>
+            <button class="btn btn-default" ng-click="ok()">ปิด</button>
+        </div>
     </div>
 </div>
