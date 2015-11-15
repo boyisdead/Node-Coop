@@ -180,6 +180,7 @@ function createStudent(item, res) {
         tel: item.tel,
         advisor_id: item.advisor_id,
         sex: item.sex,
+        academic_year : item.academic_year,
         password: passwordHash.generate(item.password) // random pass algo here 
     });
 

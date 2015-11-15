@@ -18,6 +18,7 @@ teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
     $scope.createStudent = function() {
         if ($scope.formData.stu_code != undefined) {
             $scope.loading = true;
+            $scope.formData.academic_year = "25"+ $scope.formData.stu_code.substr(0,2);
             StudentsService.create($scope.formData).success(function(data) {
                 $scope.loading = false;
                 $modalInstance.close();
