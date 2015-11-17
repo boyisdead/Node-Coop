@@ -90,3 +90,19 @@ li .label {
     border-radius: 0;
     box-shadow: none;
 }
+
+ .touched-validate input.ng-invalid.ng-touched {
+    border: #39e600;
+    box-shadow: 0px 0px 5px #FA787E;
+  }
+
+  .touched-validate input.ng-valid.ng-touched {
+        border: green;
+    box-shadow: 0px 0px 5px #39e600;
+  }
+
+/*
+input:valid{
+    border: green;
+    box-shadow: 0px 0px 5px #39e600;
+}*/

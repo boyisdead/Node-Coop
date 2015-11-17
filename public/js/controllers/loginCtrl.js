@@ -17,7 +17,7 @@ authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies'
     // 	});
     // };
     var alreadyLogin;
-    if (typeof $rootScope.currentUser !== 'undefined')
+    if (typeof $rootScope.currentUser != 'undefined')
         alreadyLogin = true;
 
     $scope.loginVerify = function(item) {
@@ -70,6 +70,7 @@ authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies'
 
     $scope.logout = function() {
         delete $rootScope.currentUser;
+        alreadyLogin = false;
         $cookies.remove('tokenJWT');
         console.log("Loged out", $cookies.get('tokenJWT'));
         swal({

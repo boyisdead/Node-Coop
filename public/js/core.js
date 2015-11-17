@@ -3,6 +3,7 @@ var mainModule = angular.module('coopEdAssist', [
     'ui.router',
     'ui.bootstrap',
     'ngCookies',
+    'ngMessages',
 
 
     'coopEdAssist.home',

@@ -15,7 +15,61 @@ teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
     getTitleName();
     getAdvisor();
 
-    $scope.createStudent = function() {
+    $scope.validateForm = function(msg) {
+        var errList = "";
+        if (typeof $scope.formData != 'undefined') {
+            if (msg.scode.$error.required) {
+                errList += "รหัสประจำตัว ไม่ถูกกรอก\n";
+            } else if (msg.scode.$error.minlength) {
+                errList += "รหัสประจำตัว สั้นเกินไป\n";
+            }
+
+            if (msg.tname.$error.required) {
+                errList += "คำนำหน้าชื่อ ไม่ถูกเลือก\n";
+            }
+
+            if (msg.th_name_first.$error.required) {
+                errList += "ชื่อภาษาไทย ไม่ถูกกรอก\n";
+            }
+            if (msg.th_name_last.$error.required) {
+                errList += "นามสกุลภาษาไทย ไม่ถูกกรอก\n";
+            }
+            if (msg.en_name_first.$error.required) {
+                errList += "ชื่อภาษาอังกฤษ ไม่ถูกกรอก\n";
+            }
+            if (msg.en_name_last.$error.required) {
+                errList += "นามสกุลภาษาอังกฤษ ไม่ถูกกรอก\n";
+            }
+
+            if (msg.acaYr.$error.required) {
+                errList += "ปีที่สมัคร ไม่ถูกกรอก\n";
+            }
+
+            if (msg.advisor.$error.required) {
+                errList += "รหัสอาจารย์ที่ปรึกษา ไม่ถูกกรอก\n";
+            }
+
+            if (msg.password.$error.required) {
+                errList += "รหัสผ่าน ไม่ถูกกรอก\n";
+            } else if (msg.password.$error.minlength) {
+                errList += "รหัสผ่านสั้นเกินไป\n";
+            }
+
+            if ($scope.formData.password != $scope.formData.password_confirm) {
+                errList += "การยืนยันรหัสผ่านไม่ถูกต้อง\n";
+            }
+
+            if (errList != "") {
+                sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
+            } else {
+                console.log("aaa");
+                createStudent();
+            }
+        }
+
+    }
+
+    var createStudent = function() {
         if ($scope.formData.stu_code != undefined) {
             $scope.loading = true;
             StudentsService.create($scope.formData).success(function(data) {

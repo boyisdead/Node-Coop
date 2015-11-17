@@ -1,75 +1,69 @@
 <div class="container" style="margin:20px">
     <div class="row">
         <h1>เพิ่มนักศึกษา<small><span ng-bind="formData.staff_code"></span></small></h1>
-        <form class="form-horizontal" style="margin-bottom:25px" ng-hide="allowPwChange">
+        <form class="form-horizontal" name="addForm" style="margin-bottom:25px" ng-hide="allowPwChange" novalidate>
             <div class="col-sm-6">
-
                 <div class="form-group">
-                    <label for="scode">รหัสนักศึกษา</label>
-                    <input type="text" class="form-control" ng-model="formData.stu_code" placeholder="รหัสนักศึกษา" id="scode" style="max-width:250px;">
+                    <label for="scode">
+                        รหัสนักศึกษา
+                        <span class="mini-red">*อย่างน้อย 9 ตัวออักษร</span>        
+                    </label>
+                    <input type="text" class="form-control" ng-model="formData.stu_code" placeholder="รหัสนักศึกษา" id="scode" name="scode" style="max-width:250px;" ng-minlength="9" required>
                 </div>
                 <div class="form-group">
-                    <label for="tname">คำนำหน้าชื่อ</label>
-                    <select class="form-control" style="max-width:250px;" ng-model="formData.title" ng-options="titleName as titleName.t_th for titleName in titleNameList" ng-change="sexChange()" placeholder=" -- โปรดเลือก -- ">
+                    <label for="tname">คำนำหน้าชื่อ <span class="mini-red">*</span></label>
+                    <select class="form-control" id="tname" name="tname"  ng-model="formData.title" ng-options="titleName as titleName.t_th for titleName in titleNameList" ng-change="sexChange()" style="max-width:250px;" required>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="fnameTh">ชื่อภาษาไทย</label>
+                    <label for="th_name_first">ชื่อภาษาไทย <span class="mini-red">*</span></label>
                     <div class="form-inline">
-                        <input type="text" class="form-control" ng-model="formData.name.f_th" placeholder="ชื่อ" for="fnameTh" style="max-width:250px">
-                        <input type="text" class="form-control" ng-model="formData.name.l_th" placeholder="นามสกุล" style="max-width:250px;margin-top:10px">
+                        <input type="text" class="form-control" ng-model="formData.name.f_th" placeholder="ชื่อ" id="th_name_first" name="th_name_first" style="max-width:250px" required>
+                        <input type="text" class="form-control" ng-model="formData.name.l_th" placeholder="นามสกุล" id="th_name_last" name="th_name_last" style="max-width:250px;margin-top:10px" required> 
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="fnameEn">ชื่อภาษาอังกฤษ</label>
+                    <label for="en_name_first">ชื่อภาษาอังกฤษ <span class="mini-red">*</span></label>
                     <div class="form-inline">
-                        <input type="text" class="form-control" ng-model="formData.name.f_en" placeholder="First name" id="fnameEn" style="max-width:250px;">
-                        <input type="text" class="form-control" ng-model="formData.name.l_en" placeholder="Last name" id="lnameEn" style="max-width:250px;margin-top:10px">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="sex">เพศ</label>
-                    <div class="btn-group" style="margin-left:15px" id="inputTypee">
-                        <label class="btn btn-default" ng-model="formData.sex" uib-btn-radio="'ชาย'" uncheckable>ชาย</label>
-                        <label class="btn btn-default" ng-model="formData.sex" uib-btn-radio="'หญิง'" uncheckable>หญิง</label>
+                        <input type="text" class="form-control" ng-model="formData.name.f_en" placeholder="First name" id="en_name_first" name="en_name_first"  style="max-width:250px;" required>
+                        <input type="text" class="form-control" ng-model="formData.name.l_en" placeholder="Last name" id="en_name_last" name="en_name_last"  style="max-width:250px;margin-top:10px" required>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label for="scode">ปีที่สมัคร</label>
-                    <input type="text" class="form-control" ng-model="formData.academic_year" placeholder="25xx" id="acaYr" style="max-width:250px;">
+                    <label for="scode">ปีที่สมัคร <span class="mini-red">*</span></label>
+                    <input type="text" class="form-control" ng-model="formData.academic_year" placeholder="25xx" id="acaYr" name="acaYr" style="max-width:250px;" required>
                 </div>
                 <div class="form-group">
-                    <label for="email">อีเมล์</label>
-                    <input type="text" class="form-control" ng-model="formData.contact_email" placeholder="อีเมล์" id="email" style="max-width:250px;">
+                    <label for="email">อีเมล์ <span class="mini-red">*</span></label>
+                    <input type="email" class="form-control" ng-model="formData.contact_email" placeholder="อีเมล์" id="email" name="email" style="max-width:250px;" required>
                 </div>
                 <div class="form-group">
                     <label for="tel">เบอร์โทรศัพท์</label>
-                    <input type="text" class="form-control" ng-model="formData.tel" placeholder="เบอร์โทรศัพท์" id="tel" style="max-width:250px;">
+                    <input type="text" class="form-control" ng-model="formData.tel" placeholder="เบอร์โทรศัพท์" id="tel" name="tel" style="max-width:250px;">
                 </div>
                 <div class="form-group">
-                    <label for="pw">รหัสอาจารย์ที่ปรึกษา</label>
-                    <input type="text" ng-model="formData.advisor_id" uib-typeahead="advisor.staff_code as advisor.staff_code + ' ('+ advisor.name.f_th + ' ' + advisor.name.l_th +')' for advisor in advisorList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;" placeholder="อาจารย์ที่ปรึกษา">
+                    <label for="advisor">รหัสอาจารย์ที่ปรึกษา <span class="mini-red">*</span></label>
+                    <input type="text" ng-model="formData.advisor_id" uib-typeahead="advisor.staff_code as advisor.staff_code + ' ('+ advisor.name.f_th + ' ' + advisor.name.l_th +')' for advisor in advisorList | filter:$viewValue | limitTo:8" class="form-control" style="max-width:250px;" id="advisor" name="advisor" placeholder="อาจารย์ที่ปรึกษา" required>
                 </div>
                 <div class="form-group">
-                    <label for="newPw">รหัสผ่าน</label>
-                    <input type="password" class="form-control" ng-model="formData.password" placeholder="รหัสผ่าน" id="newPw" style="max-width:250px;">
+                    <label for="newPw">รหัสผ่าน <span class="mini-red">*ไม่น้อยกว่า 4 ตัวอักษร</span></label>
+                    <input type="password" class="form-control" ng-model="formData.password" placeholder="รหัสผ่าน" id="newPw" name="password" style="max-width:250px;" ng-minlength="4" required>
                 </div>
                 <div class="form-group">
-                    <label for="conPw">ยืนยันรหัสผ่าน</label>
-                    <input type="password" class="form-control" ng-model="formData.password_confirm" placeholder="รหัสผ่าน" id="conPw" style="max-width:250px;">
+                    <label for="conPw">ยืนยันรหัสผ่าน <span class="mini-red">*</span></label>
+                    <input type="password" class="form-control" ng-model="formData.password_confirm" placeholder="รหัสผ่าน" id="conPw" style="max-width:250px;" ng-minlength="4" required>
                     <br>
                     <span class="mini-red" ng-hide="formData.password==formData.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
                 </div>
             </div>
-        </form>
-    </div>
-    <div class="row">
-        <div class="col-md-6 col-md-offset-6">
-            <button type="submit" class="btn btn-success" ng-click="createStudent()">บันทึก</button>
+            <div class="col-md-6 col-md-offset-6" ng-show="addForm.$valid && formData.password==formData.password_confirm ">
+            <button type="submit" class="btn btn-success" ng-click="validateForm(addForm)">บันทึก</button>
             <button type="reset" class="btn btn-warning">ล้างค่า</button>
             <button class="btn btn-default" ng-click="ok()">ปิด</button>
         </div>
+        </form>
     </div>
+    {{addForm.$error}}
 </div>
