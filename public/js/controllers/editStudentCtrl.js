@@ -21,7 +21,38 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
     getAdvisor();
     $scope.getStudentData();
 
-    $scope.updateStudent = function() {
+    $scope.validateForm = function(msg) {
+        var errList = "";
+        if (typeof $scope.formData != 'undefined') {
+
+            if (msg.th_name_first.$error.required) {
+                errList += "ชื่อภาษาไทย ไม่ถูกกรอก\n";
+            }
+            if (msg.th_name_last.$error.required) {
+                errList += "นามสกุลภาษาไทย ไม่ถูกกรอก\n";
+            }
+            if (msg.en_name_first.$error.required) {
+                errList += "ชื่อภาษาอังกฤษ ไม่ถูกกรอก\n";
+            }
+            if (msg.en_name_last.$error.required) {
+                errList += "นามสกุลภาษาอังกฤษ ไม่ถูกกรอก\n";
+            }
+
+            if (msg.advisor.$error.required) {
+                errList += "รหัสอาจารย์ที่ปรึกษา ไม่ถูกกรอก\n";
+            }
+
+            if (errList != "") {
+                sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
+            } else {
+                console.log("aaa");
+                updateStudent();
+            }
+        }
+
+    }
+
+    var updateStudent = function() {
         console.log("Updating...");
         StudentsService.update($scope.formData).success(function(data) {
             swal({

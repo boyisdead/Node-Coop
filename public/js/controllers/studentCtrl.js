@@ -5,8 +5,9 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             $scope.acaYrs = data;
             $scope.acaYrs.sort(function(a,b){return b-a});
             $scope.acaYrs.splice(0,0,"ทั้งหมด");
-            $scope.academicYear = $scope.acaYrs[1];
             console.log($scope.acaYrs);
+            if(typeof $scope.academicYear == 'undefined')
+                $scope.academicYear = $scope.acaYrs[1];
             getStudent($scope.academicYear);
         });
     }
@@ -67,8 +68,10 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             size: 'lg'
         });
 
-        modalInstance.result.then(function() {
+        modalInstance.result.then(function(newCreateYr) {
             $log.info('Modal dismissed at: ' + new Date());
+            console.log(newCreateYr);
+            $scope.academicYear = newCreateYr;
             getAcaYrs();
         });
     };

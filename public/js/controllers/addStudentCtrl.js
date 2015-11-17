@@ -74,7 +74,8 @@ teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
             $scope.loading = true;
             StudentsService.create($scope.formData).success(function(data) {
                 $scope.loading = false;
-                $modalInstance.close();
+                console.log($scope.formData.academic_year);
+                $modalInstance.close($scope.formData.academic_year);
             });
         }
     };
@@ -88,7 +89,7 @@ teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
 
     $scope.ok = function () {
   	//can return something
-        $modalInstance.close();
+    $modalInstance.close();
     };
 
     $scope.cancel = function () {
