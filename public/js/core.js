@@ -4,6 +4,8 @@ var mainModule = angular.module('coopEdAssist', [
     'ui.bootstrap',
     'ngCookies',
     'ngMessages',
+    'angular-jwt',
+    'ngFileUpload',
 
 
     'coopEdAssist.home',
@@ -13,8 +15,7 @@ var mainModule = angular.module('coopEdAssist', [
     'coopEdAssist.document',
 
     'ng-sweet-alert',
-    // 'flow',
-    'angular-jwt',
+
 
 
 ]);

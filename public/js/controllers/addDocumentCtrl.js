@@ -1,4 +1,4 @@
-documentModule.controller('addDocumentCtrl', ['$scope', '$modalInstance', 'DocumentsService', function($scope, $modalInstance, DocumentsService) {
+documentModule.controller('addDocumentCtrl', ['$scope','Upload', '$modalInstance', 'DocumentsService', function($scope, Upload, $modalInstance, DocumentsService) {
 
 
     // CREATE ==================================================================
@@ -27,16 +27,25 @@ documentModule.controller('addDocumentCtrl', ['$scope', '$modalInstance', 'Docum
         }
     };
 
-    $scope.uploadFileSuccess = function ( $file, $message, $flow){
-        console.log("Success e");
-        console.log( $file, $message, $flow);
-    }
-
-    $scope.uploadFileAdded = function ( $file, $event, $flow ){
-        console.log("Added e");
-        console.log($file, $event, $flow );
-        $flow.upload();
-    } 
+    // upload on file select or drop
+    $scope.upload = function (file) {
+        console.log(file);
+        Upload.upload({
+            url: '/api/documents/upload',
+            method: 'POST',
+            fields : {'owner' : $scope.formData.owner, 'description': $scope.formData.description, 'file_type' : $scope.formData.file_type },
+            file: file
+        }).then(function (resp) {
+            console.log('Success' , resp.config, resp.success);
+            //console.log('Success ' + resp.config.attachFile.name + 'uploaded. Response: ' , resp.data);
+        }, function (resp) {
+            console.log('Error status: ' + resp.status);
+        }, function (evt) {
+            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+            console.log('progress: ' , progressPercentage);
+            //console.log('progress: ' + progressPercentage + '% ' + evt.config.attachFile.name);
+        });
+    };
 
     $scope.ok = function() {
         //can return something

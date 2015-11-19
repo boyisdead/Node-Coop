@@ -9,7 +9,6 @@ var jwt = require('jsonwebtoken');
 var fs = require("fs");
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
-var flow = require('./../flow-node.js')('tmp');
 var multer = require('multer');
 var upload = multer({
     dest: './uploads/documents/'
@@ -536,49 +535,48 @@ function getDocument(res) {
     });
 };
 
-function createDocument(item, res) {
-    console.log(item.file);
+function getFileExtension(filename){
+    return '.' + filename.substr(filename.lastIndexOf('.') + 1);
+}
+
+function createDocument(item, res, next) {
     var tmp_path = item.file.path;
-    var time_stamp = new Date().getTime() - 1440000000000;
-    console.log("Creating...");
+    var time_stamp = Date.now();
+        console.log(tmp_path,time_stamp);
+    console.log("Creating...", item.body);
 
-    // flow.post(req, function(status, filename, original_filename, identifier){
-    //     console.log('POST', status, original_filename, identifier);
-    //     res.send(200, {
-    //             // NOTE: Uncomment this funciton to enable cross-domain request.
-    //             //'Access-Control-Allow-Origin': '*'
-    //     });
-    // });
-
-    var new_file_name = item.body.owner.substring(0, 2) + item.body.owner.substring(5, 9) + item.body.file_type.substring(0, 2).toUpperCase() + "_" + time_stamp + "." + item.file.originalname.substr(item.file.originalname.lastIndexOf('.') + 1);
-    // var target_path = './uploads/documents/' + item.file.originalname;
+    var new_file_name = item.body.owner.substring(0, 2) + item.body.owner.substring(5, 9) + item.body.file_type.substring(0, 2).toUpperCase() + "_" + time_stamp + getFileExtension(item.file.originalname);
+    // // var target_path = './uploads/documents/' + item.file.originalname;
     var target_path = './uploads/documents/' + new_file_name;
+    console.log("file name: " + new_file_name);
+    console.log("file extension: " + getFileExtension(new_file_name));
+    console.log("file path: "+target_path);
 
     var src = fs.createReadStream(tmp_path);
     var dest = fs.createWriteStream(target_path);
     src.pipe(dest);
     src.on('end', function() {
+        console.log('end');
         var newDocument = new Document({
             owner: item.body.owner,
             file_name: new_file_name,
             file_location: target_path,
             file_type: item.body.file_type,
-            status: item.body.status,
             description: item.body.description
         });
         newDocument.save(function(err) {
             if (err)
                 res.send(err);
-            getDocument(res);
+            res.json({success:true});
         });
     });
-
-
     src.on('error', function(err) {
         res.send(err);
         getDocument(res);
     });
     fs.unlinkSync(tmp_path);
+
+    // fs.unlinkSync(tmp_path);
 }
 
 function updateDocument(item, res) {
@@ -901,43 +899,9 @@ module.exports = function(app) {
     });
 
     // upload document
-    app.post('/api/documents/upload', upload.single('attachFile'), function(req, res, next) {
-        console.log(req.body);
+    app.post('/api/documents/upload', upload.single('file'), function(req, res, next) {
+        console.log(req.file);
         createDocument(req, res, next);
-    });
-
-    app.post('/upload', function(req, res) {
-        console.log("post upload");
-        flow.post(req, function(status, filename, original_filename, identifier) {
-            console.log('POST', status, original_filename, identifier);
-            var stream = fs.createWriteStream(filename);
-            flow.write(identifier, stream);
-            res.send(200, {
-                // NOTE: Uncomment this funciton to enable cross-domain request.
-                //'Access-Control-Allow-Origin': '*'
-            });
-        });
-    });
-
-    // Handle cross-domain requests
-    // NOTE: Uncomment this funciton to enable cross-domain request.
-    /*
-    app.options('/upload', function(req, res){
-        console.log('OPTIONS');
-        res.send(true, {
-            'Access-Control-Allow-Origin': '*'
-        }, 200);
-    });
-    */
-
-    app.get('/upload', function(req, res) {
-        console.log("get upload");
-        flow.get(req, function(status, filename, original_filename, identifier) {
-            console.log('GET', status);
-
-            res.send(200, (status == 'found' ? 200 : 404));
-        });
-
     });
 
     // update document
