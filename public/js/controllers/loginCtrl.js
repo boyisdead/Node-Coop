@@ -43,11 +43,18 @@ authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies'
             if (item) {
                 UsersService.get(item)
                     .success(function(data) {
-                        console.log("Success!");
-                        $scope.login = {};
-                        $cookies.put('tokenJWT', data.token);
-                        var tokenPayload = jwtHelper.decodeToken(data.token);
-                        $rootScope.currentUser = tokenPayload;
+                        if(data.success != false){
+                            $cookies.put('tokenJWT', data.token);
+                            var tokenPayload = jwtHelper.decodeToken(data.token);
+                            $rootScope.currentUser = tokenPayload;
+                        } else {
+                            swal({
+                                title: "ล้มเหลว!",
+                                text: "ชื่อบัญชีหรือรหัสผ่านไม่ถูกต้อง",
+                                type: "error",
+                                confirmButtonText: "ปิด"
+                            });
+                        }
                     });
             }
         } else { 
