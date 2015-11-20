@@ -38,8 +38,12 @@ documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', 'Documen
                 DocumentsService.delete(id).success(function(data) {
                     $scope.documents = data;
                     $scope.loading = false;
+                    console.log(data);
+                    swal("สำเร็จ!","ไฟล์ถูกลบแล้ว","success");
+                }).then(function(data){
+                    console.log("then");
+                    getDocument();
                 });
-                swal("ลบ!","เอกสารนี้ถูกลบออกแล้ว","success");
             } else {
                 swal("ยกเลิก", " ","error");
             }

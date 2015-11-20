@@ -595,13 +595,32 @@ function updateDocument(item, res) {
 }
 
 function delDocument(item, res) {
-    Document.remove({
-        _id: item
-    }, function(err) {
-        if (err)
+    var msg;
+    Document.findOneAndRemove({
+        _id :item
+    }, function(err, doc){
+        console.log("doc loc:",doc.file_location);
+        if(doc){
+            fs.stat(doc.file_location, function(err, stats) {
+                if(typeof stats != 'undefined'){
+                    console.log("File : ", stats);
+                    console.log("File : ", stats.isFile());
+                    fs.unlink(doc.file_location),function (err) {
+                        if (err) throw err;
+                    }
+                    msg = {success:true};
+                } else {
+                    msg = {success:false,reason:"File not exist",err_code:50};
+                }
+            });
+        } else {
+            msg = {success:false,reason:"Document not found",err_code:44};
+        }
+        if(err)
             res.send(err);
-        getDocument(res);
-    })
+        else
+            res.json(msg);
+    });
 }
 
 //================================ Company ====================================
