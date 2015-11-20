@@ -94,6 +94,49 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
         }
     }
 
+    $scope.lockStudent = function (id) {
+        var msg;
+        swal({
+            title:"ล็อคข้อมูล",
+            text:"ข้อมูลนักศึกษาจะถูกตรวจสอบความครบถ้วนเพื่อยืนยันสถานะ",
+            type:"warning",
+            showCancelButton: true,   
+            confirmButtonText: "ตรวจสอบและล็อคข้อมูลนี้",   
+            cancelButtonText: "ยกเลิก",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },function(isConfirm){
+            if(isConfirm){
+                StudentsService.lockProfile(id).success(function(data){
+                    if(data.success){
+                        msg = {
+                            title:"สำเร็จ!",
+                            text:"ข้อมูลนี้ถูกตรวจสอบและล็อคแล้ว",
+                            type:"success",
+                            confirmButtonText:"ปิด"
+                        };
+                    } else {
+                        msg = {
+                            title:"ล้มเหลว!",
+                            text:"มีบางอย่างผิดพลาด",
+                            type:"error",
+                            confirmButtonText:"ปิด"
+                        };
+                    }
+                    $modalInstance.close(msg);
+                });
+            } else {
+                msg = {
+                    title:"ยกเลิก!",
+                    text:"",
+                    type:"error",
+                    confirmButtonText:"ปิด"
+                };
+                $modalInstance.close(msg);
+            }
+        });
+    }
+
     $scope.ok = function() {
         //can return something
         $modalInstance.close();

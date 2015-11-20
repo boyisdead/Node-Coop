@@ -307,6 +307,9 @@ function unLockStuProfile(id, res){  // set up a lock on student status
     }, function(err, doc) {
         if (doc != null) {
             doc.profileLock = false;
+            console.log("status : " ,doc.status);
+            console.log(doc.status.profile);
+            doc.status.profile = false;
             msg = {success:true};
             doc.save();
         } else {

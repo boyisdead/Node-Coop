@@ -43,7 +43,6 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             cancelButtonText: "ยกเลิก",
             closeOnConfirm: false,
             closeOnCancel: false,
-            html: false
         }, function(isConfirm) {
             if (isConfirm) {
                 $scope.loading = true;
@@ -89,8 +88,13 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             size: 'lg'
         });
 
-        modalInstance.result.then(function() {
+        modalInstance.result.then(function(data) {
             $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
             getStudent($scope.academicYear);
         });
     };
@@ -123,7 +127,8 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             if(data.success) {
                 swal({
                     type: 'success',
-                    title : "Unlock!"
+                    title : "สำเร็จ!",
+                    text: "ปลดล็อคข้อมูลนักศึกษา",
                 });
             }
             getStudent($scope.academicYear);
