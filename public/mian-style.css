@@ -16,6 +16,13 @@ body::-webkit-scrollbar {
     color: #CC0000;
 }
 
+.mini-gray {
+    font-size: 0.7em;
+    font-style: italic;
+    color: #888888;
+}
+
+
 .little-frame {
     background-color: #fff;
     border-radius: 20px;
@@ -95,15 +102,20 @@ li .label {
     box-shadow: none;
 }
 
- .touched-validate input.ng-invalid.ng-touched {
+.touched-validate input.ng-invalid.ng-touched {
     border: #39e600;
     box-shadow: 0px 0px 5px #FA787E;
-  }
+}
 
-  .touched-validate input.ng-valid.ng-touched {
-        border: green;
+.touched-validate input.ng-valid.ng-touched {
+    border: green;
     box-shadow: 0px 0px 5px #39e600;
-  }
+}
+
+.ex-touched {
+    border: 1px solid #ccc !important;
+    box-shadow: 0px 0px 0px #ffffff !important;
+}
 
 /*
 input:valid{
