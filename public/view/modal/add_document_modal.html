@@ -2,18 +2,18 @@
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2">
             <h1>เพิ่มเอกสาร</h1>
-            <form class="form-horizontal" name="addForm" style="margin-bottom:25px">
+            <form class="form-horizontal touched-validate" name="addForm" style="margin-bottom:25px">
                 <div class="form-group">
                     <label for="scode">รหัสนักศึกษา</label>
-                    <input type="text" class="form-control" ng-model="formData.owner" placeholder="รหัสนักศึกษา" id="scode" style="max-width:250px;">
+                    <input type="text" class="form-control" ng-model="formData.owner" placeholder="รหัสนักศึกษา" id="scode" style="max-width:250px;" required>
                 </div>
                 <div class="form-group">
                     <label for="afile">เลือกไฟล์</label>
-                    <input type="file" class="form-control" ngf-select ngf-multiple="false" ng-model="formData.attachFile" placeholder="รหัสนักศึกษา" id="afile" name="file" style="max-width:250px;">
+                    <input type="file" class="form-control" ngf-select ngf-multiple="false" ng-model="formData.attachFile" placeholder="รหัสนักศึกษา" id="afile" name="file" style="max-width:250px;" required>
                 </div>
                 <div class="form-group">
                     <label for="fileUpload">ประเภท</label>
-                    <select class="form-control" style="max-width:150px" id="fileType" ng-model="formData.file_type">
+                    <select class="form-control" style="max-width:150px" id="fileType" ng-model="formData.file_type" required>
                         <option value="Application">Application</option>
                         <option value="Resume">Resume</option>
                         <option value="Certificate">Certificate</option>
@@ -22,7 +22,7 @@
                 </div>
                 <div class="form-group" >
                     <label for="email"></label>
-                    <input type="text" class="form-control" ng-model="formData.description" placeholder="ชื่อไฟล์" for="fileUpload">
+                    <input type="text" class="form-control" ng-model="formData.description" placeholder="คำอธิบาย" for="fileUpload" required>
                 </div>
                 <button type="submit" class="btn btn-primary btn-lg " ng-click="upload(formData.attachFile)">Add</button>
                 <button class="btn btn-warning btn-lg " ng-click="ok()">Close</button>
