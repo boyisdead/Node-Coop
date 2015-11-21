@@ -10,6 +10,10 @@ body::-webkit-scrollbar {
     display: none; 
 }
 
+.main-view {
+    padding:20px 10px 10px 10px;
+}
+
 .mini-red {
     font-size: 0.7em;
     font-style: italic;
@@ -116,6 +120,25 @@ li .label {
     border: 1px solid #ccc !important;
     box-shadow: 0px 0px 0px #ffffff !important;
 }
+.form-inline > input {
+    margin: 5px 5px 5px 5px !important;
+}
+
+.form-group > input {
+    margin-left: 5px !important;
+}
+input.text-short {
+    max-width:150px;
+}
+input.text-med {
+    max-width:250px;
+    margin-bottom: 5px;
+}
+select.title-name {
+    margin-left: 5px;
+    max-width:120px;
+}
+
 
 /*
 input:valid{

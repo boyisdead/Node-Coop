@@ -1,4 +1,6 @@
-teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','StudentsService','OthersService', function($scope, $modalInstance, StudentsService, OthersService) {
+studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','StudentsService','OthersService', function($scope, $modalInstance, StudentsService, OthersService) {
+
+    var allowPwChange = false;
 
     var getTitleName = function() {
         OthersService.getTitleName().success(function(titledata){
@@ -18,6 +20,11 @@ teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
     $scope.validateForm = function(msg) {
         var errList = "";
         if (typeof $scope.formData != 'undefined') {
+
+            if (msg.acaYr.$error.required) {
+                errList += "ปีที่สมัคร ไม่ถูกกรอก\n";
+            }
+
             if (msg.scode.$error.required) {
                 errList += "รหัสประจำตัว ไม่ถูกกรอก\n";
             } else if (msg.scode.$error.minlength) {
@@ -41,8 +48,10 @@ teacherModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
                 errList += "นามสกุลภาษาอังกฤษ ไม่ถูกกรอก\n";
             }
 
-            if (msg.acaYr.$error.required) {
+            if (msg.conMail.$error.required) {
                 errList += "ปีที่สมัคร ไม่ถูกกรอก\n";
+            } else if(msg.conMail.$error.email){
+                errList += "รูปแบบอีเมล์ไม่ถูกต้อง\n";
             }
 
             if (msg.advisor.$error.required) {

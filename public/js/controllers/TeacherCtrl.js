@@ -51,7 +51,7 @@ teacherModule.controller('teacherCtrl', ['$scope','$rootScope', '$cookies', 'jwt
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'view/modal/add_teacher_modal.html',
-            controller: 'addTeacherCtrl',
+            controller: 'addTeacherCtrl'
         });
 
         modalInstance.result.then(function() {
@@ -67,8 +67,7 @@ teacherModule.controller('teacherCtrl', ['$scope','$rootScope', '$cookies', 'jwt
             scope : scope,
             animation: true,
             templateUrl: 'view/modal/edit_teacher_modal.html',
-            controller: 'editTeacherCtrl',
-            size : 'lg'
+            controller: 'editTeacherCtrl'
         });
 
         modalInstance.result.then(function() {

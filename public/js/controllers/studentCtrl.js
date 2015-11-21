@@ -63,8 +63,7 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'view/modal/add_student_modal.html',
-            controller: 'addStudentCtrl',
-            size: 'lg'
+            controller: 'addStudentCtrl'
         });
 
         modalInstance.result.then(function(newCreateYr) {
@@ -84,8 +83,7 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             scope: scope,
             animation: true,
             templateUrl: 'view/modal/edit_student_modal.html',
-            controller: 'editStudentCtrl',
-            size: 'lg'
+            controller: 'editStudentCtrl'
         });
 
         modalInstance.result.then(function(data) {

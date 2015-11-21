@@ -4,8 +4,8 @@
             <div class="page-header">
                 <h1>
                     จัดการนักศึกษา 
-                    <small>
-                        ปีการศึกษา <span ng-click="openEditAcademicYear()" ng-bind="academicYear"></span>
+                    <small ng-click="openEditAcademicYear()" tooltip-placement="bottom" uib-tooltip="คลิกเพื่อเลือกปีการศึกษาอื่นๆ">
+                        ปีการศึกษา <span ng-bind="academicYear"></span>
                         
                     </small>
                 </h1>
@@ -14,7 +14,7 @@
         <div class="col-xs-12 col-sm-6" style="position:relative;min-height:90px;">
             <form class="form-inline" style="position:absolute;right:15px;bottom:5px;">
                 <button disabled class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-trash"></span></button>
-                <button class="btn btn-default btn-sm" type="button" ng-click="openAddStudent()">Add</button>
+                <button class="btn btn-default btn-sm" type="button" ng-click="openAddStudent()">เพิ่มนักศึกษา <span class="glyphicon glyphicon-plus"></span></button>
                 <div class="form-group">
                     <div class="input-group input-group-sm" style="max-width:200px;">
                         <span class="input-group-addon" id="searchBox"><span class="glyphicon glyphicon-search"></span></span>
