@@ -1,0 +1,116 @@
+[
+  {
+    "address": "139/2 ห้วยแก้ว ตำบลสุเทพ อำเภอเมืองเชียงใหม่ เชียงใหม่ 50200",
+    "website": "www.mycostech.com",
+    "email": "sales@mycos.com",
+    "fax": "053894827",
+    "tel": "053894948",
+    "coordinator": {
+      "email": "Mana@mycos.com",
+      "tel": "0848614587",
+      "pos": "กรรมการผู้จัดการ",
+      "name": {
+        "t_en": "Mr.",
+        "l_en": "Mycos",
+        "f_en": "Mana",
+        "t_th": "นาย",
+        "l_th": "มายคอส",
+        "f_th": "มานะ"
+      }
+    },
+    "contact": {
+      "email": "Manee@mycos.com",
+      "tel": "0840481234",
+      "pos": "กรรมการผู้จัดการ",
+      "name": {
+        "t_en": "Ms.",
+        "l_en": "Mycos",
+        "f_en": "Manee",
+        "t_th": "นางสาว",
+        "l_th": "มายคอส",
+        "f_th": "มานี"
+      }
+    },
+    "part_year": "2550",
+    "name": {
+      "init": "mYcos",
+      "full": "mYcos Technologies"
+    }
+  },
+  {
+    "address": "กลุ่มบริษัทจีเอเบิลจำกัด\n อาคารปัญจธานีทาวเวอร์ เลขที่ 127/27, 29-31\n ถนนนนทรี (รัชดาภิเษก) ช่องนนทรี เขตยานนาวา\n กรุงเทพฯ 10120",
+    "website": "www.g-able.com",
+    "email": "",
+    "fax": "",
+    "tel": "02-685-9333",
+    "coordinator": {
+      "email": "sujitra.j@cdg.co.th",
+      "tel": "026859000-4265",
+      "pos": "",
+      "name": {
+        "t_en": "",
+        "l_en": "Sujitra",
+        "f_en": "Jindasri",
+        "t_th": "คุณ",
+        "l_th": "สุจิตรา",
+        "f_th": "จินดาศรี"
+      }
+    },
+    "contact": {
+      "email": "",
+      "tel": "",
+      "pos": "กรรมการผู้จัดการ",
+      "name": {
+        "t_en": "",
+        "l_en": "Trirat",
+        "f_en": "Jaisamran",
+        "t_th": "คุณ",
+        "l_th": "ไตรรตน์",
+        "f_th": "ใจสำราญ"
+      }
+    },
+    "part_year": "2554",
+    "name": {
+      "init": "G-ABLE",
+      "full": "กลุ่มบริษัท จีเอเบิล"
+    }
+  },
+  {
+    "address": "บริษัท คอมพิวเตอร์ เทเลโฟนี เอเชีย จำกัด\nอาคารฤทธิ์รัตน ชั้น 3\nเลขที่ 5 ถนนรามคำแหง\nแขวงหัวหมาก เขตบางกะปิ\nกรุงเทพฯ 10250",
+    "website": "www.ctasia.com",
+    "email": "",
+    "fax": "6627137905",
+    "tel": "6627137955",
+    "coordinator": {
+      "email": "khanithar@ctasia.com",
+      "tel": "0837505788",
+      "pos": "",
+      "name": {
+        "t_en": "",
+        "l_en": "Rewthong",
+        "f_en": "Khanithar",
+        "t_th": "คุณ",
+        "l_th": "ริ้วทอง",
+        "f_th": "ขนิษฐา"
+      }
+    },
+    "contact": {
+      "email": "",
+      "tel": "",
+      "pos": "หัวหน้าเจ้าหน้าที่ฝ่ายเทคนิค",
+      "name": {
+        "t_en": "",
+        "l_en": "Todsapon",
+        "f_en": "Apikunwanit",
+        "t_th": "คุณ",
+        "l_th": "ทศพล",
+        "f_th": "อภิกุลวณิช"
+      }
+    },
+    "part_year": "2554",
+    "name": {
+      "init": "CTAsia",
+      "full": "บริษัทคอมพิวเตอร์ เทเลโฟนี เอเซีย จำกัดีเอเบิล"
+    }
+  }
+]

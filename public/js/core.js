@@ -13,6 +13,7 @@ var mainModule = angular.module('coopEdAssist', [
     'coopEdAssist.teacher',
     'coopEdAssist.authentication',
     'coopEdAssist.document',
+    'coopEdAssist.company',
 
     'ng-sweet-alert',
 
@@ -25,6 +26,7 @@ var studentModule = angular.module('coopEdAssist.student', []);
 var teacherModule = angular.module('coopEdAssist.teacher', []);
 var authenticationModule = angular.module('coopEdAssist.authentication', []);
 var documentModule = angular.module('coopEdAssist.document', []);
+var companyModule = angular.module('coopEdAssist.company', []);
 
 
 mainModule.config(function($stateProvider, $urlRouterProvider) {
@@ -86,6 +88,16 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
             url: "/document",
             templateUrl: "view/document_page.html",
             controller: "documentCtrl",
+            data: {
+                // just for now
+                requireLogin: true,
+                accessType: 'teacher'
+            }
+        })
+        .state('companyList', {
+            url: "/company",
+            templateUrl: "view/company_page.html",
+            controller: "companyCtrl",
             data: {
                 // just for now
                 requireLogin: true,

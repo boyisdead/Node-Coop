@@ -41,16 +41,16 @@
                         <th ng-bind="student.stu_code"></th>
                         <td ng-bind="student.name.t_th + ' ' + student.name.f_th + ' ' + student.name.l_th"></td>
                         <td class="student-status">
-                            <span ng-class="{'label-green':student.status.profile,'label-red':!student.status.profile}">
+                            <span ng-class="{'label label-success':student.status.profile,'label label-danger':!student.status.profile}">
                                 P
                             </span>
-                            <span ng-class="{'label-green':student.status.document,'label-red':!student.status.document}">
+                            <span ng-class="{'label label-success':student.status.document,'label label-danger':!student.status.document}">
                                 D
                             </span>
-                            <span ng-class="{'label-green':student.status.apply,'label-red':!student.status.apply}">
+                            <span ng-class="{'label label-success':student.status.apply,'label label-danger':!student.status.apply}">
                                 Ap
                             </span>
-                            <span ng-class="{'label-green':student.status.accept,'label-red':!student.status.accept}">
+                            <span ng-class="{'label label-success':student.status.accept,'label label-danger':!student.status.accept}">
                                 Ac
                             </span>
                         </td>

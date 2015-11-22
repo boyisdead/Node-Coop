@@ -62,7 +62,7 @@
         </div>
     </div>
 </div>
-<div class="modal-footer">
+<div class="modal-footer inline-block">
     <button type="button" class="btn btn-info" ng-hide="allowPwChange" ng-click="lockStudent(formData._id)" tooltip-placement="top" uib-tooltip="เพื่อยืนยันว่าสถานะนักศึกษาถูกต้องครบถ้วน">ล็อคข้อมูลนี้</button>
     <button type="reset" class="btn btn-danger" ng-click="allowPwChange = !allowPwChange" id="changePass"><span ng-hide="allowPwChange">เปลี่ยนรหัสผ่าน</span><span ng-show="allowPwChange">ยกเลิก และ กลับไปแก้ไขข้อมูล</span></button>
     <button type="button" class="btn btn-warning" ng-click="getStudentData()">คืนค่า</button>

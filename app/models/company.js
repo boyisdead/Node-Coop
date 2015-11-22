@@ -10,7 +10,7 @@ module.exports = mongoose.model('Company',{
     name: {
       f_th: {type: String, default:''},
       l_th: {type: String, default:''},
-      t_th: {type: String, default:''},
+      t_th: {type: String, default:'คุณ'},
       f_en: {type: String, default:''},
       l_en: {type: String, default:''},
       t_en: {type: String, default:''}
@@ -23,7 +23,7 @@ module.exports = mongoose.model('Company',{
     name: {
       f_th: {type: String, default:''},
       l_th: {type: String, default:''},
-      t_th: {type: String, default:''},
+      t_th: {type: String, default:'คุณ'},
       f_en: {type: String, default:''},
       l_en: {type: String, default:''},
       t_en: {type: String, default:''}
@@ -35,7 +35,8 @@ module.exports = mongoose.model('Company',{
   tel: {type: String, default:''},
   fax: {type: String, default:''},
   email: {type: String, default:''},
-  website: {type: String, default:''}
+  website: {type: String, default:''},
+  address:{type:String, default:''}
 });
 
 

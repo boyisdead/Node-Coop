@@ -1,0 +1,61 @@
+<div class="modal-header">
+    <h3 class="modal-title">เพิ่มสถานประกอบการ</h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid">
+        <div class="row">
+            <form class="form-horizontal touched-validate" name="addForm"  novalidate>
+                <div class="col-sm-6 form-column">
+                    <div class="form-group">
+                        <label for="compName">
+                            ชื่อสถานประกอบการ 
+                            <span class="mini-red">*</span>
+                        </label>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.full" placeholder="ชื่อสถานประกอบการ" id="compName" name="compName" autocomplete="off" autofocus required>
+                    </div>
+                    <div class="form-group">
+                        <label for="compInit">ชื่อย่อ </label><span class="mini-gray">(ไม่เกิน 10 ตัวอักษร) </span>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.init" placeholder="ชื่อย่อ" id="compInit" name="compInit" autocomplete="off" ng-maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="tel">เบอร์โทรศัพท์ </label><span class="mini-gray"> (ตัวเลขไม่มี '-') </span>
+                        <div class="form-inline">
+                        <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.tel.head" placeholder="เบอร์โทรศัพท์" id="tel" name="tel" autocomplete="off">
+                        <span> ต่อ </span>
+                        <input type="text" pattern="^[0-9]*$" class="form-control" ng-model="formData.tel.tail" placeholder="xx" id="tel" name="tel" autocomplete="off" style="width:50px">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                         <label for="fax">เบอร์โทรสาร </label><span class="mini-gray"> (ตัวเลขไม่มี '-') </span>
+                        <div class="form-inline">
+                            <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.fax.head" placeholder="เบอร์โทรสาร" id="fax" name="fax" autocomplete="off">
+                            <span> ต่อ </span>
+                            <input type="text" pattern="^[0-9]*$" class="form-control" ng-model="formData.fax.tail" placeholder="xx" name="faxTail" autocomplete="off" style="width:50px">
+                        </div>
+                    </div>                
+                </div>
+                <div class="col-sm-6 form-column">
+                    <div class="form-group">
+                        <label for="email">อีเมล์</label>
+                        <input type="email" class="form-control text-med" ng-model="formData.email" placeholder="อีเมล์" id="email" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="website">เว็บไซต์</label>
+                        <input type="text" class="form-control text-med" ng-model="formData.website" placeholder="เว็บไซต์" id="website" name="website" autocomplete="off" >
+                    </div>
+                    <div class="form-group">
+                        <label for="address">ที่อยู่ <span class="mini-red">*</span></label>
+                        <textarea class="form-control text-med"  rows="4" ng-model="formData.address" placeholder="ที่อยู่" id="address" name="address" style="margin-left:5px" autocomplete="off" ng-minlength="10" required> </textarea>
+                    </div>
+                    <div class="form-group" ng-show="addForm.$valid">
+                        <button type="submit" class="btn btn-success" ng-click="validateForm(addForm)">บันทึก</button>
+                        <button type="reset" class="btn btn-warning">ล้างค่า</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
+</div>

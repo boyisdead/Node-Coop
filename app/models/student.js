@@ -22,5 +22,6 @@ module.exports = mongoose.model('Student', {
 		"document":  {type : Boolean, default: false},
 		"apply":  {type : Boolean, default: false},
 		"accept":  {type : Boolean, default: false},
-	}
+	},
+	profil_picture : {type : String, default: 'default.png'}
 });

@@ -28,6 +28,8 @@
                         <th>ประเภท</th>
                         <th class="status"><span class="hide-xs">สถานะ <span class="glyphicon glyphicon-question-sign" tooltip-popup-close-delay='500' tooltip-placement="bottom" uib-tooltip-template="'descTemplate.html'" tooltip-class="tooltip-status"></span></span></th>
                         <th class="action"></th>
+                        <th class="action"></th>
+                        <th class="action"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,7 +37,13 @@
                         <th ng-bind="document.owner"></th>
                         <td ng-bind="document.description"></td>
                         <td ng-bind="document.file_type"></td>
-                        <td><span ng-class="{'label-green':document.status,'label-red':!document.status}"></span></td>
+                        <td><span ng-class="{'label label-success':document.status,'label label-danger':!document.status}"> </span></td>
+                        <td>
+                            <a ng-click=""><span class="glyphicon glyphicon-eye-open"></span></a>
+                        </td>
+                        <td>
+                            <a href="{{document.file_location}}" download><span class="glyphicon glyphicon-save"></span></a>
+                        </td>
                         <td>
                             <a ng-click="deleteDocument(document._id)"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>

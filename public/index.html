@@ -35,6 +35,9 @@
     <script src="js/controllers/documentCtrl.js"></script>
     <script src="js/controllers/addDocumentCtrl.js"></script>
 
+    <script src="js/controllers/companyCtrl.js"></script>
+    <script src="js/controllers/addCompanyCtrl.js"></script>
+
     <script src="js/controllers/chngAcaYrCtrl.js"></script>
 
     <!-- load services -->
@@ -42,6 +45,7 @@
     <script src="js/services/teachers.js"></script>
     <script src="js/services/users.js"></script>
     <script src="js/services/documents.js"></script>
+    <script src="js/services/companies.js"></script>
     <script src="js/services/others.js"></script>
 
     <!-- load filters -->
@@ -77,6 +81,7 @@
                     <li><a ui-sref="studentList">Student</a></li>
                     <li><a ui-sref="teacherList">Teacher</a></li>
                     <li><a ui-sref="documentList">Document</a></li>
+                    <li><a ui-sref="companyList">Company</a></li>
                     <li><a ui-sref="login"><span ng-show="!currentUser">Login</span><span ng-show="currentUser">Logout</span></a></li>
 
             <!-- Under construction
@@ -125,6 +130,7 @@
                     <li><a ui-sref="studentList" ng-click="isCollapsed = !isCollapsed">Student</a></li>
                     <li><a ui-sref="teacherList" ng-click="isCollapsed = !isCollapsed">Teacher</a></li>
                     <li><a ui-sref="documentList" ng-click="isCollapsed = !isCollapsed">Document</a></li>
+                    <li><a ui-sref="conpanyList" ng-click="isCollapsed = !isCollapsed">Company</a></li>
                     <li><a ui-sref="login" ng-click="isCollapsed = !isCollapsed"><span ng-show="!currentUser">Login</span><span ng-show="currentUser">Logout</span></a></li>
                 </ul>
             </nav>

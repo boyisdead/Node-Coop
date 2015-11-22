@@ -9,6 +9,9 @@
 body::-webkit-scrollbar { 
     display: none; 
 }
+th>a:hover{
+    text-decoration: none;
+}
 
 .main-view {
     padding:20px 10px 10px 10px;
@@ -33,55 +36,6 @@ body::-webkit-scrollbar {
     padding: 15px 15px 15px 15px;
     margin: 15px 15px 15px 15px;
     border: 1px dashed #eee;
-}
-
-.label-green {
-    text-shadow: 1px 1px #AEAEAE;
-    background-color: #35D400;
-    padding: 0px 5px 0px 5px;
-    color: white;
-    font-weight: 500;
-    border-radius: 5px;
-    margin-right: 3px
-}
-
-.label-orange {
-    text-shadow: 1px 1px #AEAEAE;
-    background-color: #FF8914;
-    padding: 0px 5px 2px 5px;
-    color: white;
-    font-weight: 500;
-    border-radius: 5px;
-    margin-right: 3px
-}
-
-.label-red {
-    text-shadow: 1px 1px #AEAEAE;
-    background-color: #FF1A1A;
-    padding: 0px 5px 0px 5px;
-    color: white;
-    font-weight: 500;
-    border-radius: 5px;
-    margin-right: 3px
-}
-
-.label-yellow {
-    text-shadow: 1px 1px #AEAEAE;
-    background-color: #FFFF00;
-    padding: 2px 5px 2px 5px;
-    color: white;
-    font-weight: 500;
-    border-radius: 5px;
-    margin-right: 3px
-}
-
-.label {
-    float: left;
-}
-
-li .label {
-    margin: 5px 5px 5px 5px;
-    float: left;
 }
 
 .typeahead .custom-popup-wrapper {
@@ -153,7 +107,7 @@ th.student-status {
 }
 
 th.action {
-    width:40px;
+    width:32px;
 }
 
 select.title-name {

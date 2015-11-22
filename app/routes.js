@@ -11,7 +11,7 @@ var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 var multer = require('multer');
 var upload = multer({
-    dest: './uploads/documents/'
+    dest: './public/uploads/documents/'
 });
 var passwordHash = require('password-hash');
 
@@ -550,7 +550,7 @@ function createDocument(item, res, next) {
 
     var new_file_name = item.body.owner.substring(0, 2) + item.body.owner.substring(5, 9) + item.body.file_type.substring(0, 2).toUpperCase() + "_" + time_stamp + getFileExtension(item.file.originalname);
     // // var target_path = './uploads/documents/' + item.file.originalname;
-    var target_path = './uploads/documents/' + new_file_name;
+    var target_path = './public/uploads/documents/' + new_file_name;
     console.log("file name: " + new_file_name);
     console.log("file extension: " + getFileExtension(new_file_name));
     console.log("file path: "+target_path);
@@ -659,27 +659,34 @@ function getCompany(res){
 // };
 
 function createCompany(item, res) {
-    var newCompany = new Company({
-        name : {
-            full : item.name.full,
-            init : item.name.init
-        },
-        part_year: item.part_year,
-        tel: item.tel,
-        fax: item.fax,
-        email: item.email,
-        website: item.website
-    });
-    if(item.contact)
-        newCompany.contact = item.contact;
-    if(item.coordinator)
-        newCompany.coordinator = item.coordinator;
 
-    newCompany.save(function(err) {
-        if (err)
-            res.send(err);
-        getCompany(res);
-    })
+    var msg;
+
+        var newCompany = new Company({
+            name : {
+                full : item.name.full,
+                init : item.name.init
+            },
+            part_year: item.part_year,
+            tel: item.tel,
+            fax: item.fax,
+            email: item.email,
+            website: item.website,
+            address: item.address
+        });
+        if(item.contact)
+            newCompany.contact = item.contact;
+        if(item.coordinator)
+            newCompany.coordinator = item.coordinator;
+
+        newCompany.save(function(err) {
+            if (err)
+                msg = {success:false,err:err};
+            else
+                msg = {success:true};
+            res.json(msg);
+        })
+    
 };
 
 function updateCompany(item, res) {
@@ -757,7 +764,8 @@ function delCompany(item, res) {
     }, function(err) {
         if (err)
             res.send(err);
-        getCompany(res);
+        else
+            res.json({success:true});
     })
 }
 
@@ -949,6 +957,9 @@ module.exports = function(app) {
     });
     app.put('/api/companies/contact', function(req, res) {
         updateCompanyContact(req.body, res);
+    });
+    app.delete('/api/companies/:company_id', function(req, res) {
+        delCompany(req.params.company_id, res);
     });
 
 
