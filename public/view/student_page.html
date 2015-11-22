@@ -29,29 +29,37 @@
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
-                        <th>รหัสนักศึกษา</th>
-                        <th>ชื่อไทย</th>
-                        <th>สถานะ</th>
-                        <th>ลบ</th>
-                        <th>แก้ไข</th>
+                        <th class="scode">รหัสนักศึกษา</th>
+                        <th>ชื่อ</th>
+                        <th class="student-status">สถานะ<span class="glyphicon glyphicon-question-sign" tooltip-popup-close-delay='500' tooltip-placement="bottom" uib-tooltip-template="'descTemplate.html'" tooltip-class="tooltip-status"></span></th>
+                        <th class="action"></th>
+                        <th class="action"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="student in students |orderBy: student.stu_code |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                         <th ng-bind="student.stu_code"></th>
                         <td ng-bind="student.name.t_th + ' ' + student.name.f_th + ' ' + student.name.l_th"></td>
-                        <td>
-                            <span ng-class="{'label-green':student.status.profile,'label-red':!student.status.profile}"></span>
-                            <span ng-class="{'label-green':student.status.document,'label-red':!student.status.document}"></span>
-                            <span ng-class="{'label-green':student.status.apply,'label-red':!student.status.apply}"></span>
-                            <span ng-class="{'label-green':student.status.accept,'label-red':!student.status.accept}"></span>
+                        <td class="student-status">
+                            <span ng-class="{'label-green':student.status.profile,'label-red':!student.status.profile}">
+                                P
+                            </span>
+                            <span ng-class="{'label-green':student.status.document,'label-red':!student.status.document}">
+                                D
+                            </span>
+                            <span ng-class="{'label-green':student.status.apply,'label-red':!student.status.apply}">
+                                Ap
+                            </span>
+                            <span ng-class="{'label-green':student.status.accept,'label-red':!student.status.accept}">
+                                Ac
+                            </span>
                         </td>
                         <td>
-                            <button ng-click="deleteStudent(student._id)"><span class="glyphicon glyphicon-trash"></span></button>
+                            <a ng-click="deleteStudent(student._id)"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                         <td> 
-                            <button ng-hide="student.profileLock" ng-click="openEditStudent(student._id)"><span class="glyphicon glyphicon-pencil"></span></button>
-                            <button ng-show="student.profileLock" ng-click="unlockProfile(student._id)"><span class="glyphicon glyphicon-lock"></span></button>
+                            <a ng-hide="student.profileLock" ng-click="openEditStudent(student._id)"><span class="glyphicon glyphicon-pencil"></span></a>
+                            <a ng-show="student.profileLock" ng-click="unlockProfile(student._id)"><span class="glyphicon glyphicon-lock"></span></a>
                         </td>
                     </tr>
                 </tbody>
@@ -60,10 +68,13 @@
             <uib-pagination ng-model="currentPage" total-items="students.length" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
         </div>
     </div>
-    <!--
-    <div class="round-button" style="position:fixed;right:20px;bottom:20px;width:58px !important; height:58px
-        !important;">
-        <div class="round-button-circle" ng-click="openAddStudent()"><a class="round-button"><span class="glyphicon glyphicon-plus"></span></a></div>
-    </div>
--->
 </div>
+<script type="text/ng-template" id="descTemplate.html">
+    <span>
+        <span class="red">สีแดง</span> - ยังไม่สมบูรณ์<br>
+        <span class="orange">สีส้ม</span> - อยู่ขณะดำเนินการ<br>
+        <span class="green">สีเขียว</span> - สมบูรณ์<br>
+        P - ข้อมูลส่วนตัว, D - เอกสาร<br>
+        AP - การส่งสมัคร, AC - การคัดเลือก
+    </span>
+</script>

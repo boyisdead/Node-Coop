@@ -40,8 +40,9 @@ body::-webkit-scrollbar {
     background-color: #35D400;
     padding: 0px 5px 0px 5px;
     color: white;
-    font-weight: 800;
+    font-weight: 500;
     border-radius: 5px;
+    margin-right: 3px
 }
 
 .label-orange {
@@ -49,8 +50,9 @@ body::-webkit-scrollbar {
     background-color: #FF8914;
     padding: 0px 5px 2px 5px;
     color: white;
-    font-weight: 800;
+    font-weight: 500;
     border-radius: 5px;
+    margin-right: 3px
 }
 
 .label-red {
@@ -58,8 +60,9 @@ body::-webkit-scrollbar {
     background-color: #FF1A1A;
     padding: 0px 5px 0px 5px;
     color: white;
-    font-weight: 800;
+    font-weight: 500;
     border-radius: 5px;
+    margin-right: 3px
 }
 
 .label-yellow {
@@ -67,8 +70,9 @@ body::-webkit-scrollbar {
     background-color: #FFFF00;
     padding: 2px 5px 2px 5px;
     color: white;
-    font-weight: 800;
+    font-weight: 500;
     border-radius: 5px;
+    margin-right: 3px
 }
 
 .label {
@@ -127,16 +131,55 @@ li .label {
 .form-group > input {
     margin-left: 5px !important;
 }
-input.text-short {
+
+.text-short {
     max-width:150px;
 }
-input.text-med {
+.text-med {
     max-width:250px;
     margin-bottom: 5px;
 }
+
+th.scode {
+    width:110px;
+}
+
+th.status {
+    width:75px;
+}
+
+th.student-status {
+    width:150px;
+}
+
+th.action {
+    width:40px;
+}
+
 select.title-name {
     margin-left: 5px;
     max-width:120px;
+}
+
+.form-column {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.green {
+    color: #00cc00;
+}
+
+.red {
+    color: #ff0000;
+}
+
+.orange {
+    color: #ff6600;
+}
+
+.tooltip-status{
+    width:250px;
 }
 
 

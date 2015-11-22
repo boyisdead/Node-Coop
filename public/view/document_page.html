@@ -23,11 +23,11 @@
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
-                        <th>รหัสนักศึกษา</th>
+                        <th class="scode">รหัสนักศึกษา</th>
                         <th>ชื่อไฟล์</th>
                         <th>ประเภท</th>
-                        <th>สถานะ</th>
-                        <th></th>
+                        <th class="status"><span class="hide-xs">สถานะ <span class="glyphicon glyphicon-question-sign" tooltip-popup-close-delay='500' tooltip-placement="bottom" uib-tooltip-template="'descTemplate.html'" tooltip-class="tooltip-status"></span></span></th>
+                        <th class="action"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,3 +49,10 @@
         </div>
     </div>
 </div>
+<script type="text/ng-template" id="descTemplate.html">
+    <span>
+        <span class="red">สีแดง</span> - ยังไม่ผ่านการตรวจสอบ
+        <br>
+        <span class="green">สีเขียว</span> - ผ่านการตรวจสอบแล้ว
+    </span>
+</script>

@@ -1,64 +1,70 @@
-<div class="container" style="margin:20px">
-    <div class="row">
-        <h1>แก้ไขข้อมูลอาจารย์ผู้ประสานงาน <small><span ng-bind="formData.staff_code"></span></small></h1>
-        <form class="form-horizontal touched-validate" name="editForm" style="margin-bottom:25px" ng-hide="allowPwChange" novalidate>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="fnameTh">ชื่อภาษาไทย</label>
-                    <div class="form-inline">
-                        <input type="text" class="form-control" ng-model="formData.name.f_th" placeholder="ชื่อ" id="fnameTh" name="th_name_first" style="max-width:250px"required>
-                        <input type="text" class="form-control" ng-model="formData.name.l_th" placeholder="นามสกุล" id="lnameTh" name="th_name_last" style="max-width:250px;margin-top:10px" required>
+<div class="modal-header">
+    <h3 class="modal-title">แก้ไขข้อมูลอาจารย์ผู้ประสานงาน <small><span ng-bind="formData.staff_code"></span></small></h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid">
+        <div class="row" ng-hide="allowPwChange">
+            <form class="form-horizontal touched-validate" name="editForm" novalidate>
+                <div class="col-sm-6 form-column">
+                    <div class="form-group">
+                        <label for="fnameTh">ชื่อภาษาไทย <span class="mini-red">*</span></label>
+                            <input type="text" class="form-control text-med" ng-model="formData.name.f_th" placeholder="ชื่อ" id="fnameTh" name="th_name_first" autofocus required>
+                            <input type="text" class="form-control text-med" ng-model="formData.name.l_th" placeholder="นามสกุล" id="lnameTh" name="th_name_last"  required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fnameEn">ชื่อภาษาอังกฤษ <span class="mini-red">*</span></label>
+                            <input type="text" class="form-control text-med" ng-model="formData.name.f_en" placeholder="First name" id="fnameEn" name="en_name_first" style="max-width:250px;" required>
+                            <input type="text" class="form-control text-med" ng-model="formData.name.l_en" placeholder="Last name" id="lnameEn" name="en_name_last"  required>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="fnameEn">ชื่อภาษาอังกฤษ</label>
-                    <div class="form-inline">
-                        <input type="text" class="form-control" ng-model="formData.name.f_en" placeholder="First name" id="fnameEn" name="en_name_first" style="max-width:250px;" required>
-                        <input type="text" class="form-control" ng-model="formData.name.l_en" placeholder="Last name" id="lnameEn" name="en_name_last" style="max-width:250px;margin-top:10px" required>
+                <div class="col-sm-6 form-column">
+                    <div class="form-group">
+                        <label for="acaPos">ตำแหน่งทางวิชาการ <span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" id="acaPos" name="acaPos" ng-model="formData.acade_pos" uib-typeahead="acadePos as acadePos.full_th for acadePos in acadePosList | filter:$viewValue | limitTo:8" required>
                     </div>
+                    <div class="form-group">
+                        <label for="con_email">อีเมล์ <span class="mini-red">*</span></label>
+                        <input type="email" class="form-control text-med" ng-model="formData.contact_email" placeholder="Email" id="con_email" name="con_email"  required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tel">เบอร์โทรศัพท์</label>
+                        <input type="text" class="form-control text-med" ng-model="formData.tel" placeholder="Telephone" id="tel" name="tel" >
+                    </div>
+                    <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
                 </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="acaPos">ตำแหน่งทางวิชาการ</label>
-                    <input type="text" ng-model="formData.acade_pos" uib-typeahead="acadePos as acadePos.full_th for acadePos in acadePosList | filter:$viewValue | limitTo:8" class="form-control" id="acaPos" name="acaPos" style="max-width:250px;" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">อีเมล์</label>
-                    <input type="email" class="form-control" ng-model="formData.contact_email" placeholder="Email" id="email" name="email" style="max-width:250px;" >
-                </div>
-                <div class="form-group">
-                    <label for="tel">เบอร์โทรศัพท์</label>
-                    <input type="text" class="form-control" ng-model="formData.tel" placeholder="Telephone" id="tel" name="tel" style="max-width:250px;" >
-                </div>
-                <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
-                <button type="button" class="btn btn-warning" ng-click="getTeacherData()">คืนค่า</button>
-                <button class="btn btn-default" ng-click="ok()">ปิด</button>
-            </div>
-        </form>
-    </div>
-    <div class="col-sm-12">
-        <h3>เปลี่ยนรหัสผ่าน</h3>
-        <div class="form-group">
-            <button type="button" class="form-control btn btn-danger center-block" ng-init="{allowPwChange:false}" ng-click="allowPwChange = !allowPwChange" placeholder="รหัสผ่าน" id="changePass" style="max-width:250px;"><span ng-hide="allowPwChange">ใช่ ฉันต้องการเปลี่ยนรหัสผ่าน</span><span ng-show="allowPwChange">ยกเลิก และกลับไปแก้ไขข้อมูลส่วนตัว</span></button>
+            </form>
         </div>
-        <div class="well" ng-show="allowPwChange">
-            <div class="form-group">
-                <label for="oldPw">รหัสผ่านเก่า</label>
-                <input type="password" class="form-control" ng-model="formData.pw.oldPassword" placeholder="รหัสผ่าน" id="oldPw" style="max-width:250px;" required>
+        <div class="row" ng-show="allowPwChange">
+            <div class="col-sm-6 form-column">
+                <h4>เปลี่ยนรหัสผ่าน</h4>
+                <form class="form-horizontal touched-validate">
+                    <div class="well">
+                        <div class="form-group">
+                            <label for="oldPw">รหัสผ่านเก่า <span class="mini-red">*</span></label>
+                            <input type="password" class="form-control text-med" ng-model="formData.pw.oldPassword" placeholder="รหัสผ่าน" id="oldPw" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPw">รหัสผ่านใหม่ <span class="mini-red">*</span></label>
+                            <input type="password" class="form-control text-med" ng-model="formData.pw.newPassword" placeholder="รหัสผ่าน" id="newPw" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="conPw">ยืนยันรหัสผ่านใหม่ <span class="mini-red">*</span></label>
+                            <input type="password" class="form-control text-med" ng-model="formData.pw.password_confirm" placeholder="รหัสผ่าน" id="conPw" required>
+                            <br>
+                            <span class="mini-red" ng-hide="formData.pw.newPassword==formData.pw.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
+                        </div>
+                        <button type="submit" class="btn btn-success" ng-click="changPw(formData.pw,formData._id)">บันทึก</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="newPw">รหัสผ่านใหม่</label>
-                <input type="password" class="form-control" ng-model="formData.pw.newPassword" placeholder="รหัสผ่าน" id="newPw" style="max-width:250px;" required>
-            </div>
-            <div class="form-group">
-                <label for="conPw">ยืนยันรหัสผ่านใหม่</label>
-                <input type="password" class="form-control" ng-model="formData.pw.password_confirm" placeholder="รหัสผ่าน" id="conPw" style="max-width:250px;" required>
-                <br>
-                <span class="mini-red" ng-hide="formData.pw.newPassword==formData.pw.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
-            </div>
-            <button type="submit" class="btn btn-success" ng-click="changPw(formData.pw,formData._id)">บันทึก</button>
         </div>
     </div>
     <!-- class table -->
+</div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-info" ng-hide="allowPwChange" ng-click="lockStudent(formData._id)" tooltip-placement="top" uib-tooltip="เพื่อยืนยันว่าสถานะนักศึกษาถูกต้องครบถ้วน">ล็อคข้อมูลนี้</button>
+    <button type="reset" class="btn btn-danger" ng-click="allowPwChange = !allowPwChange" id="changePass"><span ng-hide="allowPwChange">เปลี่ยนรหัสผ่าน</span><span ng-show="allowPwChange">ยกเลิก และ กลับไปแก้ไขข้อมูล</span></button>
+    <button type="button" class="btn btn-warning" ng-click="getTeacherData()">คืนค่า</button>
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
 </div>

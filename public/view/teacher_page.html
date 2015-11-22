@@ -23,9 +23,12 @@
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
-                        <th>รหัสประจำตัว</th>
+                        <th class="scode">รหัสประจำตัว</th>
                         <th>ชื่อ</th>
-                        <th>เบอร์โทร</th>
+                        <th class="hidden-xs">อีเมล์</th>
+                        <th class="hidden-xs">เบอร์โทร</th>
+                        <th class="action"></th>
+                        <th class="action"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -33,12 +36,13 @@
 
                         <th ng-bind="teacher.staff_code"></th>
                         <td ng-bind="teacher.name.t_th + ' ' + teacher.name.f_th + ' ' + teacher.name.l_th"></td>
-                        <td ng-bind="teacher.tel"></td>
+                        <td class="hidden-xs" ng-bind="teacher.contact_email"></td>
+                        <td class="hidden-xs" ng-bind="teacher.tel"></td>
                         <td>
-                            <button ng-click="deleteTeacher(teacher._id)"><span class="glyphicon glyphicon-trash"></span></button>
+                            <a ng-click="deleteTeacher(teacher._id)"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                         <td>
-                            <button ng-click="openEditTeacher(teacher._id)"><span class="glyphicon glyphicon-pencil"></span></button>
+                            <a ng-click="openEditTeacher(teacher._id)"><span class="glyphicon glyphicon-pencil"></span></a>
                         </td>
                     </tr>
                 </tbody>

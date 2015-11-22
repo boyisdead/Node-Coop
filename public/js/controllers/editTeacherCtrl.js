@@ -57,6 +57,12 @@ teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance', 'Teache
                 errList += "ตำแหน่งทางวิชาการ ไม่ถูกกรอก\n";
             }
 
+            if (msg.con_email.$error.required) {
+                errList += "อีเมล์ ไม่ถูกกรอก\n";
+            } else if (msg.con_email.$error.email) {
+                errList += "รูปแบบอีเมล์ ไม่ถูกต้อง\n";
+            }
+
             if (errList != "") {
                 sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
             } else {
