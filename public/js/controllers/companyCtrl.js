@@ -1,4 +1,4 @@
-companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$log','CompaniesService', function($scope, $rootScope, $uibModal, $log, CompaniesService){
+companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$log' ,'CompaniesService', function($scope, $rootScope, $uibModal, $log, CompaniesService){
     
     $scope.companies = []
         ,$scope.currentPage = 1
@@ -19,7 +19,6 @@ companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$l
     getCompany();
 
     $scope.deleteCompany = function(id) {
-
         //sweet alert here
         swal({
             title: "คุณแน่ใจหรือ?",
@@ -55,6 +54,24 @@ companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$l
             animation: true,
             templateUrl: 'view/modal/add_company_modal.html',
             controller: 'addCompanyCtrl'
+        });
+
+        modalInstance.result.then(function() {
+            $log.info('Modal dismissed at: ' + new Date());
+            getCompany();
+        });
+    }
+
+    $scope.openEditCompany = function(id) {
+        var scope = $rootScope.$new();
+            scope.params = {
+            company_id: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_company_modal.html',
+            controller: 'editCompanyCtrl'
         });
 
         modalInstance.result.then(function() {

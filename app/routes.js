@@ -657,35 +657,83 @@ function getCompany(res){
 //         res.json(companies); // return all companies in JSON format
 //     });
 // };
+// 
+
+
+function findCompany(item, mode, res) {
+    if (mode == 'i') {
+        Company.findOne({
+            _id: item
+        }, function(err, company) {
+            console.log("id", item, err, company);
+            if (err)
+                res.send(err)
+            res.json(company);
+        });
+    } else if (mode == 'c') {
+        Company.findOne({
+            "s_index": item
+        }, function(err, company) {
+            console.log("code", item, err, company);
+            if (err)
+                res.send(err)
+            res.json(company);
+        });
+    }
+};
+
+function easyAutoId(prefix, max, numLong){
+    var newMax = max+1;
+    var new_id = prefix.concat(newMax.toString());
+    while(new_id.length < numLong){
+        new_id = new_id.slice(0,new_id.length-1) + "0" + newMax;
+    }
+    return new_id;
+}
+
 
 function createCompany(item, res) {
 
     var msg;
+    var new_s_index;
+    var query = Company.findOne();
+    query.select('s_index');
+    query.limit(1);
+    query.sort('-s_index');
 
-        var newCompany = new Company({
-            name : {
+    query.exec(function (err, esb) {
+        if (err) return handleError(err); // Space Ghost is a talk show host.
+        new_s_index  = easyAutoId("ESB", parseInt(esb.s_index.substr(3,3)), 6);
+    })
+
+    if(typeof item.name.init == 'undefined')
+        item.name.init = new_s_index;
+
+    var newCompany = new Company({
+        name : {
                 full : item.name.full,
                 init : item.name.init
-            },
-            part_year: item.part_year,
-            tel: item.tel,
-            fax: item.fax,
-            email: item.email,
-            website: item.website,
-            address: item.address
-        });
-        if(item.contact)
-            newCompany.contact = item.contact;
-        if(item.coordinator)
-            newCompany.coordinator = item.coordinator;
+        },
+        part_year: item.part_year,
+        tel: item.tel,
+        fax: item.fax,
+        email: item.email,
+        website: item.website,
+        address: item.address,
+        s_index: new_s_index
+    });
+    if(item.contact)
+        newCompany.contact = item.contact;
+    if(item.coordinator)
+        newCompany.coordinator = item.coordinator;
 
-        newCompany.save(function(err) {
-            if (err)
-                msg = {success:false,err:err};
-            else
-                msg = {success:true};
-            res.json(msg);
-        })
+    newCompany.save(function(err) {
+        if (err)
+            msg = {success:false,err:err};
+        else
+            msg = {success:true};
+        res.json(msg);
+    })
     
 };
 
@@ -928,6 +976,7 @@ module.exports = function(app) {
         getDocument(res);
     });
 
+
     // upload document
     app.post('/api/documents/upload', upload.single('file'), function(req, res, next) {
         console.log(req.file);
@@ -937,17 +986,19 @@ module.exports = function(app) {
     // update document
     app.put('/api/documents', function(req, res) {
         updateDocument(req.body, res);
-    })
+    });
 
     // delete a document
     app.delete('/api/documents/:document_id', function(req, res) {
-
         delDocument(req.params.document_id, res);
     });
     
     // ----------------------------------- Company --------------------------------------- 
     app.get('/api/companies', function(req, res) {
         getCompany(res);
+    });
+    app.get('/api/companies/item/:item/mode/:mode', function(req, res) {
+        findCompany(req.params.item, req.params.mode, res);
     });
     app.post('/api/companies', function(req, res) {
         createCompany(req.body, res);
@@ -961,6 +1012,7 @@ module.exports = function(app) {
     app.delete('/api/companies/:company_id', function(req, res) {
         delCompany(req.params.company_id, res);
     });
+
 
 
     // -----------------------------------Other  routes ----------------------------------------------------

@@ -22,7 +22,7 @@ companyModule.controller('addCompanyCtrl', ['$scope', '$modalInstance', 'Compani
             if (errList != "") {
                 sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
             } else {
-                console.log("aaa");
+                console.log("Form is valid. Requesting company creation.");
                 createCompany();
             }
         }
@@ -31,12 +31,14 @@ companyModule.controller('addCompanyCtrl', ['$scope', '$modalInstance', 'Compani
 
     var createCompany = function() {
         $scope.loading = true;
-        if($scope.formData.tel.tail)
-        	$scope.formData.tel =  $scope.formData.tel + '-' +  $scope.formData.tel.tail; 
-        if($scope.formData.fax.tail)
-        	$scope.formData.fax =  $scope.formData.fax + '-' +  $scope.formData.fax.tail; 
+        if($scope.formData.tel)
+        	$scope.formData.tel =  $scope.formData.tel_head + "-" +  $scope.formData.tel_tail; 
+        if($scope.formData.fax)
+        	$scope.formData.fax =  $scope.formData.fax_head + "-" +  $scope.formData.fax_tail;
+
+
         CompaniesService.create($scope.formData).success(function(data) {
-            sweetAlert("สำเร็จ", "สถานประกอบการ" + $scope.formData.name.full + " ถูกเพิ่มแล้ว", "success");
+            sweetAlert("สำเร็จ", "สถานประกอบการ\n" + $scope.formData.name.full + "\nถูกเพิ่มแล้ว", "success");
             $scope.loading = false;
             $modalInstance.close();
         });

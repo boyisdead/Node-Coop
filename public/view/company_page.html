@@ -35,7 +35,7 @@
                 <tbody>
                     <tr ng-repeat="company in companies |orderBy: company.name.full |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                         <td ng-bind="company.name.full"></td>
-                        <th ng-bind="company.name.init"></th>
+                        <th ng-bind="company.name.init + company.s_index"></th>
                         <th><a href="http://{{company.website}}/" target="_blank"><span ng-bind="company.website"></span></a></th>
                         <td>
                             <a ng-click="deleteCompany(company._id)"><span class="glyphicon glyphicon-trash"></span></a>
@@ -52,11 +52,5 @@
     </div>
 </div>
 <script type="text/ng-template" id="descTemplate.html">
-    <span>
-        <span class="red">สีแดง</span> - ยังไม่สมบูรณ์<br>
-        <span class="orange">สีส้ม</span> - อยู่ขณะดำเนินการ<br>
-        <span class="green">สีเขียว</span> - สมบูรณ์<br>
-        P - ข้อมูลส่วนตัว, D - เอกสาร<br>
-        AP - การส่งสมัคร, AC - การคัดเลือก
-    </span>
+    
 </script>

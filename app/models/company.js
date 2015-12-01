@@ -36,7 +36,8 @@ module.exports = mongoose.model('Company',{
   fax: {type: String, default:''},
   email: {type: String, default:''},
   website: {type: String, default:''},
-  address:{type:String, default:''}
+  address:{type:String, default:''},
+  s_index:{type:String, default:''}
 });
 
 
