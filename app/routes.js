@@ -550,20 +550,26 @@ function createDocument(item, res, next) {
 
     var new_file_name = item.body.owner.substring(0, 2) + item.body.owner.substring(5, 9) + item.body.file_type.substring(0, 2).toUpperCase() + "_" + time_stamp + getFileExtension(item.file.originalname);
     // // var target_path = './uploads/documents/' + item.file.originalname;
-    var target_path = './public/uploads/documents/' + new_file_name;
+    var target_path = '/uploads/documents/' + new_file_name;
     console.log("file name: " + new_file_name);
     console.log("file extension: " + getFileExtension(new_file_name));
     console.log("file path: "+target_path);
-
+    console.log("read stream...");
     var src = fs.createReadStream(tmp_path);
-    var dest = fs.createWriteStream(target_path);
+    console.log("done");
+    console.log("write stream...");
+    var dest = fs.createWriteStream('./public'+target_path);
+    console.log("done");
+    console.log("pipe destination...");
     src.pipe(dest);
+    console.log("done");
+    console.log("link...");
     src.on('end', function() {
         console.log('end');
         var newDocument = new Document({
             owner: item.body.owner,
             file_name: new_file_name,
-            file_location: target_path,
+            file_location: '.'+target_path,
             file_type: item.body.file_type,
             description: item.body.description
         });
@@ -602,22 +608,25 @@ function delDocument(item, res) {
     Document.findOneAndRemove({
         _id :item
     }, function(err, doc){
-        console.log("doc loc:",doc.file_location);
+        doc_location = './public'+doc.file_location.substr(2);
+        console.log("doc loc:",doc_location);
         if(doc){
-            fs.stat(doc.file_location, function(err, stats) {
+            fs.stat(doc_location, function(err, stats) {
                 if(typeof stats != 'undefined'){
                     console.log("File : ", stats);
                     console.log("File : ", stats.isFile());
-                    fs.unlink(doc.file_location),function (err) {
+                    fs.unlink(doc_location),function (err) {
                         if (err) throw err;
                     }
                     msg = {success:true};
+                    console.log("Deleted - " + doc_location);
                 } else {
+                    console.log("File not exist - "+ doc_location);
                     msg = {success:false,reason:"File not exist",err_code:50};
                 }
             });
         } else {
-            msg = {success:false,reason:"Document not found",err_code:44};
+            msg = {success:false,reason:"Document not found - " + item ,err_code:44};
         }
         if(err)
             res.send(err);
