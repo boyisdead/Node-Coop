@@ -53,10 +53,10 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
             } else if(msg.conMail.$error.email){
                 errList += "รูปแบบอีเมล์ไม่ถูกต้อง\n";
             }
-
-            if (msg.advisor.$error.required) {
-                errList += "รหัสอาจารย์ที่ปรึกษา ไม่ถูกกรอก\n";
-            }
+            // // advisor  remove
+            // if (msg.advisor.$error.required) {
+            //     errList += "รหัสอาจารย์ที่ปรึกษา ไม่ถูกกรอก\n";
+            // }
 
             if (msg.password.$error.required) {
                 errList += "รหัสผ่าน ไม่ถูกกรอก\n";

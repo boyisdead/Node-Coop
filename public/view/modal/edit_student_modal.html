@@ -26,10 +26,12 @@
                         <label for="tel">เบอร์โทรศัพท์</label>
                         <input type="text" class="form-control text-med" ng-model="formData.tel" placeholder="Telephone" id="tel" name="tel" autocomplete="off">
                     </div>
+                    <!-- advisor remove
                     <div class="form-group">
                         <label for="advisor">รหัสอาจารย์ที่ปรึกษา <span class="mini-red">*</span></label>
                         <input type="text" class="form-control text-med" id="advisor" name="advisor" ng-model="formData.advisor_id" uib-typeahead="advisor.staff_code as advisor.staff_code + ' ('+ advisor.name.f_th + ' ' + advisor.name.l_th +')' for advisor in advisorList | filter:$viewValue | limitTo:8" autocomplete="off" placeholder="อาจารย์ที่ปรึกษา" required>
                     </div>
+                    -->
                 </div>
                 <div class="col-md-6 col-md-offset-6">
                     <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>

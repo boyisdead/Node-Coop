@@ -37,10 +37,10 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
             if (msg.en_name_last.$error.required) {
                 errList += "นามสกุลภาษาอังกฤษ ไม่ถูกกรอก\n";
             }
-
-            if (msg.advisor.$error.required) {
-                errList += "รหัสอาจารย์ที่ปรึกษา ไม่ถูกกรอก\n";
-            }
+            // // advisor remove
+            // if (msg.advisor.$error.required) {
+            //     errList += "รหัสอาจารย์ที่ปรึกษา ไม่ถูกกรอก\n";
+            // }
 
             if (errList != "") {
                 sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
