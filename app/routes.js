@@ -552,18 +552,9 @@ function createDocument(item, res, next) {
     // // var target_path = './uploads/documents/' + item.file.originalname;
     var target_path = '/uploads/documents/' + new_file_name;
     console.log("file name: " + new_file_name);
-    console.log("file extension: " + getFileExtension(new_file_name));
-    console.log("file path: "+target_path);
-    console.log("read stream...");
     var src = fs.createReadStream(tmp_path);
-    console.log("done");
-    console.log("write stream...");
     var dest = fs.createWriteStream('./public'+target_path);
-    console.log("done");
-    console.log("pipe destination...");
     src.pipe(dest);
-    console.log("done");
-    console.log("link...");
     src.on('end', function() {
         console.log('end');
         var newDocument = new Document({
@@ -584,8 +575,6 @@ function createDocument(item, res, next) {
         getDocument(res);
     });
     fs.unlinkSync(tmp_path);
-
-    // fs.unlinkSync(tmp_path);
 }
 
 function updateDocument(item, res) {

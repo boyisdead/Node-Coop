@@ -64,7 +64,6 @@ documentModule.controller('addDocumentCtrl', ['$scope','Upload', '$modalInstance
 
     // upload on file select or drop
     var upload = function (file) {
-        console.log(file);
         Upload.upload({
             url: '/api/documents/upload',
             method: 'POST',

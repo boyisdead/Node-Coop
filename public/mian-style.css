@@ -136,6 +136,12 @@ select.title-name {
     width:250px;
 }
 
+.profile-display{
+    border: 2px dashed #cccccc;
+    border-radius: 5px;
+    max-width: 124px;
+    height: 124px;
+}
 
 /*
 input:valid{
