@@ -11,7 +11,7 @@ var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 var multer = require('multer');
 var upload = multer({
-    dest: './public/uploads/documents/'
+    dest: './public/uploads/'
 });
 var passwordHash = require('password-hash');
 
@@ -190,7 +190,9 @@ function createStudent(item, res) {
         if (err) {
             res.send(err);
         } else {
-            res.json({success:true});
+            data = {id:newStudent.stu_code,mode:'c'};
+            findStudent(data,res);
+            // res.json({success:true});
         }
     })
 };
@@ -320,6 +322,39 @@ function unLockStuProfile(id, res){  // set up a lock on student status
         else
             res.json(msg);
     });
+}
+
+function uploadPicture(item,res,next){
+    var tmp_path = item.file.path;
+    var time_stamp = Date.now();
+        console.log(tmp_path,time_stamp);
+    console.log("Creating...", item.body);
+
+    var new_file_name = item.file.filename + time_stamp + getFileExtension(item.file.originalname);
+    var target_path = '/uploads/pictures/profile/' + new_file_name;
+    console.log("file name: " + new_file_name);
+    var src = fs.createReadStream(tmp_path);
+    var dest = fs.createWriteStream( './public' + target_path);
+    src.pipe(dest);
+    src.on('end', function() {
+        Student.findOne({
+            _id: item.body.student_id
+        }, function(err,doc){
+            console.log(doc);
+            if (doc!=null){
+                console.log("saving picture path...");
+                doc.profile_picture ='.' + target_path;
+                doc.save();
+                res.json({success:true});
+            } else {
+                res.send(err);
+            }
+        });
+    });
+    src.on('error', function(err) {
+        res.json({success:false});
+    });
+    fs.unlinkSync(tmp_path);
 }
 
 function pwChangeStudent(item, res) {
@@ -915,6 +950,11 @@ module.exports = function(app) {
     app.post('/api/students', function(req, res) {
         console.log("Creating...");
         createStudent(req.body, res);
+    });
+
+    app.post('/api/students/uploadPicture', upload.single('file'), function(req, res, next) {
+        console.log(req.file);
+        uploadPicture(req, res, next);
     });
 
     // update a student

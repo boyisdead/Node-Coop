@@ -10,8 +10,8 @@
                         <label for="profile_pic">
                             รูปนักศึกษา
                         </label>
-                        <img class="profile-display" ngf-thumbnail="formData.attachFile || './images/no-profile.png'" >
-                        <input type="file" class="form-control" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="picture" placeholder="รหัสนักศึกษา" id="profile_pic" name="pic" ngf-resize="{width: 600, height: 750, quality: .8, centerCrop: true}">
+                        <img class="profile-display" ngf-thumbnail=" profile_pic || './images/no-profile.png'" >
+                        <input type="file" class="form-control" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="profile_pic" placeholder="รหัสนักศึกษา" id="profile_pic" name="profile_pic" ngf-resize-if="$width > 300 || $height > 400" ngf-resize="{width: 300, height: 400,requality: 1, centerCrop: true}">
                     </div>
                     <div class="form-group">
                         <label for="scode">

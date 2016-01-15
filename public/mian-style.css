@@ -139,8 +139,8 @@ select.title-name {
 .profile-display{
     border: 2px dashed #cccccc;
     border-radius: 5px;
-    max-width: 124px;
-    height: 124px;
+    width: 124px;
+    height: 165px;
 }
 
 /*

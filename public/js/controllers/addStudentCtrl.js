@@ -83,6 +83,11 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
             $scope.loading = true;
             StudentsService.create($scope.formData).success(function(data) {
                 $scope.loading = false;
+                //upload picture here
+                StudentsService.uploadPicture($scope.profile_pic,data._id).success(function(data2){
+                    // some kind of alert
+                    console.log(data2);
+                });
                 console.log($scope.formData.academic_year);
                 $modalInstance.close($scope.formData.academic_year);
             });
