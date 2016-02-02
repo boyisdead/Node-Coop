@@ -46,7 +46,7 @@ function studentLogin(item, res, app) {
                     "access_id": student._id,
                     "success": true,
                 }, app.get('secretToken'), {
-                    expiresInMinutes: 99999 // expires in 3 hours
+                    expiresInMinutes: 30 // expires in 1/2 hour
                 });
                 console.log(token);
                 res.json({
@@ -90,7 +90,7 @@ function teacherLogin(item, res, app) {
                     "access_id": teacher._id,
                     "success": true,
                 }, app.get('secretToken'), {
-                    expiresInMinutes: 99999 // expires in 3 hours
+                    expiresInMinutes: 30 // expires in 1/2 hour
                 });
                 console.log(token);
                 res.json({
