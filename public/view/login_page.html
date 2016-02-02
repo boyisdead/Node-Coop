@@ -20,10 +20,10 @@
                         <div class="form-group">
                             <label for="inputType" class="col-sm-4 control-label">ประเภทผู้ใช้</label>
                             <div class="btn-group" style="margin-left:15px" id="inputType" required>
-                                <label class="btn btn-default" ng-model="login.type" uib-btn-radio="'teacher'" uncheckable name="loginType">Teacher</label>
-                                <label class="btn btn-default" ng-model="login.type" uib-btn-radio="'student'" uncheckable name="loginType">Student</label>
+                                <label class="btn btn-default" ng-model="loginType" uib-btn-radio="'teacher'" uncheckable name="loginType">Teacher</label>
+                                <label class="btn btn-default" ng-model="loginType" uib-btn-radio="'student'" uncheckable name="loginType">Student</label>
                             </div>
-                            <input type="button" class="btn btn-default" name="loginType" ng-model="login.type" required ng-hide="true">
+                            <input type="button" class="btn btn-default" name="loginType" ng-model="loginType" required ng-hide="true">
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-4 col-sm-8">

@@ -9,11 +9,17 @@
 // }]);
 
 authenticationModule.factory('UsersService', ['$http', function($http){
+
+
 	return {
-			get : function(loginData) {
+			get : function(loginData,loginType) {
 				console.log("in factory");
 				console.log(loginData);
-				return $http.post('/api/auth',loginData);
+				if(loginType=="teacher"){
+					return $http.post('/api/auth/teacher',loginData);
+				} else if (loginType=="student"){
+					return $http.post('/api/auth/student',loginData);
+				}
 			}
 		}
 }]);

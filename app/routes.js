@@ -884,6 +884,10 @@ function getAcaYrs(res){
 module.exports = function(app) {
 
     // authenticate to obtains token
+    app.post('/api/auth/student', function(req, res) {
+        console.log("Student login");
+        studentLogin(req.body, res, app);
+    });
     app.post('/api/auth', function(req, res) {
         console.log("Hello login");
         if (req.body.type == "student") {
@@ -893,6 +897,11 @@ module.exports = function(app) {
             teacherLogin(req.body, res, app);
             console.log("Teacher login");
         } else console.log(req.body.type + " login");
+    });
+
+    app.post('/api/auth/teacher', function(req, res) {
+        console.log("Teacher login");
+        teacherLogin(req.body, res, app);
     });
 
     //===================================================================================

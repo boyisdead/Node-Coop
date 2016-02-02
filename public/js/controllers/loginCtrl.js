@@ -26,7 +26,7 @@ authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies'
                 alert("at least 6 characters require for username");
             } else if (item.password.length < 4) {
                 alert("at least 4 characters require for password");
-            } else if (item.type == '' || item.type == null) {
+            } else if ($scope.loginType == '' || $scope.loginType == null) {
                 alert("please choose login type");
             } else {
                 identifyUser(item);
@@ -40,8 +40,8 @@ authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies'
     var identifyUser = function(item) {
 
         if (!alreadyLogin) {
-            if (item) {
-                UsersService.get(item)
+            if (item&&$scope.loginType) {
+                UsersService.get(item,$scope.loginType)
                     .success(function(data) {
                         if(data.success != false){
                             $cookies.put('tokenJWT', data.token);
