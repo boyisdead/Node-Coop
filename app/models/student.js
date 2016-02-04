@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-module.exports = mongoose.model('Student', {
+var studentSchema = mongoose.Schema({
 	stu_code :{type : String, default: ''}, 
 	name : {
 		t_th : { type : String, default: '' },
@@ -25,3 +25,5 @@ module.exports = mongoose.model('Student', {
 	},
 	profile_picture : {type : String, default: './uploads/pictures/profile/default.png'}
 });
+
+module.exports = mongoose.model('Student', studentSchema);

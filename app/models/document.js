@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-module.exports = mongoose.model('Document', {
+var documentSchema = mongoose.Schema({
 	owner :{type : String, default: ''}, 
 	file_name: {type : String, default: ''},
 	file_location : {type : String, default: ''},
@@ -9,3 +9,5 @@ module.exports = mongoose.model('Document', {
 	status : {type : Boolean, default: false},
 	description : {type : String, default: ''}
 });
+
+module.exports = mongoose.model('Document',documentSchema);

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-module.exports = mongoose.model('Teacher', {
+var teacherSchema = mongoose.Schema({
 	staff_code :{type : String, default: ''}, 
 	password : {type : String, default: ''},
 	acade_pos : { 
@@ -25,3 +25,5 @@ module.exports = mongoose.model('Teacher', {
 	tel : {type : String, default: ''},
 	sex : {type : String, default: ''},
 });
+
+module.exports = mongoose.model('Teacher', teacherSchema);
