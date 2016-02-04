@@ -10,4 +10,4 @@ var documentSchema = mongoose.Schema({
 	description : {type : String, default: ''}
 });
 
-module.exports = mongoose.model('Document',documentSchema);
+module.exports = mongoose.model('Document', documentSchema);
