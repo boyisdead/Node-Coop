@@ -192,7 +192,7 @@ var delTeacher = function(item, res) {
     })
 };
 
-var getTypeAhead = function(res){
+var TeacherTypeAhead = function(res){
     Teacher.find(function(err, acadePos) {
         if (err)
             res.send(err)
@@ -210,5 +210,5 @@ module.exports = {
     'updateTeacher': updateTeacher,
     'pwChangeTeacher': pwChangeTeacher,
     'delTeacher': delTeacher,
-    'getTypeAhead': getTypeAhead
+    'TeacherTypeAhead': TeacherTypeAhead
 }

@@ -6,15 +6,13 @@ var upload = multer({
     dest: './public/uploads/'
 });
 
-// var Student = require('./models/student');
-// var Teacher = require('./models/teacher');
-var Document = require('./models/document');
-var Title_name = require('./models/titlename');
-var Acade_pos = require('./models/acadepos');
+
+
+var DocumentController = require('./controllers/documentController');
+var OtherController = require('./controllers/otherController');
 var TeacherController = require('./controllers/teacherController');
 var StudentController = require('./controllers/studentController');
 var CompanyController = require('./controllers/companyController');
-var DocumentController = require('./controllers/documentController');
 
 
 
@@ -48,7 +46,6 @@ module.exports = function(app) {
 
     //     // check header or url parameters or post parameters for token
     //     var token = req.body.token || req.query.token || req.headers['x-access-token'];
-
     //     // decode token
     //     if (token) {
     //         // verifies secret and checks exp
@@ -64,9 +61,7 @@ module.exports = function(app) {
     //                 next();
     //             }
     //         });
-
     //     } else {
-
     //         // if there is no token
     //         // return an error
     //         return res.status(403).send({
@@ -76,6 +71,7 @@ module.exports = function(app) {
 
     //     }
     // });
+    
     //=================================================================================
     //  $$$$$$\ $$$$$$$$\ $$\   $$\ $$$$$$$\  $$$$$$$$\ $$\   $$\ $$$$$$$$\ 
     // $$  __$$\\__$$  __|$$ |  $$ |$$  __$$\ $$  _____|$$$\  $$ |\__$$  __|
@@ -132,6 +128,15 @@ module.exports = function(app) {
     app.delete('/api/students/:student_id', function(req, res) {
         StudentController.delStudent(req.params.student_id, res);
     });
+
+    app.get('/api/students/acaYrs', function(req, res) {
+        StudentController.getAcaYrs(res);
+    });
+    app.get('/api/students/documents/acaYrs/:acaYrs', function(req, res) {
+        console.log("get Docs with " + req.params.acaYrs);
+        StudentController.getDocuments(req.params.acaYrs, res);
+    });
+
 
     //================================================================================
     // $$$$$$$$\ $$$$$$$$\  $$$$$$\   $$$$$$\  $$\   $$\ $$$$$$$$\ $$$$$$$\  
@@ -246,27 +251,15 @@ module.exports = function(app) {
     //============================================================================
     
     app.get('/api/typehead/title_name', function(req, res) {
-        Title_name.find(function(err, titleName) {
-            if (err)
-                res.send(err)
-            res.json(titleName);
-        });
+        OtherController.titleNameTypeAhead(res);
     });
 
     app.get('/api/typehead/acade_pos', function(req, res) {
-        Acade_pos.find(function(err, acadePos) {
-            if (err)
-                res.send(err)
-            res.json(acadePos);
-        });
+        OtherController.acadePosTypeAhead(res);
     });
 
     app.get('/api/typehead/advisor', function(req, res) {
-        TeacherController.getTypeAhead(res);
-    });
-
-    app.get('/api/acaYrs', function(req, res) {
-        StudentController.getAcaYrs(res);
+        TeacherController.TeacherTypeAhead(res);
     });
 
     // application -------------------------------------------------------------

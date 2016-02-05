@@ -327,7 +327,26 @@ var getAcaYrs = function(res){
 
         res.json(acaYrs);
     });
-}
+};
+
+var getDocuments = function(academic_year, res) {
+    var criteria;
+
+    if (academic_year != "" && typeof academic_year != "undefined"){
+        criteria = academic_year;
+    } else {
+        criteria = {$ne:""}
+    }
+
+    Student.find({
+        "academic_year": criteria,
+        "documents":{$exists:true}
+    },{stu_code:1,name:1,documents:1},function(err,documents){
+        if (err)
+            res.send(err)
+        res.json(documents)
+    });
+};
 
 module.exports = {
 	'studentLogin': studentLogin,
@@ -341,6 +360,7 @@ module.exports = {
 	'uploadPicture': uploadPicture,
 	'pwChangeStudent': pwChangeStudent,
 	'delStudent': delStudent,
-	'getAcaYrs': getAcaYrs
+	'getAcaYrs': getAcaYrs,
+    'getDocuments': getDocuments
 
 }

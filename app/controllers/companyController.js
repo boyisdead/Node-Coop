@@ -1,4 +1,3 @@
-
 var Company = require('./../models/company');
 
 var getCompany = function(res){

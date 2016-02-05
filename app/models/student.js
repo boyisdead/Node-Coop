@@ -23,7 +23,16 @@ var studentSchema = mongoose.Schema({
 		"apply":  {type : Boolean, default: false},
 		"accept":  {type : Boolean, default: false},
 	},
-	profile_picture : {type : String, default: './uploads/pictures/profile/default.png'}
+	profile_picture : {type : String, default: './uploads/pictures/profile/default.png'},
+	documuents : [{
+		file_name: {type : String, default: ''},
+		file_location : {type : String, default: ''},
+		file_type : {type : String, default: ''},
+		comment : {type : String, default: ''},
+		status : {type : Boolean, default: false},
+		reviewed : {type : Boolean, default: false},
+		description : {type : String, default: ''}
+	}]
 });
 
 module.exports = mongoose.model('Student', studentSchema);
