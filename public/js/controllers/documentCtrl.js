@@ -1,18 +1,28 @@
 documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', 'DocumentsService', function($scope,$uibModal,$log, DocumentsService) {
     $scope.loading = true;
     
-    $scope.documents = []
+    $scope.students = []
         ,$scope.currentPage = 1
-        ,$scope.numPerPage = 10
+        ,$scope.numPerPage = 5
         ,$scope.maxSize = 5;
+
+    var sumDocuments = function (owners) {
+        var counter=0;
+        for(var i=0;i<owners.length;i++){
+            counter+=owners[i].documents.length;
+        }
+        console.log("all documents : " + counter);
+        return counter;
+    }
 
 
     var getDocument = function () {
         DocumentsService.get().success(function(data) {
             console.log("Documents data retrieving success.");
             console.log(data);
-            $scope.documents = data;
+            $scope.students = data;
             $scope.loading = false;
+            $scope.totalDouments = sumDocuments(data);
         });
     }
 

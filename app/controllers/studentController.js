@@ -59,19 +59,37 @@ var getStudents = function(res) {
     });
 };
 
-var getStudentsByAcaYr = function(res, acaYr) {
-    console.log("get student by acaYr");
-    var query = Student.find({ academic_year : acaYr }).sort({
-        stu_code: 1
-    });
+var getStudentsByAcaYr = function(academic_year, res) {
+    // console.log("get student by acaYr");
+    // var query = Student.find({ academic_year : acaYr }).sort({
+    //     stu_code: 1
+    // });
 
-    query.exec(function(err, students) {
+    // query.exec(function(err, students) {
 
-        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+    //     // if there is an error retrieving, send the error. nothing after res.send(err) will execute
+    //     if (err)
+    //         res.send(err)
+
+    //     res.json(students); // return all students in JSON format
+    // });
+
+    var criteria;
+
+    if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
+        criteria = academic_year;
+    } else {
+        criteria = {$ne:""}
+    }
+
+    console.log(criteria);
+
+    Student.find({
+        "academic_year": criteria
+    },{stu_code:1,name:1,status:1},function(err,students){
         if (err)
             res.send(err)
-
-        res.json(students); // return all students in JSON format
+        res.json(students)
     });
 };
 
@@ -332,7 +350,7 @@ var getAcaYrs = function(res){
 var getDocuments = function(academic_year, res) {
     var criteria;
 
-    if (academic_year != "" && typeof academic_year != "undefined"){
+    if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
         criteria = academic_year;
     } else {
         criteria = {$ne:""}

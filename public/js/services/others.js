@@ -10,7 +10,7 @@ mainModule.factory('OthersService', ['$http', function($http){
 			return $http.get('/api/typehead/advisor');
 		},
 		getAcaYrs : function() {
-			return $http.get('/api/acaYrs');
+			return $http.get('/api/students/acaYrs');
 		}
 	};
 }])

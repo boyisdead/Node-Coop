@@ -4,7 +4,7 @@
 	    return {
 	        get: function(acaYr) {
 	            if (typeof acaYr === "undefined" || acaYr == "ทั้งหมด") {
-	                return $http.get('/api/students');
+	                return $http.get('/api/students/acaYr/all');
 	            } else {
 	                return $http.get('/api/students/acaYr/' + acaYr);
 	            }

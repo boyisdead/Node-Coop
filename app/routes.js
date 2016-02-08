@@ -88,7 +88,8 @@ module.exports = function(app) {
     });
 
     app.get('/api/students/acaYr/:acaYr', function(req, res) {
-        StudentController.getStudentsByAcaYr(res,req.params.acaYr);
+        console.log("get all students");
+        StudentController.getStudentsByAcaYr(req.params.acaYr, res);
     });
 
     app.post('/api/students/find', function(req, res) {
