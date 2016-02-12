@@ -19,10 +19,14 @@ documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', 'Documen
     var getDocument = function () {
         DocumentsService.get().success(function(data) {
             console.log("Documents data retrieving success.");
-            console.log(data);
-            $scope.students = data;
+            console.log("data : " , data);
+            $scope.documents = data.map(function(obj){
+                return obj.documents;
+            });
+            console.log("after map : " , $scope.documents);
+            console.log("first doc : " , $scope.documents[0]);
             $scope.loading = false;
-            $scope.totalDouments = sumDocuments(data);
+            $scope.totalDouments = $scope.documents.length;
         });
     }
 

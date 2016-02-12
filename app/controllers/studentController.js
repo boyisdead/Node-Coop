@@ -347,7 +347,35 @@ var getAcaYrs = function(res){
     });
 };
 
-var getDocuments = function(academic_year, res) {
+var getDocuments = function (academic_year, res){
+    var criteria;
+
+    if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
+        criteria = academic_year;
+    } else {
+        criteria = {$ne:""}
+    }
+
+    Student.aggregate([
+        {$project:{_id:0,documents:1}}, 
+        {$match:{"documents":{$exists:true}}}
+    ])
+    .unwind("documents")
+    .exec(function(err,docs){
+        if(err)
+            res.send(err);
+        res.json(docs);
+    });
+}
+//   My new Documents Query
+//   Model
+// .aggregate({ $match: { age: { $gte: 21 }}})
+// .unwind('tags')
+// .exec(callback)
+//db.students.aggregate([{$unwind:"$documents"},{$match:{"documents":{$exists:true}}},{$project:{documents:1}}]).pretty()
+
+
+var getDocumentsWithOwner = function(academic_year, res) {
     var criteria;
 
     if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
@@ -359,10 +387,10 @@ var getDocuments = function(academic_year, res) {
     Student.find({
         "academic_year": criteria,
         "documents":{$exists:true}
-    },{stu_code:1,name:1,documents:1},function(err,documents){
+    },{documents:1,name:1},function(err,docs){
         if (err)
             res.send(err)
-        res.json(documents)
+        res.json(docs)
     });
 };
 
@@ -379,6 +407,7 @@ module.exports = {
 	'pwChangeStudent': pwChangeStudent,
 	'delStudent': delStudent,
 	'getAcaYrs': getAcaYrs,
-    'getDocuments': getDocuments
+    'getDocuments': getDocuments,
+    'getDocumentsWithOwner': getDocumentsWithOwner
 
 }

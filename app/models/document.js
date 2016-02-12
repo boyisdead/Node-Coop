@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 
 var documentSchema = mongoose.Schema({
-	owner :{type : String, default: ''}, 
 	file_name: {type : String, default: ''},
 	file_location : {type : String, default: ''},
 	file_type : {type : String, default: ''},

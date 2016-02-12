@@ -133,9 +133,13 @@ module.exports = function(app) {
     app.get('/api/students/acaYrs', function(req, res) {
         StudentController.getAcaYrs(res);
     });
-    app.get('/api/students/documents/acaYrs/:acaYrs', function(req, res) {
-        console.log("get Docs with " + req.params.acaYrs);
+    app.get('/api/documents/acaYrs/:acaYrs', function(req, res) {
+        console.log("get Docs of " + req.params.acaYrs);
         StudentController.getDocuments(req.params.acaYrs, res);
+    });
+    app.get('/api/students/documents/acaYrs/:acaYrs', function(req, res) {
+        console.log("get Docs and Owner of " + req.params.acaYrs);
+        StudentController.getDocumentsWithOwner(req.params.acaYrs, res);
     });
 
 
