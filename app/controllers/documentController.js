@@ -1,4 +1,5 @@
 var Document = require('./../models/document');
+var Student = require('./../models/student');
 var fs = require("fs");
 
 var getFileExtension = function(filename){

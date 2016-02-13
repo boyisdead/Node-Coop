@@ -1,6 +1,11 @@
 var Student = require('./../models/student');
 var passwordHash = require('password-hash');
 var jwt = require('jsonwebtoken');
+var fs = require("fs");
+
+var getFileExtension = function(filename){
+    return '.' + filename.substr(filename.lastIndexOf('.') + 1);
+}
 
 var studentLogin = function(item, res, app) {
     console.log("find Student with : " + item.username);
