@@ -18,7 +18,8 @@ var methodOverride = require('method-override');
 // configuration ===============================================================
 mongoose.connect(database.url); 	// connect to mongoDB 
 app.set('secretToken',authToken.secret);
-app.set('secretHash',hashKey.star);
+app.set('secretHash',hashKey.key);
+app.set('expireTime',authToken.exp_time);
 app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile);
 

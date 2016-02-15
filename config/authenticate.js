@@ -1,5 +1,5 @@
 module.exports = {
 	// JWT verify
 	'secret': 'nomansland',
-	'hashKey': 'somewhereibelong'
+	'exp_time' : 1800000
 }

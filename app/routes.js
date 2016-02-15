@@ -5,6 +5,7 @@ var multer = require('multer');
 var upload = multer({
     dest: './public/uploads/'
 });
+var jwt = require('jsonwebtoken');
 
 
 
@@ -42,35 +43,36 @@ module.exports = function(app) {
     //===================================================================================
     //suspended due to working
     // verify token for every request
-    // app.use(function(req, res, next) {
+    app.use(function(req, res, next) {
+        if(req.headers.cookie)
+            var cookieToken = req.headers.cookie.substr(9);
+        // check header or url parameters or post parameters for token
+        var token = req.body.token || req.query.token || req.headers['x-access-token'] || cookieToken;
+        // decode token
+        if (token) {
+            // verifies secret and checks exp
+            jwt.verify(token, app.get('secretToken'), function(err, decoded) {
+                if (err) {
+                    return res.json({
+                        success: false,
+                        message: 'Failed to authenticate token.'
+                    });
+                } else {
+                    // if everything is good, save to request for use in other routes
+                    req.decoded = decoded;
+                    next();
+                }
+            });
+        } else {
+            // if there is no token
+            // return an error
+            return res.status(403).send({
+                success: false,
+                message: 'No token provided.'
+            });
 
-    //     // check header or url parameters or post parameters for token
-    //     var token = req.body.token || req.query.token || req.headers['x-access-token'];
-    //     // decode token
-    //     if (token) {
-    //         // verifies secret and checks exp
-    //         jwt.verify(token, app.get('secretToken'), function(err, decoded) {
-    //             if (err) {
-    //                 return res.json({
-    //                     success: false,
-    //                     message: 'Failed to authenticate token.'
-    //                 });
-    //             } else {
-    //                 // if everything is good, save to request for use in other routes
-    //                 req.decoded = decoded;
-    //                 next();
-    //             }
-    //         });
-    //     } else {
-    //         // if there is no token
-    //         // return an error
-    //         return res.status(403).send({
-    //             success: false,
-    //             message: 'No token provided.'
-    //         });
-
-    //     }
-    // });
+        }
+    });
     
     //=================================================================================
     //  $$$$$$\ $$$$$$$$\ $$\   $$\ $$$$$$$\  $$$$$$$$\ $$\   $$\ $$$$$$$$\ 
