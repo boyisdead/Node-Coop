@@ -2,12 +2,13 @@ var Student = require('./../models/student');
 var passwordHash = require('password-hash');
 var jwt = require('jsonwebtoken');
 var fs = require("fs");
+var objectAssign = require('object-assign');
 
 var getFileExtension = function(filename){
     return '.' + filename.substr(filename.lastIndexOf('.') + 1);
 }
 
-var studentLogin = function(item, res, app) {
+var studentLogin = function(item, secretToken, expireTime, res) {
     console.log("find Student with : " + item.username);
     Student.findOne({
         "stu_code": item.username
@@ -36,8 +37,8 @@ var studentLogin = function(item, res, app) {
                     "access_type": "student",
                     "access_id": student._id,
                     "success": true,
-                }, app.get('secretToken'), {
-                    expiresInMinutes: 30 // expires in 1/2 hour
+                }, secretToken, {
+                    expiresInMinutes: expireTime
                 });
                 console.log(token);
                 res.json({
@@ -98,57 +99,53 @@ var getStudentsByAcaYr = function(academic_year, res) {
     });
 };
 
-var findStudent = function(data, res) {
-    console.log(data);
-    if (data.mode == 'i') {
-        Student.findOne({
-            _id: data.id
-        }, function(err, students) {
-            console.log(students);
-            if (err)
-                res.send(err)
-            res.json(students);
-        });
-    } else if (data.mode == 'c') {
-        Student.findOne({
-            "stu_code": data.id
-        }, function(err, students) {
-            console.log(students);
-            if (err)
-                res.send(err)
-            res.json(students);
-        });
-    }
+var findStudentById = function(id, res) {
+    Student.findOne({
+        _id: id
+    }, function(err, students) {
+        console.log(students);
+        if (err)
+            res.send(err)
+        res.json(students);
+    });
+};
+
+var findStudentByCode = function(stu_code, res) {
+    
+    Student.findOne({
+        "stu_code": stu_code
+    }, function(err, students) {
+        console.log(students);
+        if (err)
+            res.send(err)
+        res.json(students);
+    });
 };
 
 var createStudent = function(item, res) {
-    var newStudent = new Student({
-        stu_code: item.stu_code,
-        name: {
-            t_th: item.name.t_th,
-            f_th: item.name.f_th,
-            l_th: item.name.l_th,
-            t_en: item.name.t_en,
-            f_en: item.name.f_en,
-            l_en: item.name.l_en
-        },
-        contact_email: item.contact_email,
-        tel: item.tel,
-        advisor_id: item.advisor_id,
-        sex: item.sex,
-        academic_year : item.academic_year,
-        password: passwordHash.generate(item.password) // random pass algo here 
-    });
+    Student.findOne({
+        "stu_code": item.stu_code
+    },function(err, doc){
+        if(!doc){ 
 
-    newStudent.save(function(err) {
-        if (err) {
-            res.send(err);
+            var newStudent = new Student();
+            objectAssign(newStudent,item);
+            newStudent.password = passwordHash.generate(item.password); // random pass algo here
+            newStudent.save(function(err) {
+                if (err) {
+                    res.send(err);
+                } else {
+                    findStudentByCode(newStudent.stu_code,res);
+                    // res.json({success:true});
+                }
+            });
         } else {
-            data = {id:newStudent.stu_code,mode:'c'};
-            findStudent(data,res);
-            // res.json({success:true});
+            res.json({
+                success: false,
+                message: 'Duplicated student code.'
+            });
         }
-    })
+    });
 };
 
 var updateStudent = function(item, res) {
@@ -156,42 +153,15 @@ var updateStudent = function(item, res) {
         _id: item._id
     }, function(err, doc) {
         if (doc != null) {
-            console.log(doc);
-            //for initiate new format
-            if (item.name) {
-                if (typeof item.name.f_th != 'undefined')
-                    doc.name.f_th = item.name.f_th;
-                if (typeof item.name.l_th != 'undefined')
-                    doc.name.l_th = item.name.l_th;
-                if (typeof item.name.f_en != 'undefined')
-                    doc.name.f_en = item.name.f_en;
-                if (typeof item.name.l_en != 'undefined')
-                    doc.name.l_en = item.name.l_en;
-                if (typeof item.name.t_en != 'undefined')
-                    doc.name.t_en = item.name.t_en;
-                if (typeof item.name.t_th != 'undefined')
-                    doc.name.t_th = item.name.t_th;
-            }
-
-            if (typeof item.sex != 'undefined')
-                doc.sex = item.sex;
-            if (typeof item.advisor_id != 'undefined')
-                doc.advisor_id = item.advisor_id;
-            if (typeof item.tel != 'undefined')
-                doc.tel = item.tel;
-            if (typeof item.contact_email != 'undefined')
-                doc.contact_email = item.contact_email;
-            console.log(doc.contact_email);
+            objectAssign(doc,item);
             if (typeof item.password != 'undefined')
                 doc.password = passwordHash.generate(item.password);
-
             doc.profileLock = false;
             doc.save();
             msg= {success:true};
         } else {
-            msg= {success:false,reason:"Student not found",err_code:44};
+            msg= {success:false, message:"Student not found", err_code:44};
         }
-
         if (err)
             res.send(err);
         else
@@ -262,8 +232,6 @@ var unLockStuProfile = function(id, res){
     }, function(err, doc) {
         if (doc != null) {
             doc.profileLock = false;
-            console.log("status : " ,doc.status);
-            console.log(doc.status.profile);
             doc.status.profile = false;
             msg = {success:true};
             doc.save();
@@ -403,7 +371,8 @@ module.exports = {
 	'studentLogin': studentLogin,
 	'getStudents': getStudents,
 	'getStudentsByAcaYr': getStudentsByAcaYr,
-	'findStudent': findStudent,
+    'findStudentById': findStudentById,
+    'findStudentByCode': findStudentByCode,
 	'createStudent': createStudent,
 	'updateStudent': updateStudent,
 	'lockStuProfile': lockStuProfile,

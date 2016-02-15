@@ -1,8 +1,9 @@
 var Teacher = require('./../models/teacher');
 var passwordHash = require('password-hash');
 var jwt = require('jsonwebtoken');
+var objectAssign = require('object-assign');
 
-var teacherLogin = function(item, res, app) {
+var teacherLogin = function(item, secretToken,expireTime, res) {
     console.log("find Teacher with : " + item.username);
     Teacher.findOne({
         "staff_code": item.username
@@ -17,11 +18,6 @@ var teacherLogin = function(item, res, app) {
                 tar_obj: teacher
             });
         } else if (teacher) {
-            console.log("Guesing...");
-            console.log(teacher.password);
-            console.log(passwordHash.generate(teacher.password));
-            console.log(item.password);
-
             // check if password matches
             if (!passwordHash.verify(item.password, teacher.password)) {
                 res.json({
@@ -34,10 +30,9 @@ var teacherLogin = function(item, res, app) {
                     "access_type": "teacher",
                     "access_id": teacher._id,
                     "success": true,
-                }, app.get('secretToken'), {
-                    expiresInMinutes: 30 // expires in 1/2 hour
+                }, secretToken, {
+                    expiresInMinutes: expireTime // expires in 1/2 hour
                 });
-                console.log(token);
                 res.json({
                     token: token
                 });
@@ -48,11 +43,9 @@ var teacherLogin = function(item, res, app) {
 
 var getTeacher = function(res) {
     Teacher.find(function(err, teachers) {
-
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
         if (err)
             res.send(err)
-
         res.json(teachers); // return all teachers in JSON format
     });
 };
@@ -80,33 +73,26 @@ var findTeacher = function(item, mode, res) {
 };
 
 var createTeacher = function(item, res) {
-    var newTeacher = new Teacher({
-        staff_code: item.staff_code,
-        password: passwordHash.generate(item.password),
-        acade_pos: {
-            full_th: item.acade_pos.full_th,
-            full_en: item.acade_pos.full_en,
-            init_th: item.acade_pos.init_th,
-            init_en: item.acade_pos.init_en
-        },
-        name: {
-            t_th: item.name.t_th,
-            f_th: item.name.f_th,
-            l_th: item.name.l_th,
-            t_en: item.name.t_en,
-            f_en: item.name.f_en,
-            l_en: item.name.l_en,
-        },
-        contact_email: item.contact_email,
-        tel: item.tel,
-        sex: item.sex,
+    Teacher.findOne({
+        staff_code: item.staff_code
+    },function(not_found,doc){
+        if(not_found){
+            var newTeacher = new Teacher();
+            objectAssign(newTeacher,item);
+            newTeacher.password=  passwordHash.generate(item.password);
+            newTeacher.save(function(err) {
+            if (err)
+                res.send(err);
+            getTeacher(res);
+            })
+        } else {
+            res.json({
+                success: false,
+                message: 'Duplicated staff code.'
+            });
+        }
     });
-
-    newTeacher.save(function(err) {
-        if (err)
-            res.send(err);
-        getTeacher(res);
-    })
+    
 };
 
 var updateTeacher = function(item, res) {
@@ -114,37 +100,7 @@ var updateTeacher = function(item, res) {
         _id: item._id
     }, function(err, doc) {
         if (doc != null) {
-            if (item.name) {
-                if (typeof item.name.f_th != 'undefined')
-                    doc.name.f_th = item.name.f_th;
-                if (typeof item.name.l_th != 'undefined')
-                    doc.name.l_th = item.name.l_th;
-                if (typeof item.name.f_en != 'undefined')
-                    doc.name.f_en = item.name.f_en;
-                if (typeof item.name.l_en != 'undefined')
-                    doc.name.l_en = item.name.l_en;
-                if (typeof item.name.t_th != 'undefined')
-                    doc.name.t_th = item.name.t_th;
-                if (typeof item.name.t_en != 'undefined')
-                    doc.name.t_en = item.name.t_en;
-            }
-            if (item.acade_pos) {
-                if (typeof item.acade_pos.init_en != 'undefined')
-                    doc.acade_pos.init_en = item.acade_pos.init_en;
-                if (typeof item.acade_pos.init_th != 'undefined')
-                    doc.acade_pos.init_th = item.acade_pos.init_th;
-                if (typeof item.acade_pos.full_en != 'undefined')
-                    doc.acade_pos.full_en = item.acade_pos.full_en;
-                if (typeof item.acade_pos.full_th != 'undefined')
-                    doc.acade_pos.full_th = item.acade_pos.full_th;
-            }
-            if (typeof item.sex != 'undefined')
-                doc.sex = item.sex;
-            if (typeof item.tel != 'undefined')
-                doc.tel = item.tel;
-            if (typeof item.contact_email != 'undefined')
-                doc.contact_email = item.contact_email;
-
+            objectAssign(doc,item);
             if (typeof item.password != 'undefined')
                 doc.password = passwordHash.generate(item.password);
 

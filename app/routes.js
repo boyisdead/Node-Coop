@@ -15,7 +15,10 @@ var TeacherController = require('./controllers/teacherController');
 var StudentController = require('./controllers/studentController');
 var CompanyController = require('./controllers/companyController');
 
-
+var checkPermission = function(allow_types,access_type){
+    if(allow_types.indexOf(access_type)>=0)
+        return true
+}
 
 //================================ Routes ====================================
 //       $$$$$$$\   $$$$$$\  $$\   $$\ $$$$$$$$\ $$$$$$$$\  $$$$$$\  
@@ -32,13 +35,38 @@ module.exports = function(app) {
     // authenticate to obtains token
     app.post('/api/auth/student', function(req, res) {
         console.log("Student login");
-        StudentController.studentLogin(req.body, res, app);
+        StudentController.studentLogin(req.body, app.get('secretToken'), app.get('expireTime'), res);
     });
 
     app.post('/api/auth/teacher', function(req, res) {
         console.log("Teacher login");
-        TeacherController.teacherLogin(req.body, res, app);
+        TeacherController.teacherLogin(req.body, app.get('secretToken'), app.get('expireTime'), res);
     });
+
+
+    //================================ Others ====================================
+    //      $$$$$$\ $$$$$$$$\ $$\   $$\ $$$$$$$$\ $$$$$$$\  
+    //     $$  __$$\\__$$  __|$$ |  $$ |$$  _____|$$  __$$\ 
+    //     $$ /  $$ |  $$ |   $$ |  $$ |$$ |      $$ |  $$ |
+    //     $$ |  $$ |  $$ |   $$$$$$$$ |$$$$$\    $$$$$$$  |
+    //     $$ |  $$ |  $$ |   $$  __$$ |$$  __|   $$  __$$< 
+    //     $$ |  $$ |  $$ |   $$ |  $$ |$$ |      $$ |  $$ |
+    //      $$$$$$  |  $$ |   $$ |  $$ |$$$$$$$$\ $$ |  $$ |
+    //      \______/   \__|   \__|  \__|\________|\__|  \__|
+    //============================================================================
+    
+    app.get('/api/typehead/title_name', function(req, res) {
+        OtherController.titleNameTypeAhead(res);
+    });
+
+    app.get('/api/typehead/acade_pos', function(req, res) {
+        OtherController.acadePosTypeAhead(res);
+    });
+
+    app.get('/api/typehead/advisor', function(req, res) {
+        TeacherController.TeacherTypeAhead(res);
+    });
+
 
     //===================================================================================
     //suspended due to working
@@ -53,9 +81,11 @@ module.exports = function(app) {
             // verifies secret and checks exp
             jwt.verify(token, app.get('secretToken'), function(err, decoded) {
                 if (err) {
+                    console.log(err);
                     return res.json({
                         success: false,
-                        message: 'Failed to authenticate token.'
+                        message: 'Failed to authenticate token.',
+                        error: err
                     });
                 } else {
                     // if everything is good, save to request for use in other routes
@@ -86,16 +116,36 @@ module.exports = function(app) {
     //=================================================================================
     // get all students
     app.get('/api/students', function(req, res) {
-        StudentController.getStudents(res);
+        var allow = ["teacher"];
+        if(checkPermission(allow, req.decoded.access_type)) {
+            StudentController.getStudents(res);
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "only Teachers allow in this section."
+            });
+        }
     });
 
     app.get('/api/students/acaYr/:acaYr', function(req, res) {
-        console.log("get all students");
-        StudentController.getStudentsByAcaYr(req.params.acaYr, res);
+        if(req.decoded.access_type=="teacher"){ 
+            console.log("get all students");
+            StudentController.getStudentsByAcaYr(req.params.acaYr, res);
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "only Teachers allow in this section."
+            });
+        }
     });
 
-    app.post('/api/students/find', function(req, res) {
-        StudentController.findStudent(req.body, res);
+
+    app.post('/api/student/id/:id', function(req, res) {
+        StudentController.findStudentById(req.params.id, res);
+    });
+
+    app.post('/api/student/code/:scode', function(req, res) {
+        StudentController.findStudentByCode(req.params.scode, res);
     });
 
     // create student and send back all students after creation
@@ -244,29 +294,6 @@ module.exports = function(app) {
     });
     app.delete('/api/companies/:company_id', function(req, res) {
         CompanyController.delCompany(req.params.company_id, res);
-    });
-
-    //================================ Others ====================================
-    //      $$$$$$\ $$$$$$$$\ $$\   $$\ $$$$$$$$\ $$$$$$$\  
-    //     $$  __$$\\__$$  __|$$ |  $$ |$$  _____|$$  __$$\ 
-    //     $$ /  $$ |  $$ |   $$ |  $$ |$$ |      $$ |  $$ |
-    //     $$ |  $$ |  $$ |   $$$$$$$$ |$$$$$\    $$$$$$$  |
-    //     $$ |  $$ |  $$ |   $$  __$$ |$$  __|   $$  __$$< 
-    //     $$ |  $$ |  $$ |   $$ |  $$ |$$ |      $$ |  $$ |
-    //      $$$$$$  |  $$ |   $$ |  $$ |$$$$$$$$\ $$ |  $$ |
-    //      \______/   \__|   \__|  \__|\________|\__|  \__|
-    //============================================================================
-    
-    app.get('/api/typehead/title_name', function(req, res) {
-        OtherController.titleNameTypeAhead(res);
-    });
-
-    app.get('/api/typehead/acade_pos', function(req, res) {
-        OtherController.acadePosTypeAhead(res);
-    });
-
-    app.get('/api/typehead/advisor', function(req, res) {
-        TeacherController.TeacherTypeAhead(res);
     });
 
     // application -------------------------------------------------------------

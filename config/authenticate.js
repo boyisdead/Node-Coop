@@ -1,5 +1,5 @@
 module.exports = {
 	// JWT verify
-	'secret': 'nomansland',
-	'exp_time' : 1800000
+	'secret': 'cscmucoop',
+	'exp_time' : 14400
 }

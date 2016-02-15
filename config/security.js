@@ -1,4 +1,4 @@
 module.exports = {
-	// hashKey
+	// password hashKey
 	'key': 'cscmucoop'
 }
