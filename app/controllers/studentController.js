@@ -8,6 +8,28 @@ var getFileExtension = function(filename){
     return '.' + filename.substr(filename.lastIndexOf('.') + 1);
 }
 
+var getAcaYrs = function(res){
+    var queryGroup = Student.distinct("academic_year");
+    queryGroup.exec(function(err, acaYrs) {
+        if (err)
+            res.status(200).send({
+                success: false,
+                message: "Something went wrong while retrieving. try again.",
+                err : err
+            });
+        if (!acaYrs || typeof acaYrs[0] == "undefined")
+            res.status(204).send({
+                success : true,
+                message : "No Academic Year was found."
+            });
+        res.status(200).send({
+            data : acaYrs,
+            success: true,
+            message: "Here you go."
+        });
+    });
+};
+
 var studentLogin = function(item, secretToken, expireTime, res) {
     console.log("find Student with : " + item.username);
     Student.findOne({
@@ -16,32 +38,29 @@ var studentLogin = function(item, secretToken, expireTime, res) {
         if (err)
             res.send(err);
         if (!student) {
-            res.json({
-                success: false,
-                err_code : 11, // not found
-                message: 'Authentication failed. Student not found.',
-                obj: item,
-                tar_obj: student
+            res.status(404).send({
+                success: false,// not found
+                message: 'Authentication failed. No Student was found.'
             });
         } else if (student) {
             // check if password matches
             if (!passwordHash.verify(item.password, student.password)) {
-                res.json({
-                    success: false,
-                    err_code : 12, // wrong password
-                    message: 'Authentication failed. Wrong password.',
+                res.status(403).send({
+                    success: false, // wrong password
+                    message: 'Authentication failed. Invalid password.',
                 });
             } else {
                 var token = jwt.sign({
                     "display_name": student.stu_code,
                     "access_type": "student",
-                    "access_id": student._id,
-                    "success": true,
+                    "access_id": student._id
                 }, secretToken, {
                     expiresInMinutes: expireTime
                 });
                 console.log(token);
-                res.json({
+                res.status(200).send({
+                    success : true,
+                    message : "Login successful, token retrieved.",
                     token: token
                 });
             }
@@ -49,123 +68,136 @@ var studentLogin = function(item, secretToken, expireTime, res) {
     })
 }
 
-var getStudents = function(res) {
-    console.log("get student list");
-    var query = Student.find().sort({
-        stu_code: 1
-    });
-
-    query.exec(function(err, students) {
-
-        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-        if (err)
-            res.send(err)
-
-        res.json(students); // return all students in JSON format
+var getStudents = function(res, criteria, project) {
+    criteria = criteria || {};
+    project = project || {};
+    Student.find(criteria, project, function(err, docs){
+        if(err)
+            res.status(400).send({
+                success: false,
+                message: "Something went wrong while retrieving. try again.",
+                err : err,
+            });
+        if(!docs || typeof docs[0] == "undefined") {
+            res.status(204).send({
+                success : true,
+                message : "No Student was found."
+            });
+        } else {
+            res.status(200).send({
+                data : docs,
+                success : true,
+                message : "Here you go."
+            });
+        }
     });
 };
 
-var getStudentsByAcaYr = function(academic_year, res) {
-    // console.log("get student by acaYr");
-    // var query = Student.find({ academic_year : acaYr }).sort({
-    //     stu_code: 1
-    // });
-
-    // query.exec(function(err, students) {
-
-    //     // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-    //     if (err)
-    //         res.send(err)
-
-    //     res.json(students); // return all students in JSON format
-    // });
-
-    var criteria;
-
-    if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
-        criteria = academic_year;
-    } else {
-        criteria = {$ne:""}
-    }
-
-    console.log(criteria);
-
-    Student.find({
-        "academic_year": criteria
-    },{stu_code:1,name:1,status:1},function(err,students){
-        if (err)
-            res.send(err)
-        res.json(students)
-    });
+var getStudentsByAcaYr = function(res, academic_year) {
+    var criteria = { "academic_year": academic_year } || {};
+    var project = { stu_code: 1, name: 1, status: 1 };
+    console.log(criteria, project);
+    getStudents(res, criteria, project);
 };
 
 var findStudentById = function(id, res) {
-    Student.findOne({
-        _id: id
-    }, function(err, students) {
-        console.log(students);
-        if (err)
-            res.send(err)
-        res.json(students);
-    });
+    getStudents(res, { _id: id });
 };
 
 var findStudentByCode = function(stu_code, res) {
-    
-    Student.findOne({
-        "stu_code": stu_code
-    }, function(err, students) {
-        console.log(students);
-        if (err)
-            res.send(err)
-        res.json(students);
-    });
+    getStudents(res, {  "stu_code": stu_code});
 };
+
+var studentRegistration = function (item, res) { // wait for mailing module
+    Student.findOne({
+        stu_code: item.stu_code
+    },function(err, doc){
+        if(!doc){
+            var newStudent = new Student();
+            objectAssign(newStudent, item);
+            newStudent.password = passwordHash.generate(item.password);
+            newStudent.save(function(err){
+                if(!err){
+                    res.status(201).send({
+                        success: true,
+                        message: "Your account has been created."
+                    });
+                }
+                res.send(err);
+            });
+        } else {
+            res.status(200).send({
+                success: false,
+                message: "Duplicate student code."
+            });
+        }
+    });
+}
 
 var createStudent = function(item, res) {
     Student.findOne({
         "stu_code": item.stu_code
     },function(err, doc){
-        if(!doc){ 
-
+        if(!doc){
             var newStudent = new Student();
-            objectAssign(newStudent,item);
-            newStudent.password = passwordHash.generate(item.password); // random pass algo here
-            newStudent.save(function(err) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    findStudentByCode(newStudent.stu_code,res);
-                    // res.json({success:true});
+            objectAssign(newStudent, item);
+            newStudent.password = passwordHash.generate(item.password);
+            newStudent.save(function(err){
+                if(!err){
+                    res.status(201).send({
+                        success: true,
+                        message: "Account has been created."
+                    });
                 }
+                res.json({
+                    err: err,
+                    message : "Something went wrong! try again.",
+                    success : false
+                });
             });
         } else {
-            res.json({
+            res.status(200).send({
                 success: false,
-                message: 'Duplicated student code.'
+                message: "Duplicate student code."
             });
         }
     });
 };
 
 var updateStudent = function(item, res) {
+    if (typeof item.password != 'undefined')
+        item.password = passwordHash.generate(item.password);
+
     Student.findOne({
         _id: item._id
-    }, function(err, doc) {
-        if (doc != null) {
+    }, function(err, doc){
+        if(err)
+            res.status(200).send({
+                success: false,
+                message: "Something went wrong while finding Student. try again.",
+                err : err
+            });
+        if(doc){
             objectAssign(doc,item);
-            if (typeof item.password != 'undefined')
-                doc.password = passwordHash.generate(item.password);
-            doc.profileLock = false;
-            doc.save();
-            msg= {success:true};
+            doc.save(function (err){
+                if(err){
+                    res.status(200).send({
+                        success: false,
+                        message: "Something went wrong while saving Student. try again.",
+                        err : err
+                    });
+                }
+                res.status(200).send({
+                    success : true,
+                    message: "Student updated."
+                });
+            });
         } else {
-            msg= {success:false, message:"Student not found", err_code:44};
+            res.status(404).send({
+                success: false,
+                message: "No Student was found."
+            });
         }
-        if (err)
-            res.send(err);
-        else
-            res.json(msg);
     });
 };
 
@@ -245,7 +277,7 @@ var unLockStuProfile = function(id, res){
     });
 };
 
-var uploadPicture = function(item,res,next){
+var uploadPicture = function(item, res, next){
     var tmp_path = item.file.path;
     var time_stamp = Date.now();
         console.log(tmp_path,time_stamp);
@@ -286,38 +318,38 @@ var pwChangeStudent = function(item, res) {
             if (passwordHash.verify(item.oldPassword, doc.password)) {
                 doc.password = passwordHash.generate(item.newPassword);
                 doc.save();
-                msg = {success:true};
+                msg = {success:true, message: "Password changed."};
             } else
-                msg = {success:false,reason:"Invalid old-password",err_code:41};
+                res.status(403).send({success:false, message:"Invalid old-password."});
         } else {
-            msg = {success:false,reason:"Student not found",err_code:44};
+            res.status(403).send({success:false, message:"No Student was found."});
         }
-
         if (err)
-            res.send(err);
-        else 
-            res.json(msg);
+            msg.err = err;
+        res.status(200).send(msg);
     });
 };
 
 var delStudent = function(item, res) {
-    Student.remove({
+    Student.findOneAndRemove({
         _id: item
-    }, function(err) {
-        if (err)
-            res.send(err);
-        getStudents(res);
+    }, function(err, doc) {
+        if (!doc)
+            res.status(404).send({
+                success: false,
+                message: "Student does not exist."
+            });
+        if(err)
+            res.status(200).send({
+                success: false,
+                message: "Something went wrong while removing. try again.",
+                err :err
+            });
+        res.status(200).send({
+            success: true,
+            message: "Student removed."
+        });
     })
-};
-
-var getAcaYrs = function(res){
-    var queryGroup = Student.distinct("academic_year");
-    queryGroup.exec(function(err, acaYrs) {
-        if (err)
-            res.send(err)
-
-        res.json(acaYrs);
-    });
 };
 
 var getDocuments = function (academic_year, res){
@@ -382,6 +414,7 @@ module.exports = {
 	'delStudent': delStudent,
 	'getAcaYrs': getAcaYrs,
     'getDocuments': getDocuments,
-    'getDocumentsWithOwner': getDocumentsWithOwner
+    'getDocumentsWithOwner': getDocumentsWithOwner,
+    'studentRegistration': studentRegistration
 
 }

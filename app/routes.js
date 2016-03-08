@@ -55,17 +55,34 @@ module.exports = function(app) {
     //      \______/   \__|   \__|  \__|\________|\__|  \__|
     //============================================================================
     
-    app.get('/api/typehead/title_name', function(req, res) {
+    app.get('/typehead/title_name', function(req, res) {
         OtherController.titleNameTypeAhead(res);
     });
 
-    app.get('/api/typehead/acade_pos', function(req, res) {
+    app.get('/typehead/acade_pos', function(req, res) {
         OtherController.acadePosTypeAhead(res);
     });
 
-    app.get('/api/typehead/advisor', function(req, res) {
+    app.get('/typehead/advisor', function(req, res) {
         TeacherController.TeacherTypeAhead(res);
     });
+
+    app.post('/register',function(req, res){
+        StudentController.studentRegistration(req.body, res);
+    });
+
+    app.get('/company', function(req, res) {
+        CompanyController.getCompany(res);
+    });
+
+    app.get('/company/participating', function(req, res) {
+        CompanyController.getPartCompany(res);
+    });
+
+    app.get('/company/area/:area', function(req, res) {
+        CompanyController.getCompanyByArea(req.params.area, res);
+    });
+
 
 
     //===================================================================================
@@ -115,7 +132,7 @@ module.exports = function(app) {
     //  \______/   \__|    \______/ \_______/ \________|\__|  \__|   \__|  
     //=================================================================================
     // get all students
-    app.get('/api/students', function(req, res) {
+    app.get('/admin/student', function(req, res) {
         var allow = ["teacher"];
         if(checkPermission(allow, req.decoded.access_type)) {
             StudentController.getStudents(res);
@@ -127,10 +144,10 @@ module.exports = function(app) {
         }
     });
 
-    app.get('/api/students/acaYr/:acaYr', function(req, res) {
+    app.get('/admin/student/academic_year/:acaYr', function(req, res) {
+        console.log("get by acayrs");
         if(req.decoded.access_type=="teacher"){ 
-            console.log("get all students");
-            StudentController.getStudentsByAcaYr(req.params.acaYr, res);
+            StudentController.getStudentsByAcaYr(res, req.params.acaYr);
         } else {
             res.status(403).send({
                 success: false,
@@ -139,57 +156,56 @@ module.exports = function(app) {
         }
     });
 
-
-    app.post('/api/student/id/:id', function(req, res) {
+    app.post('/admin/student/id/:id', function(req, res) {
         StudentController.findStudentById(req.params.id, res);
     });
 
-    app.post('/api/student/code/:scode', function(req, res) {
+    app.post('/admin/student/code/:scode', function(req, res) {
         StudentController.findStudentByCode(req.params.scode, res);
     });
 
     // create student and send back all students after creation
-    app.post('/api/students', function(req, res) {
+    app.post('/admin/student', function(req, res) {
         console.log("Creating...");
         StudentController.createStudent(req.body, res);
     });
 
-    app.post('/api/students/uploadPicture', upload.single('file'), function(req, res, next) {
+    app.post('/admin/student/uploadPicture', upload.single('file'), function(req, res, next) {
         console.log(req.file);
         StudentController.uploadPicture(req, res, next);
     });
 
     // update a student
-    app.put('/api/students', function(req, res) {
+    app.put('/admin/student', function(req, res) {
         console.log("Updating...");
         StudentController.updateStudent(req.body, res);
     });
 
-    app.put('/api/students/unlock_profile', function(req, res) {
+    app.put('/admin/student/unlock_profile', function(req, res) {
         StudentController.unLockStuProfile(req.body.id, res);
     });
 
-    app.put('/api/students/lock_profile', function(req, res) {
+    app.put('/admin/student/lock_profile', function(req, res) {
         StudentController.lockStuProfile(req.body.id, res);
     });
 
-    app.put('/api/students/pw_change', function(req, res) {
+    app.put('/admin/student/pw_change', function(req, res) {
         StudentController.pwChangeStudent(req.body, res);
     })
 
     // delete a student
-    app.delete('/api/students/:student_id', function(req, res) {
+    app.delete('/admin/student/:student_id', function(req, res) {
         StudentController.delStudent(req.params.student_id, res);
     });
 
-    app.get('/api/students/acaYrs', function(req, res) {
+    app.get('/admin/student/acaYrs', function(req, res) {
         StudentController.getAcaYrs(res);
     });
-    app.get('/api/documents/acaYrs/:acaYrs', function(req, res) {
+    app.get('/admin/document/acaYrs/:acaYrs', function(req, res) {
         console.log("get Docs of " + req.params.acaYrs);
         StudentController.getDocuments(req.params.acaYrs, res);
     });
-    app.get('/api/students/documents/acaYrs/:acaYrs', function(req, res) {
+    app.get('/admin/student/document/acaYrs/:acaYrs', function(req, res) {
         console.log("get Docs and Owner of " + req.params.acaYrs);
         StudentController.getDocumentsWithOwner(req.params.acaYrs, res);
     });
@@ -206,29 +222,33 @@ module.exports = function(app) {
     //    \__|   \________|\__|  \__| \______/ \__|  \__|\________|\__|  \__|
     //================================================================================
 
-    app.get('/api/teachers', function(req, res) {
+    app.get('/admin/teacher', function(req, res) {
         TeacherController.getTeacher(res);
     });
 
-    app.get('/api/teachers/item/:item/mode/:mode', function(req, res) {
-        TeacherController.findTeacher(req.params.item, req.params.mode, res);
+    app.get('/admin/teacher/id/:id', function(req, res) {
+        TeacherController.findTeacherById(req.params.id, res);
     });
 
-    app.post('/api/teachers', function(req, res) {
+    app.get('/admin/teacher/code/:code', function(req, res) {
+        TeacherController.findTeacherByCode(req.params.code, res);
+    });
+
+    app.post('/admin/teacher', function(req, res) {
         TeacherController.createTeacher(req.body, res);
     });
     // update a teacher
-    app.put('/api/teachers', function(req, res) {
+    app.put('/admin/teacher', function(req, res) {
         TeacherController.updateTeacher(req.body, res);
     })
 
-    app.put('/api/teachers/pw_change', function(req, res) {
+    app.put('/admin/teacher/pw_change', function(req, res) {
         console.log("pw chng");
         TeacherController.pwChangeTeacher(req.body, res);
     })
 
     // delete a teacher
-    app.delete('/api/teachers/:teacher_id', function(req, res) {
+    app.delete('/admin/teacher/:teacher_id', function(req, res) {
         TeacherController.delTeacher(req.params.teacher_id, res);
     });
 
@@ -244,24 +264,24 @@ module.exports = function(app) {
     //====================================================================================
 
     // get all documents
-    app.get('/api/documents', function(req, res) {
+    app.get('/admin/document', function(req, res) {
         DocumentController.getDocument(res);
     });
 
 
     // upload document
-    app.post('/api/documents/upload', upload.single('file'), function(req, res, next) {
+    app.post('/admin/document/upload', upload.single('file'), function(req, res, next) {
         console.log(req.file);
         DocumentController.createDocument(req, res, next);
     });
 
     // update document
-    app.put('/api/documents', function(req, res) {
+    app.put('/admin/document', function(req, res) {
         DocumentController.updateDocument(req.body, res);
     });
 
     // delete a document
-    app.delete('/api/documents/:document_id', function(req, res) {
+    app.delete('/admin/document/:document_id', function(req, res) {
         DocumentController.delDocument(req.params.document_id, res);
     });
     
@@ -277,22 +297,20 @@ module.exports = function(app) {
     //    \$$$$$$   \$$$$$$  \$$      \$$ \$$       \$$   \$$ \$$   \$$     \$$                                                                       
     //                                                       
     //=============================================================================
-    app.get('/api/companies', function(req, res) {
-        CompanyController.getCompany(res);
+    app.get('/company/:item', function(req, res) {
+        CompanyController.findCompanyById(req.params.item, res);
     });
-    app.get('/api/companies/item/:item/mode/:mode', function(req, res) {
-        CompanyController.findCompany(req.params.item, req.params.mode, res);
-    });
-    app.post('/api/companies', function(req, res) {
+
+    app.post('/admin/company', function(req, res) {
         CompanyController.createCompany(req.body, res);
     });
-    app.put('/api/companies', function(req, res) {
+    app.put('/admin/company', function(req, res) {
         CompanyController.updateCompany(req.body, res);
     });
-    app.put('/api/companies/contact', function(req, res) {
+    app.put('/admin/company/contact', function(req, res) {
         CompanyController.updateCompanyContact(req.body, res);
     });
-    app.delete('/api/companies/:company_id', function(req, res) {
+    app.delete('/admin/company/:company_id', function(req, res) {
         CompanyController.delCompany(req.params.company_id, res);
     });
 

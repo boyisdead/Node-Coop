@@ -1,4 +1,5 @@
 var Company = require('./../models/company');
+var objectAssign = require('object-assign');
 
 var getCompany = function(res){
     Company.find(function(err, companies) {
@@ -7,39 +8,45 @@ var getCompany = function(res){
         res.json(companies); 
     });
 };
+var getPartCompany = function (res) {
+    Company.find({
+        "participate_now" : true
+    },function(err,docs){
+        if(!err){
+            res.status(200).send({
+                success: true,
+                message: "Here!",
+                data: docs
+            });
+        } else {
+            res.send(err);
+        }
+    });
+}
+var getCompanyByArea = function(areas, res) {
+    Company.find({
+        area: { $in : areas }
+    },function(err,docs){
+        if(!err){
+            res.status(200).send({
+                success: true,
+                message: "Here!",
+                data: docs
+            });
+        } else {
+            res.send(err);
+        }
+    });
+}
 
-// function findCompany(item, mode, res) {
-//     Company.findOne({
-//         "name"."full" : item
-//     }, function(err, companies) {
-//         console.log("code", item, err, companies);
-//         if (err)
-//             res.send(err)
-//         res.json(companies); // return all companies in JSON format
-//     });
-// };
-// 
-
-var findCompany = function(item, mode, res) {
-    if (mode == 'i') {
-        Company.findOne({
-            _id: item
-        }, function(err, company) {
-            console.log("id", item, err, company);
-            if (err)
-                res.send(err)
-            res.json(company);
-        });
-    } else if (mode == 'c') {
-        Company.findOne({
-            "s_index": item
-        }, function(err, company) {
-            console.log("code", item, err, company);
-            if (err)
-                res.send(err)
-            res.json(company);
-        });
-    }
+var findCompanyById = function(code, res) {
+    Company.findOne({
+        s_index: code
+    }, function(err, company) {
+        if (err)
+            res.send(err)
+        res.json(company);
+    });
 };
 
 var easyAutoId = function(prefix, max, numLong){
@@ -100,50 +107,7 @@ var updateCompany = function(item, res) {
         _id: item._id
     }, function(err, doc) {
         if (doc != null) {
-            if (item.name) {
-                if (typeof item.name.full != 'undefined')
-                    doc.name.full = item.name.full;
-                if (typeof item.name.init != 'undefined')
-                    doc.name.init = item.name.init;
-            }
-            if(item.contact){
-                doc.contact = item.contact;
-                // if(item.contact.name){
-                //     if (typeof item.contact.name.f_th != 'undefined')
-                //         doc.contact.name.f_th = item.contact.name.f_th;
-                //     if (typeof item.contact.name.l_th != 'undefined')
-                //         doc.contact.name.l_th = item.contact.name.l_th;
-                //     if (typeof item.contact.name.t_th != 'undefined')
-                //         doc.contact.name.t_th = item.contact.name.t_th;
-                //     if (typeof item.contact.name.f_en != 'undefined')
-                //         doc.contact.name.f_en = item.contact.name.f_en;
-                //     if (typeof item.contact.name.l_en != 'undefined')
-                //         doc.contact.name.l_en = item.contact.name.l_en;
-                //     if (typeof item.contact.name.t_en != 'undefined')
-                //         doc.contact.name.t_en = item.contact.name.t_en;
-                // }
-                // if (typeof item.contact.pos != 'undefined')
-                //     doc.contact.pos = item.contact.pos;
-                // if (typeof item.contact.tel != 'undefined')
-                //     doc.contact.tel = item.contact.tel;
-                // if (typeof item.contact.email != 'undefined')
-                //     doc.contact.email = item.contact.email;
-            }
-
-            if(item.coordinator)
-                doc.coordinator = item.coordinator;
-
-            if (typeof item.part_year != 'undefined')
-                doc.part_year = item.part_year;
-            if (typeof item.tel != 'undefined')
-                doc.tel = item.tel;
-            if (typeof item.fax != 'undefined')
-                doc.fax = item.fax;
-            if (typeof item.email != 'undefined')
-                doc.email = item.email;
-            if (typeof item.website != 'undefined')
-                doc.website = item.website;
-
+            objectAssign(doc, item);
             doc.save();
         } else console.log("Not found - not update");
 
@@ -177,10 +141,12 @@ var delCompany = function(item, res) {
 
 module.exports = {
 	'getCompany': getCompany,
-	'findCompany': findCompany,
+    'findCompanyById': findCompanyById,
 	'createCompany': createCompany,
 	'updateCompany': updateCompany,
 	'updateCompanyContact': updateCompanyContact,
-	'delCompany': delCompany
+	'delCompany': delCompany,
+    'getPartCompany': getPartCompany,
+    'getCompanyByArea': getCompanyByArea
 
 };

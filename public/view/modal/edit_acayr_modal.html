@@ -3,7 +3,7 @@
 </div>
 <div class="modal-body">
     <ul>
-        <li ng-repeat="item in items">
+        <li ng-repeat="item in items.data">
             <a href="#" ng-click="$event.preventDefault(); selected.item = item">{{ item }}</a>
         </li>
     </ul>

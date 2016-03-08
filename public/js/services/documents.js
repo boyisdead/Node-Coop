@@ -1,10 +1,10 @@
 documentModule.factory('DocumentsService', ['$http','Upload', function($http,Upload){
 	return{
 		get : function (){
-			return $http.get('/api/documents/acaYrs/all');
+			return $http.get('/admin/document/acaYrs/all');
 		},
 		delete : function (id){
-			return $http.delete('/api/documents/' + id);
+			return $http.delete('/admin/document/' + id);
 		}
 	};
 }])

@@ -1,19 +1,19 @@
 companyModule.factory('CompaniesService', ['$http', function($http){
 	return{
 		get :  function(){
-			return $http.get('/api/companies');
+			return $http.get('/company');
 		},
 		delete :  function(id){
-			return $http.delete('/api/companies/'+id);
+			return $http.delete('/admin/company/'+id);
 		},
 		create : function (companyData) {
-			return $http.post('/api/companies', companyData);
+			return $http.post('/admin/company', companyData);
 		},
 		update : function(companyData) {
-			return $http.put('/api/companies', companyData);
+			return $http.put('/admin/company', companyData);
 		},
-		find : function(id, mode) {
-			return $http.get('/api/companies/item/' + id + '/mode/' + mode);
-		},
+		find : function(id) {
+			return $http.get('/company/' + id);
+		}
 	};
 }])

@@ -41,35 +41,37 @@ var teacherLogin = function(item, secretToken,expireTime, res) {
     })
 }
 
-var getTeacher = function(res) {
-    Teacher.find(function(err, teachers) {
-        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-        if (err)
-            res.send(err)
-        res.json(teachers); // return all teachers in JSON format
+var getTeacher = function(res, criteria, project) {
+    criteria = criteria || {};
+    project = project || {};
+    Teacher.find(criteria, project, function(err, teachers) {
+        if(err)
+            res.status(400).send({
+                success: false,
+                message: "Something went wrong while retrieving. try again.",
+                err : err,
+            });
+        if(!teachers || typeof teachers[0] == "undefined") {
+            res.status(204).send({
+                success : true,
+                message : "No Teacher was found."
+            });
+        } else {
+            res.status(200).send({
+                data : teachers,
+                success : true,
+                message : "Here you go."
+            });
+        }
     });
 };
 
-var findTeacher = function(item, mode, res) {
-    if (mode == 'i') {
-        Teacher.findOne({
-            _id: item
-        }, function(err, teachers) {
-            console.log("id", item, err, teachers);
-            if (err)
-                res.send(err)
-            res.json(teachers); // return all teachers in JSON format
-        });
-    } else if (mode == 'c') {
-        Teacher.findOne({
-            "staff_code": item
-        }, function(err, teachers) {
-            console.log("code", item, err, teachers);
-            if (err)
-                res.send(err)
-            res.json(teachers); // return all teachers in JSON format
-        });
-    }
+var findTeacherById = function(item, res) {
+    getTeacher(res, { _id: item });
+};
+
+var findTeacherByCode = function(item, res) {
+    getTeacher(res, { "staff_code": item });
 };
 
 var createTeacher = function(item, res) {
@@ -161,7 +163,8 @@ var TeacherTypeAhead = function(res){
 module.exports = {
     'teacherLogin': teacherLogin,
     'getTeacher': getTeacher,
-    'findTeacher': findTeacher,
+    'findTeacherById': findTeacherById,
+    'findTeacherByCode': findTeacherByCode,
     'createTeacher': createTeacher,
     'updateTeacher': updateTeacher,
     'pwChangeTeacher': pwChangeTeacher,
