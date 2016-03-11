@@ -302,6 +302,7 @@ module.exports = function(app) {
     });
 
     app.post('/admin/company', function(req, res) {
+        console.log(req.body);
         CompanyController.createCompany(req.body, res);
     });
     app.put('/admin/company', function(req, res) {

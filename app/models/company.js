@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 
 var companySchema = mongoose.Schema=({
+    _id : {type: String},
     name : {
         full : {type: String, default:''},
         init : {type: String, default:''}
@@ -8,27 +9,21 @@ var companySchema = mongoose.Schema=({
     part_year: {type: String, default:''},
     contact: {
         name: {
-            f_th: {type: String, default:''},
-            l_th: {type: String, default:''},
-            t_th: {type: String, default:'คุณ'},
-            f_en: {type: String, default:''},
-            l_en: {type: String, default:''},
-            t_en: {type: String, default:''}
+            first: {type: String, default:''},
+            last: {type: String, default:''},
+            title: {type: String, default:'คุณ'}
         },
-        pos: {type: String, default:''},
+        position: {type: String, default:''},
         tel: {type: String, default:''},
         email: {type: String, default:''}
     },
     coordinator: {
         name: {
-            f_th: {type: String, default:''},
-            l_th: {type: String, default:''},
-            t_th: {type: String, default:'คุณ'},
-            f_en: {type: String, default:''},
-            l_en: {type: String, default:''},
-            t_en: {type: String, default:''}
+            first: {type: String, default:''},
+            last: {type: String, default:''},
+            title: {type: String, default:'คุณ'}
         },
-        pos: {type: String, default:''},
+        position: {type: String, default:''},
         tel: {type: String, default:''},
         email: {type: String, default:''}
     },
@@ -37,7 +32,8 @@ var companySchema = mongoose.Schema=({
     email: {type: String, default:''},
     website: {type: String, default:''},
     address:{type:String, default:''},
-    s_index:{type:String, default:''}
+    area: {type:String, default:''},
+    status: {type:Boolean, default: true}
 });
 
 module.exports = mongoose.model('Company', companySchema);

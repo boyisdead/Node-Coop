@@ -1,4 +1,5 @@
 var Company = require('./../models/company');
+var Counter = require('./../models/counter');
 var objectAssign = require('object-assign');
 
 var getCompany = function(res){
@@ -49,12 +50,17 @@ var findCompanyById = function(code, res) {
     });
 };
 
-var easyAutoId = function(prefix, max, numLong){
-    var newMax = max+1;
-    var new_id = prefix.concat(newMax.toString());
-    while(new_id.length < numLong){
-        new_id = new_id.slice(0,new_id.length-1) + "0" + newMax;
+var numToLengthString = function(num, length){
+    var newNum = "" + num.toString();
+    while(newNum.length<length){
+        newNum = "0" + newNum;
     }
+    return newNum;
+}
+
+var autoPrefixId = function(prefix, max, numLong){
+    var new_id = prefix.concat(numToLengthString(max,numLong));
+    console.log(new_id);
     return new_id;
 };
 
@@ -62,44 +68,21 @@ var createCompany = function(item, res) {
 
     var msg;
     var new_s_index;
-    var query = Company.findOne();
-    query.select('s_index');
-    query.limit(1);
-    query.sort('-s_index');
-
-    query.exec(function (err, esb) {
-        if (err) return handleError(err); // Space Ghost is a talk show host.
-        new_s_index  = easyAutoId("ESB", parseInt(esb.s_index.substr(3,3)), 6);
-    })
-
-    if(typeof item.name.init == 'undefined')
-        item.name.init = new_s_index;
-
-    var newCompany = new Company({
-        name : {
-                full : item.name.full,
-                init : item.name.init
-        },
-        part_year: item.part_year,
-        tel: item.tel,
-        fax: item.fax,
-        email: item.email,
-        website: item.website,
-        address: item.address,
-        s_index: new_s_index
+    var newCompany = new Company();
+    Counter.findOneAndUpdate({_id:"companies"},{$inc:{"seq":1 }}, function (err, esb) {
+        if (err) return res.send(err); // Space Ghost is a talk show host.
+        console.log(esb);
+        newCompany._id  = autoPrefixId("ESB", esb.seq, 3);
+        objectAssign(newCompany, item)
+        console.log(newCompany);
+        newCompany.save(function(err) {
+            if (err)
+                msg = {success:false,err:err};
+            else
+                msg = {success:true};
+            res.json(msg);
+        })
     });
-    if(item.contact)
-        newCompany.contact = item.contact;
-    if(item.coordinator)
-        newCompany.coordinator = item.coordinator;
-
-    newCompany.save(function(err) {
-        if (err)
-            msg = {success:false,err:err};
-        else
-            msg = {success:true};
-        res.json(msg);
-    })
 };
 
 var updateCompany = function(item, res) {
