@@ -1,5 +1,5 @@
 module.exports = {
-	// JWT verify
+	// Secret key for token 
 	'secret': 'cscmucoop',
-	'exp_time' : 14400
+	'exp_time' : 1440000
 }

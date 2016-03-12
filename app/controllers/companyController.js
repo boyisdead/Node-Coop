@@ -2,53 +2,7 @@ var Company = require('./../models/company');
 var Counter = require('./../models/counter');
 var objectAssign = require('object-assign');
 
-var getCompany = function(res){
-    Company.find(function(err, companies) {
-        if (err)
-            res.send(err)
-        res.json(companies); 
-    });
-};
-var getPartCompany = function (res) {
-    Company.find({
-        "participate_now" : true
-    },function(err,docs){
-        if(!err){
-            res.status(200).send({
-                success: true,
-                message: "Here!",
-                data: docs
-            });
-        } else {
-            res.send(err);
-        }
-    });
-}
-var getCompanyByArea = function(areas, res) {
-    Company.find({
-        area: { $in : areas }
-    },function(err,docs){
-        if(!err){
-            res.status(200).send({
-                success: true,
-                message: "Here!",
-                data: docs
-            });
-        } else {
-            res.send(err);
-        }
-    });
-}
-
-var findCompanyById = function(code, res) {
-    Company.findOne({
-        s_index: code
-    }, function(err, company) {
-        if (err)
-            res.send(err)
-        res.json(company);
-    });
-};
+// Misc
 
 var numToLengthString = function(num, length){
     var newNum = "" + num.toString();
@@ -64,8 +18,38 @@ var autoPrefixId = function(prefix, max, numLong){
     return new_id;
 };
 
-var createCompany = function(item, res) {
 
+// Get
+
+var getCompany = function(res, criteria, projection){
+    criteria = criteria || {};
+    projection = projection || {"name":1, "status":1, "website":1, "area":1};
+    Company.find(criteria,projection,function(err, companies) {
+        if (err)
+            res.send(err)
+        res.json(companies); 
+    });
+};
+
+var getPartCompany = function (res) {
+    var criteria = {"active" : true};
+    getCompany(res, criteria);
+}
+
+var getCompanyByArea = function(res, areas) {
+    var criteria = {"area": { $in : areas }};
+    getCompany(res, criteria);
+}
+
+var findCompanyById = function(res, code) {
+    var criteria = {"_id": code};
+    var projection = {};
+    getCompany(res, criteria, projection);    
+};
+
+// Create
+
+var createCompany = function(res, item) {
     var msg;
     var new_s_index;
     var newCompany = new Company();
@@ -73,7 +57,7 @@ var createCompany = function(item, res) {
         if (err) return res.send(err); // Space Ghost is a talk show host.
         console.log(esb);
         newCompany._id  = autoPrefixId("ESB", esb.seq, 3);
-        objectAssign(newCompany, item)
+        objectAssign(newCompany, item);
         console.log(newCompany);
         newCompany.save(function(err) {
             if (err)
@@ -85,7 +69,9 @@ var createCompany = function(item, res) {
     });
 };
 
-var updateCompany = function(item, res) {
+// Update
+
+var updateCompany = function(res, item) {
     Company.findOne({
         _id: item._id
     }, function(err, doc) {
@@ -100,7 +86,7 @@ var updateCompany = function(item, res) {
     });
 };
 
-var updateCompanyContact = function(item, res){
+var updateCompanyContact = function(res, item){
     Company.findOne({
         _id: item._id
     }, function(err, doc) {
@@ -111,7 +97,13 @@ var updateCompanyContact = function(item, res){
     })
 };
 
-var delCompany = function(item, res) {
+var addCompanyPicture = function(res){
+
+}
+
+// Remove
+
+var delCompany = function(res, item) {
     Company.remove({
         _id: item
     }, function(err) {

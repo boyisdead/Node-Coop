@@ -14,6 +14,8 @@ var OtherController = require('./controllers/otherController');
 var TeacherController = require('./controllers/teacherController');
 var StudentController = require('./controllers/studentController');
 var CompanyController = require('./controllers/companyController');
+var AnnounceController = require('./controllers/announceController');
+var DlcController = require('./controllers/dlcController');
 
 var checkPermission = function(allow_types,access_type){
     if(allow_types.indexOf(access_type)>=0)
@@ -72,18 +74,39 @@ module.exports = function(app) {
     });
 
     app.get('/company', function(req, res) {
+        console.log("Get all company");
         CompanyController.getCompany(res);
     });
 
     app.get('/company/participating', function(req, res) {
+        console.log("Get participating company");
         CompanyController.getPartCompany(res);
     });
 
     app.get('/company/area/:area', function(req, res) {
-        CompanyController.getCompanyByArea(req.params.area, res);
+        console.log("Get company by area with " + req.params.area);
+        CompanyController.getCompanyByArea(res, req.params.area);
     });
 
+    app.get('/company/:item', function(req, res) {
+        console.log("Get company with " + req.params.item);
+        CompanyController.findCompanyById(res, req.params.item);
+    });
 
+    app.get('/announce', function(req, res) {
+        console.log("Get all announce");
+        AnnounceController.getAnnounce(res);
+    });
+
+    app.get('/announce/:item', function(req, res) {
+        console.log("Get announce with " + req.params.item);
+        AnnounceController.findAnnounceById(res, req.params.item);
+    });
+
+    app.get('/dlc', function(req, res) {
+        console.log("Get all DLC");
+        DlcController.getDlc(res);
+    });
 
     //===================================================================================
     //suspended due to working
@@ -297,22 +320,82 @@ module.exports = function(app) {
     //    \$$$$$$   \$$$$$$  \$$      \$$ \$$       \$$   \$$ \$$   \$$     \$$                                                                       
     //                                                       
     //=============================================================================
-    app.get('/company/:item', function(req, res) {
-        CompanyController.findCompanyById(req.params.item, res);
-    });
 
     app.post('/admin/company', function(req, res) {
-        console.log(req.body);
-        CompanyController.createCompany(req.body, res);
+        var compName = req.body.name.full || "noname";
+        console.log("Create " + compName + " company");
+        CompanyController.createCompany(res, req.body);
     });
     app.put('/admin/company', function(req, res) {
-        CompanyController.updateCompany(req.body, res);
+        var compName = req.body.name.full || "noname";
+        console.log("Update " + compName + " company");
+        CompanyController.updateCompany(res, req.body);
     });
     app.put('/admin/company/contact', function(req, res) {
-        CompanyController.updateCompanyContact(req.body, res);
+        var compName = req.body.name.full || "noname";
+        console.log("Update " + compName + " company's contact");
+        CompanyController.updateCompanyContact(res, req.body);
     });
     app.delete('/admin/company/:company_id', function(req, res) {
-        CompanyController.delCompany(req.params.company_id, res);
+        var compId = req.params.company_id || "noname";
+        console.log("Remove " + compId + " company");
+        CompanyController.delCompany(res, compId);
+    });    
+
+    //================================ Company ====================================
+    //   ______   __    __  __    __   ______   __    __  __    __   ______   ________ 
+    //  /      \ |  \  |  \|  \  |  \ /      \ |  \  |  \|  \  |  \ /      \ |        \
+    // |  $$$$$$\| $$\ | $$| $$\ | $$|  $$$$$$\| $$  | $$| $$\ | $$|  $$$$$$\| $$$$$$$$
+    // | $$__| $$| $$$\| $$| $$$\| $$| $$  | $$| $$  | $$| $$$\| $$| $$   \$$| $$__    
+    // | $$    $$| $$$$\ $$| $$$$\ $$| $$  | $$| $$  | $$| $$$$\ $$| $$      | $$  \   
+    // | $$$$$$$$| $$\$$ $$| $$\$$ $$| $$  | $$| $$  | $$| $$\$$ $$| $$   __ | $$$$$   
+    // | $$  | $$| $$ \$$$$| $$ \$$$$| $$__/ $$| $$__/ $$| $$ \$$$$| $$__/  \| $$_____ 
+    // | $$  | $$| $$  \$$$| $$  \$$$ \$$    $$ \$$    $$| $$  \$$$ \$$    $$| $$     \
+    //  \$$   \$$ \$$   \$$ \$$   \$$  \$$$$$$   \$$$$$$  \$$   \$$  \$$$$$$  \$$$$$$$$                                                                      
+    //                                                       
+    //=============================================================================
+
+    app.post('/admin/announce', function(req, res) {
+        var title = req.body.title || "noname";
+        console.log("Create " + title + " news");
+        AnnounceController.createAnnounce(res, req.body);
+    });
+    app.put('/admin/announce', function(req, res) {
+        var title = req.body.title || "noname";
+        console.log("Update " + title + " news");
+        AnnounceController.updateAnnounce(res, req.body);
+    });
+    app.delete('/admin/announce/:announce_id', function(req, res) {
+        var ancId = req.params.announce_id || "noname";
+        console.log("Remove " + ancId + " company");
+        AnnounceController.delAnnounce(res, ancId);
+    });
+
+
+    //================================ DLC ====================================
+    //                      _______   __        ______  
+    //                     |       \ |  \      /      \ 
+    //                     | $$$$$$$\| $$     |  $$$$$$\
+    //                     | $$  | $$| $$     | $$   \$$
+    //                     | $$  | $$| $$     | $$      
+    //                     | $$  | $$| $$     | $$   __ 
+    //                     | $$__/ $$| $$_____| $$__/  \
+    //                     | $$    $$| $$     \\$$    $$
+    //                      \$$$$$$$  \$$$$$$$$ \$$$$$$                                                                     
+    //                                                       
+    //=============================================================================
+
+    app.post('/admin/dlc', upload.single('file'), function(req, res, next) {
+        console.log(req.file);
+        var title = req.body.title || "noname";
+        console.log("Create " + title + " dlc");
+        DlcController.createDlc(req, res, next);
+    });
+
+    app.delete('/admin/dlc/:dlc_id', function(req, res) {
+        var ancId = req.params.dlc_id || {};
+        console.log("Remove " + ancId);
+        DlcController.delDlc(res, ancId);
     });
 
     // application -------------------------------------------------------------

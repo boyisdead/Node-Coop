@@ -1,12 +1,13 @@
 var mongoose = require('mongoose');
+var this_year = new Date().getFullYear()+543;
 
-var companySchema = mongoose.Schema=({
+var companySchema = mongoose.Schema({
     _id : {type: String},
     name : {
-        full : {type: String, default:''},
+        full : {type: String, default:'', required: [true, "No company name? Then leave."]},
         init : {type: String, default:''}
     },
-    part_year: {type: String, default:''},
+    part_year: {type: String, default: this_year},
     contact: {
         name: {
             first: {type: String, default:''},
@@ -33,17 +34,6 @@ var companySchema = mongoose.Schema=({
     website: {type: String, default:''},
     address:{type:String, default:''},
     area: {type:String, default:''},
-    status: {type:Boolean, default: true}
+    active: {type:Boolean, default: true}
 });
-
 module.exports = mongoose.model('Company', companySchema);
-
-
-
-
-
-
-
-
-
-
