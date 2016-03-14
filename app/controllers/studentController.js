@@ -51,9 +51,9 @@ var studentLogin = function(item, secretToken, expireTime, res) {
                 });
             } else {
                 var token = jwt.sign({
-                    "display_name": student.stu_code,
+                    "display_name": student.name.first,
                     "access_type": "student",
-                    "access_id": student._id
+                    "access_id": student.stu_code
                 }, secretToken, {
                     expiresInMinutes: expireTime
                 });

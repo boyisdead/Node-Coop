@@ -10,14 +10,26 @@ var getDocument = function(res) {
     var query = Document.find().sort({
         file_name: 1
     });
-    var queryGroup = Document.aggregate([{$sort: {owner: 1}}, {"$group": {"_id": "$owner","files": {"$push": {"file_name": "$file_name","file_type": "$file_type", "comment": "$comment"}}}}]);
+    var queryGroup = Document.aggregate([{
+        $sort: {owner: 1}
+    }, {"$group": {
+        "_id": "$owner",
+        "files": {
+            "$push": {
+                "file_name": "$file_name",
+                "file_type": "$file_type", 
+                "comment": "$comment"}
+            }
+        }
+    }]);
+
     query.exec(function(err, documents) {
 
         // if there is an error retrieving, send the error. nothing after res.send(err) will execute
         if (err)
             res.send(err)
 
-        res.json(documents); // return all documents in JSON format
+        res.json({success:true,data:documents}); // return all documents in JSON format
     });
 };
 

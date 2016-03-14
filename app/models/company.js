@@ -5,7 +5,7 @@ var companySchema = mongoose.Schema({
     _id : {type: String},
     name : {
         full : {type: String, default:'', required: [true, "No company name? Then leave."]},
-        init : {type: String, default:''}
+        initial : {type: String, default:''}
     },
     part_year: {type: String, default: this_year},
     contact: {

@@ -13,7 +13,7 @@ var titleNameTypeAhead = function(res) {
     Title_name.find(function(err, titleName) {
         if (err)
             res.send(err)
-        res.json(titleName);
+        res.json({success:true,data:titleName});
     });
 }
 module.exports = {

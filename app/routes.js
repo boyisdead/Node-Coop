@@ -57,11 +57,11 @@ module.exports = function(app) {
     //      \______/   \__|   \__|  \__|\________|\__|  \__|
     //============================================================================
     
-    app.get('/typehead/title_name', function(req, res) {
+    app.get('/typehead/title-name', function(req, res) {
         OtherController.titleNameTypeAhead(res);
     });
 
-    app.get('/typehead/acade_pos', function(req, res) {
+    app.get('/typehead/academic-position', function(req, res) {
         OtherController.acadePosTypeAhead(res);
     });
 
@@ -249,15 +249,12 @@ module.exports = function(app) {
         TeacherController.getTeacher(res);
     });
 
-    app.get('/admin/teacher/id/:id', function(req, res) {
-        TeacherController.findTeacherById(req.params.id, res);
-    });
-
-    app.get('/admin/teacher/code/:code', function(req, res) {
-        TeacherController.findTeacherByCode(req.params.code, res);
+    app.get('/admin/teacher/:id', function(req, res) {
+        TeacherController.findTeacher(req.params.id, res);
     });
 
     app.post('/admin/teacher', function(req, res) {
+        console.log("Creating teacher");
         TeacherController.createTeacher(req.body, res);
     });
     // update a teacher
@@ -265,7 +262,7 @@ module.exports = function(app) {
         TeacherController.updateTeacher(req.body, res);
     })
 
-    app.put('/admin/teacher/pw_change', function(req, res) {
+    app.put('/admin/teacher/change-password', function(req, res) {
         console.log("pw chng");
         TeacherController.pwChangeTeacher(req.body, res);
     })

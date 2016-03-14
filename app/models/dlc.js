@@ -8,5 +8,4 @@ var dlcSchema = mongoose.Schema({
 	uploader : {type: String, required: [true,"File uploader is required."]}
 });
 
-
 module.exports = mongoose.model('Dlc', dlcSchema);

@@ -1,12 +1,27 @@
 var Teacher = require('./../models/teacher');
+var Counter = require('./../models/counter');
 var passwordHash = require('password-hash');
 var jwt = require('jsonwebtoken');
 var objectAssign = require('object-assign');
 
+var numToLengthString = function(num, length) {
+    var newNum = "" + num.toString();
+    while (newNum.length < length) {
+        newNum = "0" + newNum;
+    }
+    return newNum;
+}
+
+var autoPrefixId = function(prefix, max, numLong) {
+    var new_id = prefix.concat(numToLengthString(max, numLong));
+    console.log(new_id);
+    return new_id;
+};
+
 var teacherLogin = function(item, secretToken,expireTime, res) {
     console.log("find Teacher with : " + item.username);
     Teacher.findOne({
-        "staff_code": item.username
+        "_id": item.username
     }, function(err, teacher) {
         if (err)
             res.send(err);
@@ -26,7 +41,7 @@ var teacherLogin = function(item, secretToken,expireTime, res) {
                 });
             } else {
                 var token = jwt.sign({
-                    "display_name": teacher.staff_code,
+                    "display_name": teacher.academic_pos + " " +teacher.name.first,
                     "access_type": "teacher",
                     "access_id": teacher._id,
                     "success": true,
@@ -41,10 +56,10 @@ var teacherLogin = function(item, secretToken,expireTime, res) {
     })
 }
 
-var getTeacher = function(res, criteria, project) {
+var getTeacher = function(res, criteria, projection) {
     criteria = criteria || {};
-    project = project || {};
-    Teacher.find(criteria, project, function(err, teachers) {
+    projection = projection || {};
+    Teacher.find(criteria, projection, function(err, teachers) {
         if(err)
             res.status(400).send({
                 success: false,
@@ -66,35 +81,35 @@ var getTeacher = function(res, criteria, project) {
     });
 };
 
-var findTeacherById = function(item, res) {
+var findTeacher = function(item, res) {
     getTeacher(res, { _id: item });
-};
-
-var findTeacherByCode = function(item, res) {
-    getTeacher(res, { "staff_code": item });
 };
 
 var createTeacher = function(item, res) {
     Teacher.findOne({
-        staff_code: item.staff_code
-    },function(not_found,doc){
-        if(not_found){
-            var newTeacher = new Teacher();
-            objectAssign(newTeacher,item);
-            newTeacher.password=  passwordHash.generate(item.password);
-            newTeacher.save(function(err) {
-            if (err)
-                res.send(err);
-            getTeacher(res);
-            })
+        email: item.email
+    },function(err,doc){
+        if(!doc){
+            console.log("valid email");
+            Counter.findOneAndUpdate({_id:"teachers"},{ $inc : { "seq": 1 }}, function(err, doc){
+                 console.log("Teacher number : " + doc.seq);
+                var newTeacher = new Teacher();
+                objectAssign(newTeacher,item);
+                newTeacher.password=  passwordHash.generate(item.password);
+                newTeacher._id = autoPrefixId("PS", doc.seq, 4);
+                newTeacher.save(function(err) {
+                    if (err)
+                        res.send(err);
+                    res.json({ success: true });
+                });
+            });
         } else {
             res.json({
                 success: false,
-                message: 'Duplicated staff code.'
+                message: 'Duplicated email.'
             });
         }
     });
-    
 };
 
 var updateTeacher = function(item, res) {
@@ -105,27 +120,22 @@ var updateTeacher = function(item, res) {
             objectAssign(doc,item);
             if (typeof item.password != 'undefined')
                 doc.password = passwordHash.generate(item.password);
-
             doc.save();
         } else console.log("Not found - not update");
 
         if (err)
             res.send(err);
-        getTeacher(res);
+        res.json({success:true});
     });
 }
 
 
 var pwChangeTeacher = function(item, res) {
-    console.log("param item", item);
     Teacher.findOne({
         _id: item._id
     }, function(err, doc) {
         if (doc != null) {
-
-            console.log(item.oldPassword, item.newPassword, doc.password);
-            console.log(passwordHash.generate(item.oldPassword));
-
+            console.log("Change password from %s to %s (in db is %s).", item.oldPassword, item.newPassword);
             if (passwordHash.verify(item.oldPassword, doc.password)) {
                 doc.password = passwordHash.generate(item.newPassword);
                 doc.save();
@@ -146,25 +156,24 @@ var delTeacher = function(item, res) {
     }, function(err) {
         if (err)
             res.send(err);
-        getTeacher(res);
+        res.json({success:true});
     })
 };
 
 var TeacherTypeAhead = function(res){
-    Teacher.find(function(err, acadePos) {
+    Teacher.find(function(err, teacher) {
         if (err)
             res.send(err)
-        res.json(acadePos);
+        res.json(teacher);
     })
-    .sort('-staff_code')
-    .select('staff_code first_name_th last_name_th');
+    .sort('-_id')
+    .select('_id first_name_th last_name_th');
 }
 
 module.exports = {
     'teacherLogin': teacherLogin,
     'getTeacher': getTeacher,
-    'findTeacherById': findTeacherById,
-    'findTeacherByCode': findTeacherByCode,
+    'findTeacher': findTeacher,
     'createTeacher': createTeacher,
     'updateTeacher': updateTeacher,
     'pwChangeTeacher': pwChangeTeacher,
