@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var announceSchema = mongoose.Schema({
-    _id : {type: String},
+    _id : {type: String, required: true},
     title : {type: String},
     detail: {type: String, default:''},
     annouce_date : {type: Date, default: Date.now},

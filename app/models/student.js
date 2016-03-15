@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var default_profile_picture = require('../../config/setting').default_profile_picture;
+var this_year  = new Date().getFullYear() + 543;
 
 var studentSchema = mongoose.Schema({
     "_id": { type: String, default: '' },
@@ -24,13 +25,13 @@ var studentSchema = mongoose.Schema({
         "tel": { type: String, default: '' },
         "address": { type: String, default: '' }
     },
-    "aptitudes": {
-        "subject": { type: String, default: '' },
-        "level": { type: Number, 
-        	min:[1,"Why bother mention it if it below 1?"], 
-        	max:[5,"Five stars ranking, boy."] 
-        }
-    },
+    "aptitudes": [{ 
+            "subject": { type: String, default: '' },
+            "level": { type: Number, 
+                min:[1,"Why bother mention it if it below 1?"], 
+                max:[5,"Five stars ranking, boy."] 
+            }
+    }],
     "profile_picture": { type: String, default: default_profile_picture },
     "documuents": [{
         "file_name": { type: String, default: '' },

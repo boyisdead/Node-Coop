@@ -30,10 +30,10 @@ var getAcaYrs = function(res){
     });
 };
 
-var studentLogin = function(item, secretToken, expireTime, res) {
+var studentLogin = function(res, item, secretToken, expireTime) {
     console.log("find Student with : " + item.username);
     Student.findOne({
-        "stu_code": item.username
+        "_id": item.username
     }, function(err, student) {
         if (err)
             res.send(err);
@@ -53,7 +53,7 @@ var studentLogin = function(item, secretToken, expireTime, res) {
                 var token = jwt.sign({
                     "display_name": student.name.first,
                     "access_type": "student",
-                    "access_id": student.stu_code
+                    "access_id": student._id
                 }, secretToken, {
                     expiresInMinutes: expireTime
                 });
@@ -70,7 +70,7 @@ var studentLogin = function(item, secretToken, expireTime, res) {
 
 var getStudents = function(res, criteria, project) {
     criteria = criteria || {};
-    project = project || {};
+    project = project || { name: 1, profile_picture: 1, status: 1, sex:1 };
     Student.find(criteria, project, function(err, docs){
         if(err)
             res.status(400).send({
@@ -93,24 +93,20 @@ var getStudents = function(res, criteria, project) {
     });
 };
 
-var getStudentsByAcaYr = function(res, academic_year) {
+var getStudentByAcaYr = function(res, academic_year) {
     var criteria = { "academic_year": academic_year } || {};
-    var project = { stu_code: 1, name: 1, status: 1 };
-    console.log(criteria, project);
-    getStudents(res, criteria, project);
+    var projection = { name: 1, status: 1 };
+    console.log(criteria, projection);
+    getStudents(res, criteria, projection);
 };
 
-var findStudentById = function(id, res) {
-    getStudents(res, { _id: id });
+var findStudentById = function(res, id) {
+    getStudents(res, { _id: id }, {});
 };
 
-var findStudentByCode = function(stu_code, res) {
-    getStudents(res, {  "stu_code": stu_code});
-};
-
-var studentRegistration = function (item, res) { // wait for mailing module
+var studentRegistration = function (res, item) { // wait for mailing module
     Student.findOne({
-        stu_code: item.stu_code
+        _id: item._id
     },function(err, doc){
         if(!doc){
             var newStudent = new Student();
@@ -134,9 +130,9 @@ var studentRegistration = function (item, res) { // wait for mailing module
     });
 }
 
-var createStudent = function(item, res) {
+var createStudent = function(res, item) {
     Student.findOne({
-        "stu_code": item.stu_code
+        "_id": item._id
     },function(err, doc){
         if(!doc){
             var newStudent = new Student();
@@ -148,12 +144,13 @@ var createStudent = function(item, res) {
                         success: true,
                         message: "Account has been created."
                     });
+                } else {
+                    res.json({
+                        err: err,
+                        message : "Something went wrong! try again.",
+                        success : false
+                    });
                 }
-                res.json({
-                    err: err,
-                    message : "Something went wrong! try again.",
-                    success : false
-                });
             });
         } else {
             res.status(200).send({
@@ -164,7 +161,7 @@ var createStudent = function(item, res) {
     });
 };
 
-var updateStudent = function(item, res) {
+var updateStudent = function(res, item) {
     if (typeof item.password != 'undefined')
         item.password = passwordHash.generate(item.password);
 
@@ -177,7 +174,25 @@ var updateStudent = function(item, res) {
                 message: "Something went wrong while finding Student. try again.",
                 err : err
             });
-        if(doc){
+        if(doc){            if(item.name){
+                objectAssign(doc.name,item.name);
+                delete item.name;
+            }
+            if(item.emergency_contact){
+                objectAssign(doc.emergency_contact, item.emergency_contact);
+                delete item.emergency_contact;
+            }
+            if(item.contact){
+                objectAssign(doc.contact, item.contact);
+                delete item.contact;
+            }
+            if(item.aptitudes){
+                delete item.aptitudes;
+            }
+            if(item.documuents){
+                delete item.documuents;
+            }
+
             objectAssign(doc,item);
             doc.save(function (err){
                 if(err){
@@ -201,83 +216,72 @@ var updateStudent = function(item, res) {
     });
 };
 
-var lockStuProfile = function(id, res){  // set up a lock on student status
+// var lockStuProfile = function(res, item){  // set up a lock on student status
 
-    Student.findOne({
-        _id: id
-    }, function(err, doc) {
-        console.log(doc);
-        if (doc != null) {
-            doc.status.profile = true;
-            if(typeof doc.name == 'undefined'){
-                if (typeof doc.name.f_th == 'undefined' || doc.name.f_th == '')
-                    doc.status.profile = false; 
-                if (typeof doc.name.l_th == 'undefined' || doc.name.l_th == '')
-                    doc.status.profile = false; 
-                if (typeof doc.name.f_en == 'undefined' || doc.name.f_en == '')
-                    doc.status.profile = false; 
-                if (typeof doc.name.l_en == 'undefined' || doc.name.l_en == '')
-                    doc.status.profile = false; 
-                if (typeof doc.name.t_en == 'undefined' || doc.name.t_en == '')
-                    doc.status.profile = false; 
-                if (typeof doc.name.t_th == 'undefined' || doc.name.t_th == '')
-                    doc.status.profile = false; 
-            }
-            if (typeof doc.academic_year == 'undefined'|| doc.academic_year == '')
-                doc.status.profile = false; 
-            if (typeof doc.sex == 'undefined' || doc.sex == '')
-                doc.status.profile = false; 
-            // if (typeof doc.advisor_id == 'undefined' || doc.advisor_id == '')
-            //     doc.status.profile = false; 
-            if (typeof doc.tel == 'undefined' || doc.tel == '')
-                doc.status.profile = false; 
-            if (typeof doc.contact_email == 'undefined' || doc.contact_email == '')
-                doc.status.profile = false; 
-            if (typeof doc.password == 'undefined' || doc.password == '')
-                doc.status.profile = false; 
+//     Student.findOne({
+//         _id: item
+//     }, function(err, doc) {
+//             if (doc != null) {
+//             doc.status = true;
+//             if(typeof doc.name == 'undefined'){
+//                 if (typeof doc.name.first == 'undefined' || doc.name.first == '')
+//                     doc.status = false; 
+//                 if (typeof doc.name.last == 'undefined' || doc.name.last == '')
+//                     doc.status = false; 
+//                 if (typeof doc.name.title == 'undefined' || doc.name.title == '')
+//                     doc.status = false; 
+//             }
+//             if (typeof doc.academic_year == 'undefined'|| doc.academic_year == '')
+//                 doc.status = false; 
+//             if (typeof doc.sex == 'undefined' || doc.sex == '')
+//                 doc.status = false; 
+//             // if (typeof doc.advisor_id == 'undefined' || doc.advisor_id == '')
+//             //     doc.status.profile = false; 
+//             if (typeof doc.contact.tel == 'undefined' || doc.tel == '')
+//                 doc.status = false; 
+//             if (typeof doc.contact.email == 'undefined' || doc.contact_email == '')
+//                 doc.status = false; 
+//             if (typeof doc.password == 'undefined' || doc.password == '')
+//                 doc.status = false; 
 
-            if (doc.status.profile){
-                doc.profileLock = true;
-                msg = {success:true};
-            } else {
-                doc.profileLock = false;
-                msg = {success:false,reason:"Profile's not complete.",err_code:40};
-            }
+//             if (doc.status){
+//                 msg = {success:true};
+//             } else {
+//                 msg = {success:false,reason:"Profile's not complete.",err_code:40};
+//             }
+//             doc.save();
+//         } else {
+//             console.log("Not found - status not set",id);
+//             msg = {success:false,reason:"Profile's not found.",err_code:44};
+//         }
 
-            doc.save();
-        } else {
-            console.log("Not found - status not set",id);
-            msg = {success:false,reason:"Profile's not found.",err_code:44};
-        }
+//         if (err)
+//             res.send(err);
+//         else 
+//             res.json(msg);
+//     });
+// };
 
-        if (err)
-            res.send(err);
-        else 
-            res.json(msg);
-    });
-};
+// var unLockStuProfile = function(res, item){  
 
-var unLockStuProfile = function(id, res){  
+//     Student.findOne({
+//         _id: item
+//     }, function(err, doc) {
+//         if (doc != null) {
+//             doc.status = false;
+//             msg = {success:true};
+//             doc.save();
+//         } else {
+//             msg = {success:false,reason:"Student not found",err_code:44};
+//         }
+//         if (err)
+//             res.send(err);
+//         else
+//             res.json(msg);
+//     });
+// };
 
-    Student.findOne({
-        _id: id
-    }, function(err, doc) {
-        if (doc != null) {
-            doc.profileLock = false;
-            doc.status.profile = false;
-            msg = {success:true};
-            doc.save();
-        } else {
-            msg = {success:false,reason:"Student not found",err_code:44};
-        }
-        if (err)
-            res.send(err);
-        else
-            res.json(msg);
-    });
-};
-
-var uploadPicture = function(item, res, next){
+var uploadPicture = function(res, item, next){
     var tmp_path = item.file.path;
     var time_stamp = Date.now();
         console.log(tmp_path,time_stamp);
@@ -310,7 +314,7 @@ var uploadPicture = function(item, res, next){
     fs.unlinkSync(tmp_path);
 };
 
-var pwChangeStudent = function(item, res) {
+var pwChangeStudent = function(res, item) {
     Student.findOne({
         _id: item._id
     }, function(err, doc) {
@@ -330,7 +334,7 @@ var pwChangeStudent = function(item, res) {
     });
 };
 
-var delStudent = function(item, res) {
+var delStudent = function(res, item) {
     Student.findOneAndRemove({
         _id: item
     }, function(err, doc) {
@@ -352,14 +356,14 @@ var delStudent = function(item, res) {
     })
 };
 
-var getDocuments = function (academic_year, res){
-    var criteria;
+var getDocuments = function (res, academic_year){
+    // var criteria;
 
-    if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
-        criteria = academic_year;
-    } else {
-        criteria = {$ne:""}
-    }
+    // if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
+    //     criteria = academic_year;
+    // } else {
+    //     criteria = {$ne:""}
+    // }
 
     Student.aggregate([
         {$project:{_id:0,documents:1}}, 
@@ -380,17 +384,15 @@ var getDocuments = function (academic_year, res){
 //db.students.aggregate([{$unwind:"$documents"},{$match:{"documents":{$exists:true}}},{$project:{documents:1}}]).pretty()
 
 
-var getDocumentsWithOwner = function(academic_year, res) {
-    var criteria;
+var getDocumentsWithOwner = function(res, academic_year) {
+    academic_year = academic_year || {"$ne":""};
 
-    if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
-        criteria = academic_year;
-    } else {
-        criteria = {$ne:""}
+    if (academic_year == "all"){
+        academic_year = {$ne:""}
     }
 
     Student.find({
-        "academic_year": criteria,
+        "academic_year": academic_year,
         "documents":{$exists:true}
     },{documents:1,name:1},function(err,docs){
         if (err)
@@ -402,13 +404,12 @@ var getDocumentsWithOwner = function(academic_year, res) {
 module.exports = {
 	'studentLogin': studentLogin,
 	'getStudents': getStudents,
-	'getStudentsByAcaYr': getStudentsByAcaYr,
+	'getStudentByAcaYr': getStudentByAcaYr,
     'findStudentById': findStudentById,
-    'findStudentByCode': findStudentByCode,
 	'createStudent': createStudent,
 	'updateStudent': updateStudent,
-	'lockStuProfile': lockStuProfile,
-	'unLockStuProfile': unLockStuProfile,
+	// 'lockStuProfile': lockStuProfile,
+	// 'unLockStuProfile': unLockStuProfile,
 	'uploadPicture': uploadPicture,
 	'pwChangeStudent': pwChangeStudent,
 	'delStudent': delStudent,

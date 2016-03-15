@@ -18,7 +18,7 @@ var autoPrefixId = function(prefix, max, numLong) {
     return new_id;
 };
 
-var teacherLogin = function(item, secretToken,expireTime, res) {
+var teacherLogin = function(res, item, secretToken,expireTime) {
     console.log("find Teacher with : " + item.username);
     Teacher.findOne({
         "_id": item.username
@@ -81,11 +81,11 @@ var getTeacher = function(res, criteria, projection) {
     });
 };
 
-var findTeacher = function(item, res) {
+var findTeacherById = function(res, item) {
     getTeacher(res, { _id: item });
 };
 
-var createTeacher = function(item, res) {
+var createTeacher = function(res, item) {
     Teacher.findOne({
         email: item.email
     },function(err,doc){
@@ -112,7 +112,7 @@ var createTeacher = function(item, res) {
     });
 };
 
-var updateTeacher = function(item, res) {
+var updateTeacher = function(res, item) {
     Teacher.findOne({
         _id: item._id
     }, function(err, doc) {
@@ -130,7 +130,7 @@ var updateTeacher = function(item, res) {
 }
 
 
-var pwChangeTeacher = function(item, res) {
+var pwChangeTeacher = function(res, item) {
     Teacher.findOne({
         _id: item._id
     }, function(err, doc) {
@@ -150,7 +150,7 @@ var pwChangeTeacher = function(item, res) {
     });
 }
 
-var delTeacher = function(item, res) {
+var delTeacher = function(res, item) {
     Teacher.remove({
         _id: item
     }, function(err) {
@@ -173,7 +173,7 @@ var TeacherTypeAhead = function(res){
 module.exports = {
     'teacherLogin': teacherLogin,
     'getTeacher': getTeacher,
-    'findTeacher': findTeacher,
+    'findTeacherById': findTeacherById,
     'createTeacher': createTeacher,
     'updateTeacher': updateTeacher,
     'pwChangeTeacher': pwChangeTeacher,

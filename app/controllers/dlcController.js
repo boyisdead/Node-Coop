@@ -30,7 +30,11 @@ var getDlc = function(res, criteria) {
     });
 };
 
-var createDlc = function(item, res, next) {
+var findDlc = function (res, item) {
+    getDlc(res, {_id:item});
+}
+
+var createDlc = function(res, item, next) {
     var tmp_path = item.file.path;
     var destination_folder = '/uploads/dlcs/';
     var time_stamp = Date.now();
@@ -62,7 +66,7 @@ var createDlc = function(item, res, next) {
     });
 }
 
-var delDlc = function(item, res) {
+var delDlc = function(res, item) {
     var msg;
     Dlc.findOneAndRemove({
         _id: item
@@ -97,6 +101,7 @@ var delDlc = function(item, res) {
 
 module.exports = {
     'getDlc': getDlc,
+    'findDlc': findDlc,
     'createDlc': createDlc,
     'delDlc': delDlc
 }

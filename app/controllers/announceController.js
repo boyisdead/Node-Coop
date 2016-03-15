@@ -30,9 +30,8 @@ var getAnnounce = function(res, criteria){
     });
 };
 
-var findAnnounceById = function(code, res) {
-    var criteria = {"_id": code};
-    getAnnounce(res, criteria);    
+var findAnnounceById = function(res, item) {
+    getAnnounce(res, {"_id": item});    
 };
 
 // Create
@@ -62,7 +61,7 @@ var updateAnnounce = function(res, item) {
     }, function(err, doc) {
         if (doc != null) {
             objectAssign(doc, item);
-            doc.annouce_date = Date.now();
+            doc.annouce_date = Date.now;
             doc.save();
         } else console.log("Not found - not update");
 
