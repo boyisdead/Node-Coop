@@ -28,6 +28,28 @@ var findApplicationById = function(res, item) {
     getApplication(res, {"_id": item});    
 };
 
+var getStudentApplyStatus = function(res, item){
+    Application.find({student:item,apply_date:{$exists:true}},function(err, application) {
+        if (err)
+            res.send(err)
+        if(application)
+            res.status(200).send({success:true,status:true}); 
+        else
+            res.status(200).send({success:true,status:false}); 
+    });
+}
+
+var getStudentAcceptStatus = function(res, item){
+    Application.find({student:item,response:true,reply:{$exists:true}},function(err, application) {
+        if (err)
+            res.send(err)
+        if(application)
+            res.status(200).send({success:true,status:true}); 
+        else
+            res.status(200).send({success:true,status:false}); 
+    });
+}
+
 // Create
 
 var createApplication = function(res, item) {
@@ -84,6 +106,8 @@ module.exports = {
 	'getApplicationByCompany': getApplicationByCompany,
 	'getApplicationUnreply': getApplicationUnreply,
     'findApplicationById': findApplicationById,
+    'getStudentApplyStatus': getStudentApplyStatus,
+    'getStudentAcceptStatus': getStudentAcceptStatus,
 	'createApplication': createApplication,
 	'updateApplication': updateApplication,
 	'delApplication': delApplication,

@@ -34,7 +34,7 @@ var findDlc = function (res, item) {
     getDlc(res, {_id:item});
 }
 
-var createDlc = function(res, item, next) {
+var createDlc = function(res, item) {
     var tmp_path = item.file.path;
     var destination_folder = '/uploads/dlcs/';
     var time_stamp = Date.now();
@@ -42,8 +42,9 @@ var createDlc = function(res, item, next) {
 
     Counter.findOneAndUpdate({ _id: "dlcs" }, { $inc: { "seq": 1 } }, function (err, doc) {
         if (err) return res.send(err); 
-        var new_file_name = item.body.title.replace('/\s+/g', '-').toLowerCase() + getFileExtension(item.file.originalname);
+        var new_file_name = item.body.title.replace(/ /g,"_").toLowerCase() + getFileExtension(item.file.originalname);
         var target_path = destination_folder + new_file_name;
+        console.log("new file name ",new_file_name);
         var src = fs.createReadStream(tmp_path);
         var dest = fs.createWriteStream('./public' + target_path);
         objectAssign(newDlc, item.body);

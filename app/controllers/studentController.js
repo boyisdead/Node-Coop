@@ -1,8 +1,10 @@
 var Student = require('./../models/student');
+var Teacher = require('./../models/teacher');
 var passwordHash = require('password-hash');
 var jwt = require('jsonwebtoken');
 var fs = require("fs");
 var objectAssign = require('object-assign');
+var ObjectId = require('mongoose').Types.ObjectId; 
 
 var getFileExtension = function(filename){
     return '.' + filename.substr(filename.lastIndexOf('.') + 1);
@@ -68,9 +70,10 @@ var studentLogin = function(res, item, secretToken, expireTime) {
     })
 }
 
-var getStudents = function(res, criteria, project) {
+var getStudents = function(res, criteria, project, option) {
     criteria = criteria || {};
     project = project || { name: 1, profile_picture: 1, status: 1, sex:1 };
+    option = option || {};
     Student.find(criteria, project, function(err, docs){
         if(err)
             res.status(400).send({
@@ -102,6 +105,47 @@ var getStudentByAcaYr = function(res, academic_year) {
 
 var findStudentById = function(res, id) {
     getStudents(res, { _id: id }, {});
+};
+
+var getMyAdviser = function(res, id) {
+    console.log("Get adviser of %s", id);
+    Student.find({_id:id}, { adviser_id:1 }, function(err, docs){
+        if(err)
+            res.status(400).send({
+                success: false,
+                message: "Something went wrong while retrieving. try again.",
+                err : err,
+            });
+        if(!docs || typeof docs[0] == "undefined") {
+            res.status(204).send({
+                success : true,
+                message : "No Student was found."
+            });
+        } else {
+            console.log("Adviser of %s is ",id);
+            console.log(docs[0].adviser_id);
+            Teacher.find({_id:docs[0].adviser_id}, function (err, doc){
+                if(err)
+                    res.status(400).send({
+                        success: false,
+                        message: "Something went wrong while retrieving. try again.",
+                        err : err,
+                    });
+                if(!doc || typeof doc[0] == "undefined") {
+                    res.status(204).send({
+                        success : true,
+                        message : "No Teacher was found."
+                    });
+                } else {
+                    res.status(200).send({
+                        data : doc,
+                        success : true,
+                        message : "Here you go."
+                    });
+                }
+            });
+        }
+    });
 };
 
 var studentRegistration = function (res, item) { // wait for mailing module
@@ -235,7 +279,7 @@ var updateStudent = function(res, item) {
 //                 doc.status = false; 
 //             if (typeof doc.sex == 'undefined' || doc.sex == '')
 //                 doc.status = false; 
-//             // if (typeof doc.advisor_id == 'undefined' || doc.advisor_id == '')
+//             // if (typeof doc.adviser_id == 'undefined' || doc.adviser_id == '')
 //             //     doc.status.profile = false; 
 //             if (typeof doc.contact.tel == 'undefined' || doc.tel == '')
 //                 doc.status = false; 
@@ -356,7 +400,7 @@ var delStudent = function(res, item) {
     })
 };
 
-var getDocuments = function (res, academic_year){
+var getAttachments = function (res, academic_year){
     // var criteria;
 
     // if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
@@ -366,25 +410,111 @@ var getDocuments = function (res, academic_year){
     // }
 
     Student.aggregate([
-        {$project:{_id:0,documents:1}}, 
-        {$match:{"documents":{$exists:true}}}
+        {$project:{_id:0,attachments:1}}, 
+        {$match:{"attachments":{$exists:true}}}
     ])
-    .unwind("documents")
+    .unwind("attachments")
     .exec(function(err,docs){
         if(err)
             res.send(err);
         res.json(docs);
     });
 }
-//   My new Documents Query
-//   Model
-// .aggregate({ $match: { age: { $gte: 21 }}})
-// .unwind('tags')
-// .exec(callback)
-//db.students.aggregate([{$unwind:"$documents"},{$match:{"documents":{$exists:true}}},{$project:{documents:1}}]).pretty()
+
+var getStudentAttachments = function (res, item){
+    if(!item){
+        res.status(401).send({success:false,message:"No student id in token."});
+    } else {
+        Student.findOne({_id:item},{attachments:1},function(err,docs){
+            if(err)
+                res.status(200).send({
+                    success: false,
+                    message: "Something went wrong while removing. try again.",
+                    err :err
+                });
+            res.status(200).send({
+                success: true,
+                data: docs.attachments,
+                message: "Here you go."
+            });
+        });
+    }
+}
+
+var findAttachmentById = function (res, item){
+    var newItem = new ObjectId(item);
+    Student.findOne({"attachments._id": newItem},{attachments:1},function(err, doc){
+        if(err)
+            res.status(200).send({
+                success: false,
+                message: "Something went wrong while removing. try again.",
+                err :err
+            });
+        else
+            res.status(200).send({
+                success: true,
+                data: doc.attachments[0],
+                message: "Here you go."
+            });
+    });
+}
+
+var createAttachment = function (res, file, attachment, student){
+
+    console.log("old file: " , attachment, file, student);
+    var tmp_path = file.path;
+    var destination_folder = '/uploads/attachments/';
+    var new_file_name = attachment.file_name.replace(/ /g,"_").toLowerCase() + getFileExtension(file.originalname);
+    var target_path = destination_folder + new_file_name;
+    var src = fs.createReadStream(tmp_path);
+    var dest = fs.createWriteStream('./public' + target_path);
+
+    attachment.file_path = '.'+target_path;
+
+    console.log("new file: " , attachment);
+    src.pipe(dest);
+    src.on('end', function() {
+        Student.findOneAndUpdate({"_id": student},{ $addToSet:{"attachments":attachment}}, function(err, doc){
+            //console.log("doc",doc);
+            if(err)
+                res.status(200).send({
+                    success: false,
+                    message: "Something went wrong while removing. try again.",
+                    err :err
+                });
+            else 
+                res.status(200).send({
+                    success: true,
+                    message: "Attachment created."
+                });
+        });
+    });
+    src.on('error', function(err) {
+        res.send(err);
+    });
+    fs.unlinkSync(tmp_path);
 
 
-var getDocumentsWithOwner = function(res, academic_year) {
+}
+
+var delAttachment = function (res, item){
+    var newItem = new ObjectId(item.att_id);
+    Student.findOneAndUpdate({"_id": item.stu_id},{$pull:{"attachments":{"_id":newItem}}}, function(err, doc){
+        if(err)
+            res.status(200).send({
+                success: false,
+                message: "Something went wrong while removing. try again.",
+                err :err
+            });
+        else
+            res.status(200).send({
+                success: true,
+                message: "Attachment removed."
+            });
+    });
+}
+
+var getAttachmentsWithOwner = function(res, academic_year) {
     academic_year = academic_year || {"$ne":""};
 
     if (academic_year == "all"){
@@ -393,8 +523,8 @@ var getDocumentsWithOwner = function(res, academic_year) {
 
     Student.find({
         "academic_year": academic_year,
-        "documents":{$exists:true}
-    },{documents:1,name:1},function(err,docs){
+        "attachments":{$exists:true}
+    },{attachments:1,name:1},function(err,docs){
         if (err)
             res.send(err)
         res.json(docs)
@@ -406,6 +536,7 @@ module.exports = {
 	'getStudents': getStudents,
 	'getStudentByAcaYr': getStudentByAcaYr,
     'findStudentById': findStudentById,
+    'getMyAdviser': getMyAdviser,
 	'createStudent': createStudent,
 	'updateStudent': updateStudent,
 	// 'lockStuProfile': lockStuProfile,
@@ -414,8 +545,12 @@ module.exports = {
 	'pwChangeStudent': pwChangeStudent,
 	'delStudent': delStudent,
 	'getAcaYrs': getAcaYrs,
-    'getDocuments': getDocuments,
-    'getDocumentsWithOwner': getDocumentsWithOwner,
+    'getAttachments': getAttachments,
+    'getStudentAttachments': getStudentAttachments,
+    'getAttachmentsWithOwner': getAttachmentsWithOwner,
+    'findAttachmentById': findAttachmentById,
+    'createAttachment': createAttachment,
+    'delAttachment': delAttachment,
     'studentRegistration': studentRegistration
 
 }

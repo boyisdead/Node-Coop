@@ -8,6 +8,6 @@ var documentSchema = mongoose.Schema({
         "status": { type: Boolean, default: false },
         "reviewed": { type: Boolean, default: false },
         "description": { type: String, default: '' }
-    });
+    },{ _id: false });
 
 module.exports = mongoose.model('Document', documentSchema);

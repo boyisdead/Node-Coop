@@ -9,7 +9,7 @@ var studentSchema = mongoose.Schema({
         "last": { type: String, default: '' },
         "title": { type: String, default: '' }
     },
-    "advisor_id": { type: String, default: '' },
+    "adviser_id": { type: String, default: '' },
     "sex": { type: String, default: '', enum : ['M','F'] },
     "password": { type: String, default: '' },
     "academic_year": { type: String, default: '' },
@@ -33,15 +33,31 @@ var studentSchema = mongoose.Schema({
             }
     }],
     "profile_picture": { type: String, default: default_profile_picture },
-    "documuents": [{
-        "file_name": { type: String, default: '' },
-        "file_location": { type: String, default: '' },
-        "file_type": { type: String, default: '' },
+    "attachments": [{
+        "file_name": { type: String, default: "Noname" },
+        "file_path": { type: String, default: "Missing" },
+        "file_type": { type: String, default: "Other"},
         "comment": { type: String, default: '' },
         "status": { type: Boolean, default: false },
         "reviewed": { type: Boolean, default: false },
         "description": { type: String, default: '' }
-    }]
+    }],
+    "job" : {
+        "status": {type : String, enum: ["active", "inactive", "suspend", "finished"], default:"inactive"},
+        "company" : {type : String, default: '' },
+        "work_site" : {type : String, default: '' },
+        "position" : {type : String, default: '' }, 
+        "report_date" : {type : Date }, 
+        "launch_date" : {type : Date },
+        "finish_date" : {type : Date }, 
+        "welfares" : [{type : String, default: '' }],
+        "payment": {
+            "method" : {type : String, default: ''},
+            "period" : {type : String, default: ''}, 
+            "amount_per_period" : {type : String, default: ''} 
+        },
+        "note" : {type : String, default: '' }
+    }
 });
 
 module.exports = mongoose.model('Student', studentSchema);

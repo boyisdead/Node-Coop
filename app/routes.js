@@ -68,7 +68,7 @@ module.exports = function(app) {
         OtherController.acadePosTypeAhead(res);
     });
 
-    app.get('/typehead/advisor', function(req, res) {
+    app.get('/typehead/adviser', function(req, res) {
         TeacherController.TeacherTypeAhead(res);
     });
 
@@ -252,7 +252,60 @@ module.exports = function(app) {
     //  \______/   \__|    \______/ \_______/ \________|\__|  \__|   \__|  
     //=================================================================================
 
+    // Get the token owner's adviser
+    app.get('/myadviser', function (req, res) {
+        StudentController.getMyAdviser(res, req.decoded.access_id);
+    });
 
+    // Get the token owner's job
+    app.get('/myjob', function (req, res) {
+        StudentController.getStudents(res, {_id: req.decoded.access_id}, {job:1});
+    });
+
+    // Get the token owner's status
+    app.get('/mystatus', function (req, res) {
+        StudentController.getStudents(res, {_id: req.decoded.access_id}, {status:1});
+    });
+
+    // Get the token owner's apply status
+    app.get('/mystatus/apply', function (req, res) {
+        ApplicationController.getStudentApplyStatus(res, req.decoded.access_id);
+    });
+
+    // Get the token owner's accept status
+    app.get('/mystatus/accept', function (req, res) {
+        ApplicationController.getStudentAcceptStatus(res, req.decoded.access_id);
+    });
+
+    // Get the token owner's attachments
+    app.get('/myattach', function (req, res) {
+        StudentController.getStudentAttachments(res, {_id: req.decoded.access_id});
+    });
+
+    // Get the token owner's a specific attachment
+    app.get('/myattach/:id', function (req, res) {
+        StudentController.findAttachmentById(res, req.params.id);
+    });
+
+    // Creat the token owner's a attachment
+    app.post('/myattach', upload.single('file'), function (req, res) {
+        StudentController.createAttachment(res, req.file, req.body, req.decoded.access_id);
+    });
+
+    // Edit the token owner's attachment
+    app.put('/myattach', function (req, res) {
+        res.status(200).send({success:true});
+    });
+
+    // Delete the token owner's a specific attachment
+    app.delete('/myattach/:id', function (req, res) {
+        StudentController.delAttachment(res, { stu_id:req.decoded.access_id,att_id:req.params.id});
+    });
+
+    // Set the token owner's company preferrence
+    app.put('/myprefer', function (req, res) {
+        res.status(200).send({success:true});
+    });
 
     //================================================================================
     // $$$$$$$$\ $$$$$$$$\  $$$$$$\   $$$$$$\  $$\   $$\ $$$$$$$$\ $$$$$$$\  
@@ -340,15 +393,15 @@ module.exports = function(app) {
     });
 
     // Get all attachment of owners who are in specific academic year
-    app.get('/document/acaYrs/:acaYrs', function(req, res) {
+    app.get('/attachment/acaYrs/:acaYrs', function(req, res) {
         console.log("get Docs of " + req.params.acaYrs);
-        StudentController.getDocuments(res, req.params.acaYrs);
+        StudentController.getAttachments(res, req.params.acaYrs);
     });
 
     // Get all attachments of all students in specific academic year
-    app.get('/student/document/acaYrs/:acaYrs', function(req, res) {
+    app.get('/student/attachment/acaYrs/:acaYrs', function(req, res) {
         console.log("get Docs and Owner of " + req.params.acaYrs);
-        StudentController.getDocumentsWithOwner(res, req.params.acaYrs);
+        StudentController.getAttachmentsWithOwner(res, req.params.acaYrs);
     });
 
 
@@ -520,7 +573,7 @@ module.exports = function(app) {
         console.log(req.file);
         var title = req.body.title || "noname";
         console.log("Create " + title + " dlc");
-        DlcController.createDlc(res, req, next);
+        DlcController.createDlc(res, req);
     });
 
     // Delete a DLC
