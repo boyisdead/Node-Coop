@@ -1,14 +1,31 @@
 var Student = require('./../models/student');
 var Teacher = require('./../models/teacher');
+var Counter = require('./../models/counter');
 var passwordHash = require('password-hash');
 var jwt = require('jsonwebtoken');
 var fs = require("fs");
 var objectAssign = require('object-assign');
 var ObjectId = require('mongoose').Types.ObjectId; 
 
+var default_profile = './uploads/pictures/profile/default.png'
+
 var getFileExtension = function(filename){
     return '.' + filename.substr(filename.lastIndexOf('.') + 1);
 }
+
+var numToLengthString = function(num, length) {
+    var newNum = "" + num.toString();
+    while (newNum.length < length) {
+        newNum = "0" + newNum;
+    }
+    return newNum;
+}
+
+var autoPrefixId = function(prefix, max, numLong) {
+    var new_id = prefix.concat(numToLengthString(max, numLong));
+    console.log(new_id);
+    return new_id;
+};
 
 var getAcaYrs = function(res){
     var queryGroup = Student.distinct("academic_year");
@@ -86,6 +103,12 @@ var getStudents = function(res, criteria, project, option) {
                 success : true,
                 message : "No Student was found."
             });
+        } else if (docs.length<=1) {
+             res.status(200).send({
+                data : docs[0],
+                success : true,
+                message : "Here you go."
+            });
         } else {
             res.status(200).send({
                 data : docs,
@@ -109,22 +132,22 @@ var findStudentById = function(res, id) {
 
 var getMyAdviser = function(res, id) {
     console.log("Get adviser of %s", id);
-    Student.find({_id:id}, { adviser_id:1 }, function(err, docs){
+    Student.findOne({_id:id}, { adviser_id:1 }, function(err, student){
         if(err)
             res.status(400).send({
                 success: false,
                 message: "Something went wrong while retrieving. try again.",
                 err : err,
             });
-        if(!docs || typeof docs[0] == "undefined") {
+        if(!student || typeof student == "undefined") {
             res.status(204).send({
                 success : true,
                 message : "No Student was found."
             });
         } else {
             console.log("Adviser of %s is ",id);
-            console.log(docs[0].adviser_id);
-            Teacher.find({_id:docs[0].adviser_id}, function (err, doc){
+            console.log(student.adviser_id);
+            Teacher.find({_id:student.adviser_id}, function (err, doc){
                 if(err)
                     res.status(400).send({
                         success: false,
@@ -135,6 +158,12 @@ var getMyAdviser = function(res, id) {
                     res.status(204).send({
                         success : true,
                         message : "No Teacher was found."
+                    });
+                } else if(doc.length<=1){
+                    res.status(200).send({
+                        data : doc[0],
+                        success : true,
+                        message : "Here you go."
                     });
                 } else {
                     res.status(200).send({
@@ -379,25 +408,51 @@ var pwChangeStudent = function(res, item) {
 };
 
 var delStudent = function(res, item) {
-    Student.findOneAndRemove({
-        _id: item
-    }, function(err, doc) {
-        if (!doc)
-            res.status(404).send({
-                success: false,
-                message: "Student does not exist."
-            });
+    Student.findOne({_id: item}, function (err, doc){
         if(err)
+            res.status(500).send({
+                success: false,
+                message: "Something went wrong while retrieving. try again."
+            })
+        if(!doc)
             res.status(200).send({
                 success: false,
-                message: "Something went wrong while removing. try again.",
-                err :err
+                message: "File not exist."
+            })
+        else {
+            console.log("doc in findOne : ",doc);
+            if (doc.profile_picture!= default_profile) {
+                var profile_path = doc.profile_picture.replace('./','./public/');
+                console.log("doc loc:", profile_path);
+                fs.stat(profile_path, function(err, stats) {
+                    if(typeof stats != 'undefined'){
+                        console.log("File : ", stats);
+                        console.log("File : ", stats.isFile());
+                        if(stats.isFile())
+                            fs.unlink(profile_path),function (err) {
+                                if (err) throw err;
+                            }
+                        console.log("Deleted - " + profile_path);
+                    } else {
+                        console.log("File not exist - "+ profile_path);
+                    }
+                });
+            }
+            Student.findOneAndRemove({"_id": item}, function(err, doc){
+                if(err)
+                    res.status(200).send({
+                        success: false,
+                        message: "Something went wrong while removing. try again.",
+                        err :err
+                    });
+                else
+                    res.status(200).send({
+                        success: true,
+                        message: "Student removed."
+                    });
             });
-        res.status(200).send({
-            success: true,
-            message: "Student removed."
-        });
-    })
+        }
+    })     
 };
 
 var getAttachments = function (res, academic_year){
@@ -464,54 +519,88 @@ var createAttachment = function (res, file, attachment, student){
     console.log("old file: " , attachment, file, student);
     var tmp_path = file.path;
     var destination_folder = '/uploads/attachments/';
-    var new_file_name = attachment.file_name.replace(/ /g,"_").toLowerCase() + getFileExtension(file.originalname);
-    var target_path = destination_folder + new_file_name;
-    var src = fs.createReadStream(tmp_path);
-    var dest = fs.createWriteStream('./public' + target_path);
 
-    attachment.file_path = '.'+target_path;
+    Counter.findOneAndUpdate({_id:"attachments"},{$inc:{seq:1}}, function(err, cnt){
+        var new_file_name = autoPrefixId("AT", cnt.seq, 6) + "_" + attachment.file_name.replace(/ /g,"_").toLowerCase() + getFileExtension(file.originalname);
+        var target_path = destination_folder + new_file_name;
+        var src = fs.createReadStream(tmp_path);
+        var dest = fs.createWriteStream('./public' + target_path);
 
-    console.log("new file: " , attachment);
-    src.pipe(dest);
-    src.on('end', function() {
-        Student.findOneAndUpdate({"_id": student},{ $addToSet:{"attachments":attachment}}, function(err, doc){
-            //console.log("doc",doc);
-            if(err)
-                res.status(200).send({
-                    success: false,
-                    message: "Something went wrong while removing. try again.",
-                    err :err
-                });
-            else 
-                res.status(200).send({
-                    success: true,
-                    message: "Attachment created."
-                });
+        attachment.file_path = '.'+target_path;
+
+        console.log("new file name: " , new_file_name);
+        console.log("new file: " , attachment);
+        src.pipe(dest);
+        src.on('end', function() {
+            Student.findOneAndUpdate({"_id": student},{ $addToSet:{"attachments":attachment}}, function(err, doc){
+                //console.log("doc",doc);
+                if(err)
+                    res.status(200).send({
+                        success: false,
+                        message: "Something went wrong while removing. try again.",
+                        err :err
+                    });
+                else 
+                    res.status(200).send({
+                        success: true,
+                        message: "Attachment created."
+                    });
+            });
         });
-    });
-    src.on('error', function(err) {
-        res.send(err);
-    });
-    fs.unlinkSync(tmp_path);
-
-
+        src.on('error', function(err) {
+            res.send(err);
+        });
+        fs.unlinkSync(tmp_path);
+    })
 }
 
 var delAttachment = function (res, item){
     var newItem = new ObjectId(item.att_id);
-    Student.findOneAndUpdate({"_id": item.stu_id},{$pull:{"attachments":{"_id":newItem}}}, function(err, doc){
+
+    Student.findOne({"_id":item.stu_id, "attachments._id":newItem}, {_id:0,"attachments.$":1}, function (err, doc){
         if(err)
+            res.status(500).send({
+                success: false,
+                message: "Something went wrong while retrieving. try again."
+            })
+        if(!doc)
             res.status(200).send({
                 success: false,
-                message: "Something went wrong while removing. try again.",
-                err :err
+                message: "File not exist."
+            })
+        else {
+            console.log("doc in findOne : ",doc);
+            var att_path = doc.attachments[0].file_path.replace('./','./public/');
+            console.log("doc loc:",att_path);
+            fs.stat(att_path, function(err, stats) {
+                if(typeof stats != 'undefined'){
+                    console.log("File : ", stats);
+                    console.log("File : ", stats.isFile());
+                    if(stats.isFile())
+                        fs.unlink(att_path),function (err) {
+                            if (err) throw err;
+                        }
+                    console.log("Deleted - " + att_path);
+                } else {
+                    console.log("File not exist - "+ att_path);
+                }
             });
-        else
-            res.status(200).send({
-                success: true,
-                message: "Attachment removed."
+            Student.findOneAndUpdate({"_id": item.stu_id},{$pull:{"attachments":{"_id":item.att_id}}}, function(err, doc){
+                console.log(doc.attachments);
+                if(err)
+                    res.status(200).send({
+                        success: false,
+                        message: "Something went wrong while removing. try again.",
+                        err :err
+                    });
+                else
+                    res.status(200).send({
+                        success: true,
+                        message: "Attachment removed."
+                    });
             });
-    });
+        }
+    })    
 }
 
 var getAttachmentsWithOwner = function(res, academic_year) {

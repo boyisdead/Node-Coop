@@ -120,8 +120,8 @@ module.exports = function(app) {
     });
 
     app.get('/dlc/:id', function(req, res) {
-        console.log("Get all DLC");
-        DlcController.findDlcById(res);
+        console.log("Get DLC by id");
+        DlcController.findDlcById(res, req.params.id);
     });
 
     //===================================================================================
@@ -259,7 +259,7 @@ module.exports = function(app) {
 
     // Get the token owner's job
     app.get('/myjob', function (req, res) {
-        StudentController.getStudents(res, {_id: req.decoded.access_id}, {job:1});
+        StudentController.getStudents(res, {_id: req.decoded.access_id}, { job:1 });
     });
 
     // Get the token owner's status
@@ -289,6 +289,7 @@ module.exports = function(app) {
 
     // Creat the token owner's a attachment
     app.post('/myattach', upload.single('file'), function (req, res) {
+        console.log("create my attach");
         StudentController.createAttachment(res, req.file, req.body, req.decoded.access_id);
     });
 
@@ -485,8 +486,6 @@ module.exports = function(app) {
         console.log("Remove " + comp_id + " company");
         CompanyController.delCompany(res, comp_id);
     });    
-
-
 
     //================================ Application ====================================
     

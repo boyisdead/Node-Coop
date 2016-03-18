@@ -33,9 +33,9 @@ var getStudentApplyStatus = function(res, item){
         if (err)
             res.send(err)
         if(application)
-            res.status(200).send({success:true,status:true}); 
+            res.status(200).send({success:true,data:{status:true,_id:item}}); 
         else
-            res.status(200).send({success:true,status:false}); 
+            res.status(200).send({success:true,data:{status:false,_id:item}}); 
     });
 }
 
@@ -44,9 +44,9 @@ var getStudentAcceptStatus = function(res, item){
         if (err)
             res.send(err)
         if(application)
-            res.status(200).send({success:true,status:true}); 
+            res.status(200).send({success:true,data:{status:true,_id:item}}); 
         else
-            res.status(200).send({success:true,status:false}); 
+            res.status(200).send({success:true,data:{status:false,_id:item}}); 
     });
 }
 

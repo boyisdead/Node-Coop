@@ -15,6 +15,20 @@ var multiparty = require('multiparty');
 var port  	 = process.env.PORT || 8080; 				// set the port
 var methodOverride = require('method-override');
 
+var mkdirp = require('mkdirp');
+mkdirp('./public/uploads/attachments', function(err) {
+	if (err) console.error(err)
+    else console.log('Attachment directory created!')
+});
+mkdirp('./public/uploads/dlcs', function(err) {
+	if (err) console.error(err)
+    else console.log('Downloadable Content directory created!')
+});
+mkdirp('./public/uploads/pictures/profile', function(err) {
+	if (err) console.error(err)
+    else console.log('Profile Picture directory created!')
+});
+
 // configuration ===============================================================
 mongoose.connect(database.url); 	// connect to mongoDB 
 app.set('secretToken',authToken.secret);
@@ -30,18 +44,8 @@ app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-Method-Override header in the request
 
-
 // routes ======================================================================
 require('./app/routes.js')(app);
-
-// =============================================================================
-// app.post('/api/documents/upload',[multer({dest:'./uploads/documents/'}), function(req, res) {
-//     console.log(req.body);
-//     console.log(req.files);
-// }]);
-
-
-
 
 // listen (start app with node server.js) ======================================
 app.listen(port);
