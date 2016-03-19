@@ -12,7 +12,7 @@ var studentSchema = mongoose.Schema({
     "adviser_id": { type: String, default: '' },
     "sex": { type: String, default: '', enum : ['M','F'] },
     "password": { type: String, default: '' },
-    "academic_year": { type: String, default: '' },
+    "academic_year": { type: String, default: this_year },
     "status": {type: Boolean, default: false},
     "contact": {
         "tel": { type: String, default: '' },

@@ -300,7 +300,7 @@ module.exports = function(app) {
 
     // Delete the token owner's a specific attachment
     app.delete('/myattach/:id', function (req, res) {
-        StudentController.delAttachment(res, { stu_id:req.decoded.access_id,att_id:req.params.id});
+        StudentController.delAttachment(res, req.params.id, req.decoded.access_id);
     });
 
     // Set the token owner's company preferrence
@@ -394,6 +394,11 @@ module.exports = function(app) {
     });
 
     // Get all attachment of owners who are in specific academic year
+    app.get('/attachment/', function(req, res) {
+        console.log("get all Attachment");
+        StudentController.getAttachments(res);
+    });
+    // Get all attachment of owners who are in specific academic year
     app.get('/attachment/acaYrs/:acaYrs', function(req, res) {
         console.log("get Docs of " + req.params.acaYrs);
         StudentController.getAttachments(res, req.params.acaYrs);
@@ -405,6 +410,20 @@ module.exports = function(app) {
         StudentController.getAttachmentsWithOwner(res, req.params.acaYrs);
     });
 
+    app.post('/attachment', upload.single('file'), function (req, res) {
+        console.log("create an attach");
+        StudentController.createAttachment(res, req.file, req.body, req.body.owner);
+    });
+
+    app.put('/attachment', function (req, res) {
+        console.log("create an attach");
+        StudentController.updateAttachment(res, req.body);
+    });
+
+    // Delete the token owner's a specific attachment
+    app.delete('/attachment/:id', function (req, res) {
+        StudentController.delAttachment(res, req.params.id);
+    });
 
     // app.put('/student/unlock_profile', function(req, res) {
     //     StudentController.unLockStuProfile(res, req.body.id);

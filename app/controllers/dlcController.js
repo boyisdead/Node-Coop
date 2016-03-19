@@ -128,7 +128,7 @@ var delDlc = function(res, item) {
                     });
             });
         }
-    })    
+    })
 }
 
 module.exports = {

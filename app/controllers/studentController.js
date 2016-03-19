@@ -7,7 +7,7 @@ var fs = require("fs");
 var objectAssign = require('object-assign');
 var ObjectId = require('mongoose').Types.ObjectId; 
 
-var default_profile = './uploads/pictures/profile/default.png'
+var default_profile = './uploads/pictures/profile/default.png';
 
 var getFileExtension = function(filename){
     return '.' + filename.substr(filename.lastIndexOf('.') + 1);
@@ -26,6 +26,21 @@ var autoPrefixId = function(prefix, max, numLong) {
     console.log(new_id);
     return new_id;
 };
+
+function deleteFiles(files, callback){
+    var i = files.length;
+    files.forEach(function(filepath){
+        fs.unlink(filepath, function(err) {
+            i--;
+            if (err) {
+                callback(err);
+                return;
+            } else if (i <= 0) {
+                callback(null);
+            }
+        });
+    });
+}
 
 var getAcaYrs = function(res){
     var queryGroup = Student.distinct("academic_year");
@@ -247,7 +262,8 @@ var updateStudent = function(res, item) {
                 message: "Something went wrong while finding Student. try again.",
                 err : err
             });
-        if(doc){            if(item.name){
+        if(doc){            
+            if(item.name){
                 objectAssign(doc.name,item.name);
                 delete item.name;
             }
@@ -266,7 +282,7 @@ var updateStudent = function(res, item) {
                 delete item.documuents;
             }
 
-            objectAssign(doc,item);
+            objectAssign(doc, item);
             doc.save(function (err){
                 if(err){
                     res.status(200).send({
@@ -438,6 +454,23 @@ var delStudent = function(res, item) {
                     }
                 });
             }
+
+            var remainFiles = [];
+            while(doc.attachments.length>0){
+                var nextFile = doc.attachments.pop().file_path;
+                console.log(nextFile);
+                remainFiles.push(nextFile.replace('./','./public/'));
+            }
+
+            console.log("sending : ",doc.attachments);
+            deleteFiles(remainFiles, function(err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('all files removed');
+                }
+            });
+
             Student.findOneAndRemove({"_id": item}, function(err, doc){
                 if(err)
                     res.status(200).send({
@@ -516,48 +549,85 @@ var findAttachmentById = function (res, item){
 
 var createAttachment = function (res, file, attachment, student){
 
+    student = student || attachment.owner || -1;
     console.log("old file: " , attachment, file, student);
-    var tmp_path = file.path;
-    var destination_folder = '/uploads/attachments/';
+    if(student==-1) {
+        res.status(400).send({
+            success: false,
+            message: "No attachment owner provided."
+        });
+    } else {
+        var tmp_path = file.path;
+        var destination_folder = '/uploads/attachments/';
 
-    Counter.findOneAndUpdate({_id:"attachments"},{$inc:{seq:1}}, function(err, cnt){
-        var new_file_name = autoPrefixId("AT", cnt.seq, 6) + "_" + attachment.file_name.replace(/ /g,"_").toLowerCase() + getFileExtension(file.originalname);
-        var target_path = destination_folder + new_file_name;
-        var src = fs.createReadStream(tmp_path);
-        var dest = fs.createWriteStream('./public' + target_path);
+        Counter.findOneAndUpdate({_id:"attachments"},{$inc:{seq:1}}, function(err, cnt){
+            var new_file_name = autoPrefixId("AT", cnt.seq, 6) + "_" + attachment.file_name.replace(/ /g,"_").toLowerCase() + getFileExtension(file.originalname);
+            var target_path = destination_folder + new_file_name;
+            var src = fs.createReadStream(tmp_path);
+            var dest = fs.createWriteStream('./public' + target_path);
 
-        attachment.file_path = '.'+target_path;
+            attachment.file_path = '.'+target_path;
 
-        console.log("new file name: " , new_file_name);
-        console.log("new file: " , attachment);
-        src.pipe(dest);
-        src.on('end', function() {
-            Student.findOneAndUpdate({"_id": student},{ $addToSet:{"attachments":attachment}}, function(err, doc){
-                //console.log("doc",doc);
-                if(err)
-                    res.status(200).send({
-                        success: false,
-                        message: "Something went wrong while removing. try again.",
-                        err :err
-                    });
-                else 
-                    res.status(200).send({
-                        success: true,
-                        message: "Attachment created."
-                    });
+            console.log("new file name: " , new_file_name);
+            console.log("new file: " , attachment);
+            src.pipe(dest);
+            src.on('end', function() {
+                Student.findOneAndUpdate({"_id": student},{ $addToSet:{"attachments":attachment}}, function(err, doc){
+                    //console.log("doc",doc);
+                    if(err)
+                        res.status(200).send({
+                            success: false,
+                            message: "Something went wrong while removing. try again.",
+                            err :err
+                        });
+                    else 
+                        res.status(200).send({
+                            success: true,
+                            message: "Attachment created."
+                        });
+                });
             });
-        });
-        src.on('error', function(err) {
-            res.send(err);
-        });
-        fs.unlinkSync(tmp_path);
-    })
+            src.on('error', function(err) {
+                res.send(err);
+            });
+            fs.unlinkSync(tmp_path);
+        })
+    }
 }
 
-var delAttachment = function (res, item){
-    var newItem = new ObjectId(item.att_id);
+var updateAttachment = function (res, attachment) {
+    if(attachment && typeof attachment != "undefined"){
+        Student.findOneAndUpdate({"attachments._id": attachment._id},{ 
+            $set:{
+                "attachments.$.file_name":attachment.file_name,
+                "attachments.$.file_type":attachment.file_type,
+                "attachments.$.comment":attachment.comment,
+                "attachments.$.status":attachment.status,
+                "attachments.$.reviewed":attachment.reviewed,
+                "attachments.$.description":attachment.description
+            }
+        }, function(err, doc){
+            if(err)
+                res.status(200).send({
+                    success: false,
+                    message: "Something went wrong while removing. try again.",
+                    err :err
+                });
+            else 
+                res.status(200).send({
+                    success: true,
+                    message: "Attachment updated."
+                });
+        });
+    }
+}
 
-    Student.findOne({"_id":item.stu_id, "attachments._id":newItem}, {_id:0,"attachments.$":1}, function (err, doc){
+var delAttachment = function (res, item, student){
+    student = student || {$ne:''};
+    var newItem = new ObjectId(item);
+    console.log(student, newItem);
+
+    Student.findOne({"_id": student , "attachments._id":newItem}, {_id:0,"attachments.$":1}, function (err, doc){
         if(err)
             res.status(500).send({
                 success: false,
@@ -585,8 +655,8 @@ var delAttachment = function (res, item){
                     console.log("File not exist - "+ att_path);
                 }
             });
-            Student.findOneAndUpdate({"_id": item.stu_id},{$pull:{"attachments":{"_id":item.att_id}}}, function(err, doc){
-                console.log(doc.attachments);
+            Student.findOneAndUpdate({"_id": student, "attachments._id":newItem},{$pull:{"attachments":{"_id":newItem}}}, function(err, doc){
+                console.log(doc);
                 if(err)
                     res.status(200).send({
                         success: false,
@@ -639,6 +709,7 @@ module.exports = {
     'getAttachmentsWithOwner': getAttachmentsWithOwner,
     'findAttachmentById': findAttachmentById,
     'createAttachment': createAttachment,
+    'updateAttachment': updateAttachment,
     'delAttachment': delAttachment,
     'studentRegistration': studentRegistration
 
