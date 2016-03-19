@@ -5,7 +5,12 @@ var jwt = require('jsonwebtoken');
 var objectAssign = require('object-assign');
 var fs = require("fs");
 
-var default_profile = './uploads/pictures/profile/default.png';
+var default_profile_picture = require('../../config/setting').default_profile_picture;
+var profile_picture_dir = require('../../config/setting').profile_picture_dir;
+
+var getFileExtension = function(filename){
+    return '.' + filename.substr(filename.lastIndexOf('.') + 1);
+}
 
 var numToLengthString = function(num, length) {
     var newNum = "" + num.toString();
@@ -145,35 +150,67 @@ var updateTeacher = function(res, item) {
     });
 }
 
-var uploadPicture = function(res, item, next){
-    var tmp_path = item.file.path;
-    var time_stamp = Date.now();
-    console.log(tmp_path, time_stamp);
-    console.log("Creating...", item.body);
+var uploadPicture = function(res, id, item){
 
-    var new_file_name = item.file.filename + time_stamp + getFileExtension(item.file.originalname);
-    var target_path = '/uploads/pictures/profile/' + new_file_name;
+    console.log("file teacher: " , item, id);
+    var tmp_path = item.path;
+
+    var new_file_name = item.filename + getFileExtension(item.originalname);
+    var target_path = profile_picture_dir + new_file_name;
     console.log("file name: " + new_file_name);
     var src = fs.createReadStream(tmp_path);
     var dest = fs.createWriteStream( './public' + target_path);
     src.pipe(dest);
     src.on('end', function() {
         Teacher.findOne({
-            _id: item.body._id
+            _id: id
         }, function(err,doc){
-            console.log(doc);
-            if (doc!=null){
-                console.log("saving picture path...");
-                doc.profile_picture ='.' + target_path;
-                doc.save();
-                res.json({success:true});
+            if(err) {
+                res.status(500).send({
+                    success: false,
+                    err: err,
+                    message: "Something went wrong while retrieving. try again"
+                })
+            } else if (doc){
+                var old_file = doc.profile_picture.replace('./','./public/');
+                var newProfile  = '.' + target_path;
+                console.log("saving picture path...", newProfile, old_file);
+                if (old_file != default_profile_picture) {
+                    fs.unlink(old_file, function(err) {
+                        if(err)
+                            console.log(err)
+                        console.log("file deleted");
+                    });
+                }
+                Teacher.findOneAndUpdate({_id : id},{profile_picture:newProfile},function(err){
+                    if(err){
+                        res.status(500).send({
+                            success: false,
+                            err: err,
+                            message: "Something went wrong while retrieving. try again"
+                        })
+                    } else {
+                        res.status(200).send({
+                            success: true,
+                            message: "Profile picture updated."
+                        })
+                    }
+                });
+               
             } else {
-                res.send(err);
+                res.status(200).send({
+                    success: false,
+                    message: "Account not found - not update"
+                })
             }
         });
     });
     src.on('error', function(err) {
-        res.json({success:false});
+        res.status(500).send({
+            success: false,
+            err: err,
+            message: "Something went wrong while retrieving. try again"
+        })
     });
     fs.unlinkSync(tmp_path);
 };
@@ -207,7 +244,7 @@ var delTeacher = function(res, item) {
             res.send(err);
         else if (!doc)
             res.send({success:false});
-        else if(doc.profile_picture!=default_profile){
+        else if(doc.profile_picture!=default_profile_picture){
             var remainFile = [];
             remainFile.push(doc.profile_picture.replace('./','./public/'));
             console.log(remainFile);
@@ -251,6 +288,7 @@ module.exports = {
     'findTeacherById': findTeacherById,
     'createTeacher': createTeacher,
     'updateTeacher': updateTeacher,
+    'uploadPicture': uploadPicture,
     'pwChangeTeacher': pwChangeTeacher,
     'delTeacher': delTeacher,
     'TeacherTypeAhead': TeacherTypeAhead

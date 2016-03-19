@@ -208,6 +208,29 @@ module.exports = function(app) {
         }
     });
 
+    // View Self profile
+    app.put('/myprofile/picture', upload.single('file'),function(req, res) {
+        var allow = ["teacher","student"];
+        var item = req.decoded.access_id;
+        if(req.file){
+            console.log("decoded",req.decoded);
+            if(req.decoded.access_type == allow[0]){ 
+                TeacherController.uploadPicture(res, item, req.file);
+            } else if (req.decoded.access_type==allow[1]) {
+                StudentController.uploadPicture(res, item, req.file);
+            } else {
+                res.status(403).send({
+                    success: false,
+                    message: "only " + allow + " allow in this section."
+                });
+            }
+        } else {
+            res.status(400).send({
+                    success: false,
+                    message: "File not provided"
+                });
+        }
+    });
 
     // Edit Self profile
     app.put('/myprofile', function(req, res) {

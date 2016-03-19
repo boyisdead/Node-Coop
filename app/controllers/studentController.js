@@ -438,19 +438,11 @@ var delStudent = function(res, item) {
         else {
             console.log("doc in findOne : ",doc);
             if (doc.profile_picture!= default_profile) {
-                var profile_path = doc.profile_picture.replace('./','./public/');
-                console.log("doc loc:", profile_path);
-                fs.stat(profile_path, function(err, stats) {
-                    if(typeof stats != 'undefined'){
-                        console.log("File : ", stats);
-                        console.log("File : ", stats.isFile());
-                        if(stats.isFile())
-                            fs.unlink(profile_path),function (err) {
-                                if (err) throw err;
-                            }
-                        console.log("Deleted - " + profile_path);
+                deleteFiles(doc.profile_picture.replace('./','./public/'), function(err) {
+                    if (err) {
+                        console.log(err);
                     } else {
-                        console.log("File not exist - "+ profile_path);
+                        console.log('all files removed');
                     }
                 });
             }
