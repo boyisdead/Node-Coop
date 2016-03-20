@@ -173,9 +173,9 @@ module.exports = function(app) {
     //========================================================================================
     app.use(function(req, res, next) {
         allow = ["teacher","student"];
-        if(checkPermission(allow,req.decoded.access_type)){
+        if(checkPermission(allow, req.decoded.access_type)){
             next();
-        } else  res.status(403).send({success:false,message:"Unauthurized"});
+        } else  res.status(403).send({success:false, message:"Unauthurized"});
     });
 
     app.put('/change_password', function(req, res) {
@@ -318,7 +318,7 @@ module.exports = function(app) {
 
     // Edit the token owner's attachment
     app.put('/myattach', function (req, res) {
-        res.status(200).send({success:true});
+        StudentController.uploadAttachment(res, req.body);
     });
 
     // Delete the token owner's a specific attachment
@@ -433,13 +433,13 @@ module.exports = function(app) {
         StudentController.getAttachmentsWithOwner(res, req.params.acaYrs);
     });
 
-    app.post('/attachment', upload.single('file'), function (req, res) {
+    app.post('/attachment/', upload.single('file'), function (req, res) {
         console.log("create an attach");
         StudentController.createAttachment(res, req.file, req.body, req.body.owner);
     });
 
-    app.put('/attachment', function (req, res) {
-        console.log("create an attach");
+    app.put('/attachment/', function (req, res) {
+        console.log("update an attach");
         StudentController.updateAttachment(res, req.body);
     });
 
@@ -515,19 +515,47 @@ module.exports = function(app) {
         CompanyController.updateCompany(res, req.body);
     });
 
-    // Update contact of specific company
-    app.put('/company/contact', function(req, res) {
-        var comp_id = req.body._id || "noname";
-        console.log("Update " + comp_id + " company's contact");
-        CompanyController.updateCompanyContact(res, req.body);
-    });
-
     // Delete a company
     app.delete('/company/:company_id', function(req, res) {
         var comp_id = req.params.company_id || "noname";
         console.log("Remove " + comp_id + " company");
         CompanyController.delCompany(res, comp_id);
-    });    
+    });  
+
+    app.post('/company/picture/:id', upload.single('file'), function(req, res) {
+        CompanyController.addCompanyPicture(res, req.file, req.body, req.params.id);
+    });
+
+    // Delete a single picture in specific company
+    app.delete('/company/:company_id/picture/:picture_id', function(req, res) {
+        var comp_id = req.params.company_id;
+        var picture_id = req.params.picture_id;
+        CompanyController.delCompanyPicture(res, comp_id, picture_id);
+    });   
+
+    // Update a contact of specific company
+    app.put('/company/:company_id/contact/', function(req, res) {
+        var comp_id = req.params.company_id;
+        CompanyController.updateCompanyContact(res, comp_id, req.body);
+    });
+
+    // Update a contact of specific company
+    app.delete('/company/:company_id/contact/', function(req, res) {
+        var comp_id = req.params.company_id;
+        CompanyController.updateCompanyContact(res, comp_id, {});
+    });   
+
+    // Update a contact of specific company
+    app.put('/company/:company_id/coordinator/', function(req, res) {
+        var comp_id = req.params.company_id;
+        CompanyController.updateCompanyCoor(res, comp_id, req.body);
+    });
+
+    // Update a contact of specific company
+    app.delete('/company/:company_id/coordinator/', function(req, res) {
+        var comp_id = req.params.company_id;
+        CompanyController.updateCompanyCoor(res, comp_id, {});
+    });  
 
     //================================ Application ====================================
     

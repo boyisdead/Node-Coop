@@ -305,70 +305,45 @@ var updateStudent = function(res, item) {
     });
 };
 
-// var lockStuProfile = function(res, item){  // set up a lock on student status
-
-//     Student.findOne({
-//         _id: item
-//     }, function(err, doc) {
-//             if (doc != null) {
-//             doc.status = true;
-//             if(typeof doc.name == 'undefined'){
-//                 if (typeof doc.name.first == 'undefined' || doc.name.first == '')
-//                     doc.status = false; 
-//                 if (typeof doc.name.last == 'undefined' || doc.name.last == '')
-//                     doc.status = false; 
-//                 if (typeof doc.name.title == 'undefined' || doc.name.title == '')
-//                     doc.status = false; 
-//             }
-//             if (typeof doc.academic_year == 'undefined'|| doc.academic_year == '')
-//                 doc.status = false; 
-//             if (typeof doc.sex == 'undefined' || doc.sex == '')
-//                 doc.status = false; 
-//             // if (typeof doc.adviser_id == 'undefined' || doc.adviser_id == '')
-//             //     doc.status.profile = false; 
-//             if (typeof doc.contact.tel == 'undefined' || doc.tel == '')
-//                 doc.status = false; 
-//             if (typeof doc.contact.email == 'undefined' || doc.contact_email == '')
-//                 doc.status = false; 
-//             if (typeof doc.password == 'undefined' || doc.password == '')
-//                 doc.status = false; 
-
-//             if (doc.status){
-//                 msg = {success:true};
-//             } else {
-//                 msg = {success:false,reason:"Profile's not complete.",err_code:40};
-//             }
-//             doc.save();
-//         } else {
-//             console.log("Not found - status not set",id);
-//             msg = {success:false,reason:"Profile's not found.",err_code:44};
-//         }
-
-//         if (err)
-//             res.send(err);
-//         else 
-//             res.json(msg);
-//     });
-// };
-
-// var unLockStuProfile = function(res, item){  
-
-//     Student.findOne({
-//         _id: item
-//     }, function(err, doc) {
-//         if (doc != null) {
-//             doc.status = false;
-//             msg = {success:true};
-//             doc.save();
-//         } else {
-//             msg = {success:false,reason:"Student not found",err_code:44};
-//         }
-//         if (err)
-//             res.send(err);
-//         else
-//             res.json(msg);
-//     });
-// };
+var changePreferredCompany = function (res, owner, item) {
+    if (item){    
+        Student.findOne({_id:owner}, function(err, doc){
+            if(err)
+            res.status(200).send({
+                success: false,
+                message: "Something went wrong while finding Student. try again.",
+                err : err
+            });
+            if(doc){            
+                var preferred = new Student().preferred_company;
+                objectAssign(preferred, item);
+                doc.save();
+                    if(err){
+                        res.status(200).send({
+                            success: false,
+                            message: "Something went wrong while saving Student. try again.",
+                            err : err
+                        });
+                    }
+                    res.status(200).send({
+                        success : true,
+                        message: "Preferred companies updated."
+                    });
+                });
+            } else {
+                res.status(404).send({
+                    success: false,
+                    message: "No Student was found."
+                });
+            }
+        })
+    } else {
+        res.status(400).send({
+                    success: false,
+                    message: "No prefered companies provided."
+                });
+    }
+}
 
 var uploadPicture = function(res, item, next){
     var tmp_path = item.file.path;
@@ -481,14 +456,6 @@ var delStudent = function(res, item) {
 };
 
 var getAttachments = function (res, academic_year){
-    // var criteria;
-
-    // if (academic_year != "" && typeof academic_year != "undefined" && academic_year != "all"){
-    //     criteria = academic_year;
-    // } else {
-    //     criteria = {$ne:""}
-    // }
-
     Student.aggregate([
         {$project:{_id:0,attachments:1}}, 
         {$match:{"attachments":{$exists:true}}}

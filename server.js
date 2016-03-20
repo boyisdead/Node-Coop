@@ -28,6 +28,10 @@ mkdirp('./public/uploads/pictures/profile', function(err) {
 	if (err) console.error(err)
     else console.log('Profile Picture directory created!')
 });
+mkdirp('./public/uploads/pictures/company', function(err) {
+	if (err) console.error(err)
+    else console.log('Company Picture directory created!')
+});
 
 // configuration ===============================================================
 mongoose.connect(database.url); 	// connect to mongoDB 

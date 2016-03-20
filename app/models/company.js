@@ -34,6 +34,10 @@ var companySchema = mongoose.Schema({
     website: {type: String, default:''},
     address:{type:String, default:''},
     area: {type:String, default:''},
-    active: {type:Boolean, default: true}
+    active: {type:Boolean, default: true},
+    picture : [{
+        file_path : {type: String},
+        description : {type: String}
+    }]
 });
 module.exports = mongoose.model('Company', companySchema);

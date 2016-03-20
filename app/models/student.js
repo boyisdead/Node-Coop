@@ -19,6 +19,11 @@ var studentSchema = mongoose.Schema({
         "email": { type: String, default: '' },
         "address": { type: String, default: '' }
     },
+    "preferred_company" : {
+        "first": { type: String, default: '' }
+        "second": { type: String, default: '' }
+        "third": { type: String, default: '' }
+    },
     "emergency_contact": {
         "name": { type: String, default: '' },
         "relationship": { type: String, default: '' },

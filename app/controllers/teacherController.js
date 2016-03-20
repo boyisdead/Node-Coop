@@ -5,41 +5,14 @@ var jwt = require('jsonwebtoken');
 var objectAssign = require('object-assign');
 var fs = require("fs");
 
+var deleteFiles = require('./../utilities/deleteFiles').deleteFiles;
+var getFileExtension = require('./../utilities/misc').getFileExtension;
+var numToLengthString = require('./../utilities/misc').numToLengthString;
+var autoPrefixId = require('./../utilities/misc').autoPrefixId;
+var company_picture_dir = require('../../config/setting').company_picture_dir;
+
 var default_profile_picture = require('../../config/setting').default_profile_picture;
 var profile_picture_dir = require('../../config/setting').profile_picture_dir;
-
-var getFileExtension = function(filename){
-    return '.' + filename.substr(filename.lastIndexOf('.') + 1);
-}
-
-var numToLengthString = function(num, length) {
-    var newNum = "" + num.toString();
-    while (newNum.length < length) {
-        newNum = "0" + newNum;
-    }
-    return newNum;
-}
-
-var autoPrefixId = function(prefix, max, numLong) {
-    var new_id = prefix.concat(numToLengthString(max, numLong));
-    console.log(new_id);
-    return new_id;
-};
-
-function deleteFiles(files, callback){
-    var i = files.length;
-    files.forEach(function(filepath){
-        fs.unlink(filepath, function(err) {
-            i--;
-            if (err) {
-                callback(err);
-                return;
-            } else if (i <= 0) {
-                callback(null);
-            }
-        });
-    });
-}
 
 var teacherLogin = function(res, item, secretToken,expireTime) {
     console.log("find Teacher with : " + item.username);
