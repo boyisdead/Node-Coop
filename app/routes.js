@@ -1,200 +1,147 @@
-var Student = require('./models/student');
-var Teacher = require('./models/teacher');
+var fs = require("fs");
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
+var multer = require('multer');
+var upload = multer({
+    dest: './public/uploads/'
+});
 var jwt = require('jsonwebtoken');
+var allow;
 
 
-function studentLogin(item, res, app) {
-    console.log("find Student with : " + item.username);
-    Student.findOne({
-        "stu_code": item.username
-    }, function(err, student) {
-        if (err)
-            res.send(err);
-        if (!student) {
-            res.json({
-                success: false,
-                message: 'Authentication failed. Student not found.',
-                obj: item,
-                tar_obj: student
-            });
-        } else if (student) {
-            // check if password matches
-            if (student.password != item.password) {
-                res.json({
-                    success: false,
-                    message: 'Authentication failed. Wrong password.',
-                });
-            } else {
 
-                // if student is found and password is right
-                // create a token
-                var token = jwt.sign({
-                    "stu_code": student.stu_code,
-                    access_type: "student"
-                }, app.get('secretToken'), {
-                    expiresInMinutes: 180 // expires in 3 hours
-                });
-
-                // return the information including token as JSON
-                res.json({
-                    success: true,
-                    display_name: student.stu_code,
-                    access_id: student._id,
-                    access_type: 'student',
-                    token: token
-                });
-            }
-        }
-    })
+var DocumentController = require('./controllers/documentController');
+var OtherController = require('./controllers/otherController');
+var TeacherController = require('./controllers/teacherController');
+var StudentController = require('./controllers/studentController');
+var CompanyController = require('./controllers/companyController');
+var ApplicationController = require('./controllers/applicationController');
+var AnnounceController = require('./controllers/announceController');
+var DlcController = require('./controllers/dlcController');
+    
+var checkPermission = function(allow_types,access_type){
+    if(allow_types.indexOf(access_type)>=0)
+        return true
 }
 
-function teacherLogin(item, res, app) {
-    console.log("find Teacher with : " + item.username);
-    Teacher.findOne({
-        "staff_code": item.username
-    }, function(err, teacher) {
-        if (err)
-            res.send(err);
-        if (!teacher) {
-            res.json({
-                success: false,
-                message: 'Authentication failed. Teacher not found.',
-                obj: item,
-                tar_obj: teacher
-            });
-        } else if (teacher) {
-            // check if password matches
-            if (teacher.password != item.password) {
-                res.json({
-                    success: false,
-                    message: 'Authentication failed. Wrong password.',
-                });
-            } else {
-
-                // if teacher is found and password is right
-                // create a token
-                var token = jwt.sign({
-                    "staff_code": teacher.staff_code,
-                    access_type: "teacher"
-                }, app.get('secretToken'), {
-                    expiresInMinutes: 180 // expires in 3 hours
-                });
-
-                // return the information including token as JSON
-                res.json({
-                    success: true,
-                    display_name: teacher.staff_code,
-                    access_id: teacher._id,
-                    access_type: 'teacher',
-                    token: token
-                });
-            }
-        }
-    })
-}
-
-function getStudents(res) {
-    Student.find(function(err, students) {
-
-        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-        if (err)
-            res.send(err)
-
-        res.json(students); // return all students in JSON format
-    });
-};
-
-function createStudent(item, res) {
-    var newStudent = new Student({
-        stu_code: item.stu_code,
-        name_th: item.first_name_th + " " + item.last_name_th,
-        name_en: item.first_name_en + " " + item.last_name_en,
-        contact_email: item.contact_email,
-        tel: item.tel,
-        advisor_id: item.advisor,
-        sex: item.sex
-    });
-
-    newStudent.save(function(err) {
-        if (err)
-            res.send(err);
-        getStudents(res);
-    })
-};
-
-function delStudent(item, res) {
-    Student.remove({
-        _id: item
-    }, function(err) {
-        if (err)
-            res.send(err);
-        getStudents(res);
-    })
-}
-
-function getTeacher(res) {
-    Teacher.find(function(err, teachers) {
-
-        // if there is an error retrieving, send the error. nothing after res.send(err) will execute
-        if (err)
-            res.send(err)
-
-        res.json(teachers); // return all teachers in JSON format
-    });
-};
-
-function createTeacher(item, res) {
-    var newTeacher = new Teacher({
-        staff_code: item.staff_code,
-        name_th: item.first_name_th + " " + item.last_name_th,
-        name_en: item.first_name_en + " " + item.last_name_en,
-        contact_email: item.contact_email,
-        tel: item.tel,
-        sex: item.sex,
-    });
-
-    newTeacher.save(function(err) {
-        if (err)
-            res.send(err);
-        getTeacher(res);
-    })
-};
-
-function delTeacher(item, res) {
-    Teacher.remove({
-        _id: item
-    }, function(err) {
-        if (err)
-            res.send(err);
-        getTeacher(res);
-    })
-}
-
+                                //================================ Routes ====================================
+                                //       $$$$$$$\   $$$$$$\  $$\   $$\ $$$$$$$$\ $$$$$$$$\  $$$$$$\  
+                                //       $$  __$$\ $$  __$$\ $$ |  $$ |\__$$  __|$$  _____|$$  __$$\ 
+                                //       $$ |  $$ |$$ /  $$ |$$ |  $$ |   $$ |   $$ |      $$ /  \__|
+                                //       $$$$$$$  |$$ |  $$ |$$ |  $$ |   $$ |   $$$$$\    \$$$$$$\  
+                                //       $$  __$$< $$ |  $$ |$$ |  $$ |   $$ |   $$  __|    \____$$\ 
+                                //       $$ |  $$ |$$ |  $$ |$$ |  $$ |   $$ |   $$ |      $$\   $$ |
+                                //       $$ |  $$ | $$$$$$  |\$$$$$$  |   $$ |   $$$$$$$$\ \$$$$$$  |
+                                //       \__|  \__| \______/  \______/    \__|   \________| \______/ 
+                                //=============================================================================
 module.exports = function(app) {
 
     // authenticate to obtains token
-    app.post('/api/auth', function(req, res) {
-        if (req.body.type == "student")
-            studentLogin(req.body, res, app);
-        else if (req.body.type == "teacher")
-            teacherLogin(req.body, res, app);
+    app.post('/coopsys/v1/login/student', function(req, res) {
+        console.log("Student login");
+        StudentController.studentLogin(res, req.body, app.get('secretToken'), app.get('expireTime'));
     });
 
+    app.post('/coopsys/v1/login/teacher', function(req, res) {
+        console.log("Teacher login");
+        TeacherController.teacherLogin(res, req.body, app.get('secretToken'), app.get('expireTime'));
+    });
+
+
+    //================================ Others ====================================
+    //  __    __   ______         ________   ______   __    __  ________  __    __ 
+    // |  \  |  \ /      \       |        \ /      \ |  \  /  \|        \|  \  |  \
+    // | $$\ | $$|  $$$$$$\       \$$$$$$$$|  $$$$$$\| $$ /  $$| $$$$$$$$| $$\ | $$
+    // | $$$\| $$| $$  | $$         | $$   | $$  | $$| $$/  $$ | $$__    | $$$\| $$
+    // | $$$$\ $$| $$  | $$         | $$   | $$  | $$| $$  $$  | $$  \   | $$$$\ $$
+    // | $$\$$ $$| $$  | $$         | $$   | $$  | $$| $$$$$\  | $$$$$   | $$\$$ $$
+    // | $$ \$$$$| $$__/ $$         | $$   | $$__/ $$| $$ \$$\ | $$_____ | $$ \$$$$
+    // | $$  \$$$ \$$    $$         | $$    \$$    $$| $$  \$$\| $$     \| $$  \$$$
+    //  \$$   \$$  \$$$$$$           \$$     \$$$$$$  \$$   \$$ \$$$$$$$$ \$$   \$$
+    //=============================================================================
+    
+    app.get('/coopsys/v1/typehead/title_name', function(req, res) {
+        OtherController.titleNameTypeAhead(res);
+    });
+
+    app.get('/coopsys/v1/typehead/academic_position', function(req, res) {
+        OtherController.acadePosTypeAhead(res);
+    });
+
+    app.get('/coopsys/v1/typehead/adviser', function(req, res) {
+        TeacherController.TeacherTypeAhead(res);
+    });
+
+    app.post('/coopsys/v1/register',function(req, res){
+        StudentController.studentRegistration(res, req.body);
+    });
+
+    app.get('/coopsys/v1/teacher', function(req, res) {
+        TeacherController.getTeacher(res);
+    });
+
+    app.get('/coopsys/v1/teacher/:id', function(req, res) {
+        TeacherController.findTeacherById(res, req.params.id);
+    });
+
+    app.get('/coopsys/v1/company', function(req, res) {
+        console.log("Get all company");
+        CompanyController.getCompany(res);
+    });
+
+    app.get('/coopsys/v1/company/participating', function(req, res) {
+        console.log("Get participating company");
+        CompanyController.getPartCompany(res);
+    });
+
+    app.get('/coopsys/v1/company/area/:area', function(req, res) {
+        console.log("Get company by area with " + req.params.area);
+        CompanyController.getCompanyByArea(res, req.params.area);
+    });
+
+    app.get('/coopsys/v1/company/:id', function(req, res) {
+        console.log("Get company with " + req.params.id);
+        CompanyController.findCompanyById(res, req.params.id);
+    });
+
+    app.get('/coopsys/v1/announce', function(req, res) {
+        console.log("Get all announce");
+        AnnounceController.getAnnounce(res);
+    });
+
+    app.get('/coopsys/v1/announce/:item', function(req, res) {
+        console.log("Get announce with " + req.params.item);
+        AnnounceController.findAnnounceById(res, req.params.item);
+    });
+
+    app.get('/coopsys/v1/dlc', function(req, res) {
+        console.log("Get all DLC");
+        DlcController.getDlc(res);
+    });
+
+    app.get('/coopsys/v1/dlc/:id', function(req, res) {
+        console.log("Get DLC by id");
+        DlcController.findDlcById(res, req.params.id);
+    });
+
+    //===================================================================================
+    //suspended due to working
     // verify token for every request
     app.use(function(req, res, next) {
-
+        if(req.headers.cookie)
+            var cookieToken = req.headers.cookie.substr(9) || {};
         // check header or url parameters or post parameters for token
-        var token = req.body.token || req.query.token || req.headers['x-access-token'];
-
+        var token = req.body.token || req.query.token || req.headers['x-access-token'] || cookieToken;
         // decode token
         if (token) {
-
             // verifies secret and checks exp
             jwt.verify(token, app.get('secretToken'), function(err, decoded) {
                 if (err) {
+                    console.log(err);
                     return res.json({
                         success: false,
-                        message: 'Failed to authenticate token.'
+                        message: 'Failed to authenticate token.',
+                        error: err
                     });
                 } else {
                     // if everything is good, save to request for use in other routes
@@ -202,9 +149,7 @@ module.exports = function(app) {
                     next();
                 }
             });
-
         } else {
-
             // if there is no token
             // return an error
             return res.status(403).send({
@@ -214,43 +159,509 @@ module.exports = function(app) {
 
         }
     });
-    // -----------------------------------Student API ----------------------------------------------------
-    // get all students
-    app.get('/api/students', function(req, res) {
-        getStudents(res);
+
+    //========================================================================================
+    //  __    __  __    __  ______  __     __  ________  _______    ______    ______   __       
+    // |  \  |  \|  \  |  \|      \|  \   |  \|        \|       \  /      \  /      \ |  \      
+    // | $$  | $$| $$\ | $$ \$$$$$$| $$   | $$| $$$$$$$$| $$$$$$$\|  $$$$$$\|  $$$$$$\| $$      
+    // | $$  | $$| $$$\| $$  | $$  | $$   | $$| $$__    | $$__| $$| $$___\$$| $$__| $$| $$      
+    // | $$  | $$| $$$$\ $$  | $$  | $$   | $$| $$  \   | $$    $$ \$$    \ | $$    $$| $$      
+    // | $$  | $$| $$\$$ $$  | $$   \$$   / $$| $$$$$   | $$$$$$$\ _\$$$$$$\| $$$$$$$$| $$      
+    // | $$__/ $$| $$ \$$$$ _| $$_   \$$ / $$ | $$_____ | $$  | $$|  \__| $$| $$  | $$| $$_____ 
+    //  \$$    $$| $$  \$$$|   $$ \   \$$$$$  | $$     \| $$  | $$ \$$    $$| $$  | $$| $$     \
+    //   \$$$$$$  \$$   \$$ \$$$$$$    \$$$    \$$$$$$$$ \$$   \$$  \$$$$$$  \$$   \$$ \$$$$$$$$
+    //========================================================================================
+    app.use(function(req, res, next) {
+        allow = ["teacher","student"];
+        if(checkPermission(allow, req.decoded.access_type)){
+            next();
+        } else  res.status(403).send({success:false, message:"Unauthurized"});
     });
 
-    // create student and send back all students after creation
-    app.post('/api/students', function(req, res) {
-        createStudent(req.body, res);
+    app.put('/coopsys/v1/change_password', function(req, res) {
+        if(req.decoded.access_type == allow[0]){ 
+            console.log(allow, req.decoded.access_type);
+            TeacherController.pwChangeTeacher(res, req.body);
+        } else if (req.decoded.access_type==allow[1]) {
+            StudentController.pwChangeStudent(res, req.body);
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "only " + allow + " allow in this section."
+            });
+        }
+    })
+
+    // View Self profile
+    app.get('/coopsys/v1/myprofile', function(req, res) {
+        var allow = ["teacher","student"];
+        var item = req.decoded.access_id;
+        if(req.decoded.access_type == allow[0]){ 
+            TeacherController.findTeacherById(res, item);
+        } else if (req.decoded.access_type==allow[1]) {
+            StudentController.findStudentById(res, item);
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "only " + allow + " allow in this section."
+            });
+        }
+    });
+
+    // View Self profile
+    app.put('/coopsys/v1/myprofile/picture', upload.single('file'),function(req, res) {
+        var allow = ["teacher","student"];
+        var item = req.decoded.access_id;
+        if(req.file){
+            console.log("decoded",req.decoded);
+            if(req.decoded.access_type == allow[0]){ 
+                TeacherController.uploadPicture(res, item, req.file);
+            } else if (req.decoded.access_type==allow[1]) {
+                StudentController.uploadPicture(res, item, req.file);
+            } else {
+                res.status(403).send({
+                    success: false,
+                    message: "only " + allow + " allow in this section."
+                });
+            }
+        } else {
+            res.status(400).send({
+                    success: false,
+                    message: "File not provided"
+                });
+        }
+    });
+
+    // Edit Self profile
+    app.put('/coopsys/v1/myprofile', function(req, res) {
+        var allow = ["teacher","student"];
+        var item = req.decoded.access_id;
+        if(req.decoded.access_type == allow[0]){ 
+            TeacherController.updateTeacher(res, item);
+        } else if (req.decoded.access_type==allow[1]) {
+            StudentController.updateStudent(res, item);
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "only " + allow + " allow in this section."
+            });
+        }
+    });
+
+    // Del Self profile
+    app.delete('/coopsys/v1/myprofile', function(req, res) {
+        var allow = ["teacher","student"];
+        var item = req.decoded.access_id;
+        if(req.decoded.access_type == allow[0]){ 
+            TeacherController.delTeacher(res, item);
+        } else if (req.decoded.access_type==allow[1]) {
+            StudentController.delStudent(res, item);
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "only " + allow + " allow in this section."
+            });
+        }
+    });
+
+    //=================================================================================
+    //  $$$$$$\ $$$$$$$$\ $$\   $$\ $$$$$$$\  $$$$$$$$\ $$\   $$\ $$$$$$$$\ 
+    // $$  __$$\\__$$  __|$$ |  $$ |$$  __$$\ $$  _____|$$$\  $$ |\__$$  __|
+    // $$ /  \__|  $$ |   $$ |  $$ |$$ |  $$ |$$ |      $$$$\ $$ |   $$ |   
+    // \$$$$$$\    $$ |   $$ |  $$ |$$ |  $$ |$$$$$\    $$ $$\$$ |   $$ |   
+    //  \____$$\   $$ |   $$ |  $$ |$$ |  $$ |$$  __|   $$ \$$$$ |   $$ |   
+    // $$\   $$ |  $$ |   $$ |  $$ |$$ |  $$ |$$ |      $$ |\$$$ |   $$ |   
+    // \$$$$$$  |  $$ |   \$$$$$$  |$$$$$$$  |$$$$$$$$\ $$ | \$$ |   $$ |   
+    //  \______/   \__|    \______/ \_______/ \________|\__|  \__|   \__|  
+    //=================================================================================
+
+    // Get the token owner's adviser
+    app.get('/coopsys/v1/myadviser', function (req, res) {
+        StudentController.getMyAdviser(res, req.decoded.access_id);
+    });
+
+    // Get the token owner's job
+    app.get('/coopsys/v1/myjob', function (req, res) {
+        StudentController.getStudents(res, {_id: req.decoded.access_id}, { job:1 });
+    });
+
+    // Get the token owner's status
+    app.get('/coopsys/v1/mystatus', function (req, res) {
+        StudentController.getStudents(res, {_id: req.decoded.access_id}, {status:1});
+    });
+
+    // Get the token owner's apply status
+    app.get('/coopsys/v1/mystatus/apply', function (req, res) {
+        ApplicationController.getStudentApplyStatus(res, req.decoded.access_id);
+    });
+
+    // Get the token owner's accept status
+    app.get('/coopsys/v1/mystatus/accept', function (req, res) {
+        ApplicationController.getStudentAcceptStatus(res, req.decoded.access_id);
+    });
+
+    // Get the token owner's attachments
+    app.get('/coopsys/v1/myattach', function (req, res) {
+        StudentController.getStudentAttachments(res, {_id: req.decoded.access_id});
+    });
+
+    // Get the token owner's a specific attachment
+    app.get('/coopsys/v1/myattach/:id', function (req, res) {
+        StudentController.findAttachmentById(res, req.params.id);
+    });
+
+    // Creat the token owner's a attachment
+    app.post('/coopsys/v1/myattach', upload.single('file'), function (req, res) {
+        console.log("create my attach");
+        StudentController.createAttachment(res, req.file, req.body, req.decoded.access_id);
+    });
+
+    // Edit the token owner's attachment
+    app.put('/coopsys/v1/myattach', function (req, res) {
+        StudentController.uploadAttachment(res, req.body);
+    });
+
+    // Delete the token owner's a specific attachment
+    app.delete('/coopsys/v1/myattach/:id', function (req, res) {
+        StudentController.delAttachment(res, req.params.id, req.decoded.access_id);
+    });
+
+    // Set the token owner's company preferrence
+    app.put('/coopsys/v1/myprefer', function (req, res) {
+        res.status(200).send({success:true});
+    });
+
+    //================================================================================
+    // $$$$$$$$\ $$$$$$$$\  $$$$$$\   $$$$$$\  $$\   $$\ $$$$$$$$\ $$$$$$$\  
+    // \__$$  __|$$  _____|$$  __$$\ $$  __$$\ $$ |  $$ |$$  _____|$$  __$$\ 
+    //    $$ |   $$ |      $$ /  $$ |$$ /  \__|$$ |  $$ |$$ |      $$ |  $$ |
+    //    $$ |   $$$$$\    $$$$$$$$ |$$ |      $$$$$$$$ |$$$$$\    $$$$$$$  |
+    //    $$ |   $$  __|   $$  __$$ |$$ |      $$  __$$ |$$  __|   $$  __$$< 
+    //    $$ |   $$ |      $$ |  $$ |$$ |  $$\ $$ |  $$ |$$ |      $$ |  $$ |
+    //    $$ |   $$$$$$$$\ $$ |  $$ |\$$$$$$  |$$ |  $$ |$$$$$$$$\ $$ |  $$ |
+    //    \__|   \________|\__|  \__| \______/ \__|  \__|\________|\__|  \__|
+    //================================================================================
+
+    app.use(function(req, res, next) {
+        allow = "teacher";
+        if(checkPermission(allow,req.decoded.access_type)){
+            next();
+        } else  res.status(403).send({success:false,message:"Unauthurized"});
+    });
+
+    // ================================= Self ========================================
+     
+    
+
+
+
+    // ============================ Student ==========================================
+    
+    
+    // get all students
+    app.get('/coopsys/v1/student', function(req, res) {
+        if(checkPermission(allow, req.decoded.access_type)) {
+            StudentController.getStudents(res);
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "only Teachers allow in this section."
+            });
+        }
+    });
+
+    // Get student in specific academic year
+    app.get('/coopsys/v1/student/academic_year/:acaYr', function(req, res) {
+        var allow = ["teacher"];
+        if(checkPermission(allow, req.decoded.access_type)) {
+            StudentController.getStudentByAcaYr(res, req.params.acaYr);
+        } else {
+            res.status(403).send({
+                success: false,
+                message: "only Teachers allow in this section."
+            });
+        }
+    });
+
+    // Find Student with ID
+    app.get('/coopsys/v1/student/:id', function(req, res) {
+        StudentController.findStudentById(res, req.params.id);
+    });
+
+    // create a student
+    app.post('/coopsys/v1/student', function(req, res) {
+        console.log("Creating...");
+        StudentController.createStudent(res, req.body);
+    });
+
+    // 
+    app.post('/coopsys/v1/student/upload_myprofile_picture', upload.single('file'), function(req, res, next) {
+        console.log(req.file);
+        StudentController.uploadPicture(res, req, next);
+    });
+
+    // update a student
+    app.put('/coopsys/v1/student', function(req, res) {
+        console.log("Updating...");
+        StudentController.updateStudent(res, req.body);
     });
 
     // delete a student
-    app.delete('/api/students/:student_id', function(req, res) {
-        delStudent(req.params.student_id, res);
+    app.delete('/coopsys/v1/student/:student_id', function(req, res) {
+        StudentController.delStudent(res, req.params.student_id);
     });
 
-    // ---------------------------------- Teacher API ------------------------------------------------------
-    // 
-    app.get('/api/teachers', function(req, res) {
-        getTeacher(res);
+    // Get academic year available
+    app.get('/coopsys/v1/student/acaYrs', function(res, req) {
+        StudentController.getAcaYrs(res);
     });
 
-    // create teacher and send back all teachers after creation
-    app.post('/api/teachers', function(req, res) {
-        createTeacher(req.body, res);
+    // Get all attachment of owners who are in specific academic year
+    app.get('/coopsys/v1/attachment/', function(req, res) {
+        console.log("get all Attachment");
+        StudentController.getAttachments(res);
+    });
+    // Get all attachment of owners who are in specific academic year
+    app.get('/coopsys/v1/attachment/acaYrs/:acaYrs', function(req, res) {
+        console.log("get Docs of " + req.params.acaYrs);
+        StudentController.getAttachments(res, req.params.acaYrs);
     });
 
+    // Get all attachments of all students in specific academic year
+    app.get('/coopsys/v1/student/attachment/acaYrs/:acaYrs', function(req, res) {
+        console.log("get Docs and Owner of " + req.params.acaYrs);
+        StudentController.getAttachmentsWithOwner(res, req.params.acaYrs);
+    });
+
+    app.get('/coopsys/v1/student/:owner/attachment', function(req, res) {
+        StudentController.getStudentAttachments(res, req.params.owner);
+    });
+
+    app.get('/coopsys/v1/attachment/:id', function(req, res) {
+        StudentController.findAttachmentById(res, req.params.id);
+    });
+
+    app.post('/coopsys/v1/attachment/:owner', upload.single('file'), function (req, res) {
+        console.log("create an attach");
+        StudentController.createAttachment(res, req.file, req.body, req.params.owner ||req.body.owner);
+    });
+
+    app.put('/coopsys/v1/attachment/', function (req, res) {
+        console.log("update an attach");
+        StudentController.updateAttachment(res, req.body);
+    });
+
+    // Delete the token owner's a specific attachment
+    app.delete('/coopsys/v1/attachment/:id', function (req, res) {
+        StudentController.delAttachment(res, req.params.id);
+    });
+
+    // app.put('/coopsys/v1/student/unlock_profile', function(req, res) {
+    //     StudentController.unLockStuProfile(res, req.body.id);
+    // });
+
+    // app.put('/coopsys/v1/student/lock_profile', function(req, res) {
+    //     StudentController.lockStuProfile(res, req.body.id);
+    // });
+
+
+    // ================================= Teacher ==========================================
+
+    app.post('/coopsys/v1/teacher', function(req, res) {
+        console.log("Creating teacher");
+        TeacherController.createTeacher(res, req.body);
+    });
+    // update a teacher
+    app.put('/coopsys/v1/teacher', function(req, res) {
+        TeacherController.updateTeacher(res, req.body);
+    })
     // delete a teacher
-    app.delete('/api/teachers/:teacher_id', function(req, res) {
-        delTeacher(req.params.teacher_id, res);
+    app.delete('/coopsys/v1/teacher/:teacher_id', function(req, res) {
+        TeacherController.delTeacher(res, req.params.teacher_id);
+    });
+
+    //================================== Document ======================================
+
+
+// ========================= Old document management =================================
+    // // get all documents
+    // app.get('/coopsys/v1/document', function(req, res) {
+    //     DocumentController.getDocument(res);
+    // });
+
+    // // upload document
+    // app.post('/coopsys/v1/document/upload', upload.single('file'), function(req, res, next) {
+    //     console.log(req.file);
+    //     DocumentController.createDocument(req, res, next);
+    // });
+
+    // // update document
+    // app.put('/coopsys/v1/document', function(req, res) {
+    //     DocumentController.updateDocument(req.body, res);
+    // });
+
+    // // delete a document
+    // app.delete('/coopsys/v1/document/:document_id', function(req, res) {
+    //     DocumentController.delDocument(req.params.document_id, res);
+    // });
+    // 
+// ====================================================================================
+    
+    //================================ Company ====================================
+    
+    // Create a company
+    app.post('/coopsys/v1/company', function(req, res) {
+        var compName = req.body.name.full || "noname";
+        console.log("Create " + compName + " company");
+        CompanyController.createCompany(res, req.body);
+    });
+
+    // Edit a company
+    app.put('/coopsys/v1/company', function(req, res) {
+        var compName = req.body.name.full || "noname";
+        console.log("Update " + compName + " company");
+        CompanyController.updateCompany(res, req.body);
+    });
+
+    // Delete a company
+    app.delete('/coopsys/v1/company/:company_id', function(req, res) {
+        var comp_id = req.params.company_id || "noname";
+        console.log("Remove " + comp_id + " company");
+        CompanyController.delCompany(res, comp_id);
+    });  
+
+    app.post('/coopsys/v1/company/picture/:id', upload.single('file'), function(req, res) {
+        CompanyController.addCompanyPicture(res, req.file, req.body, req.params.id);
+    });
+
+    // Delete a single picture in specific company
+    app.delete('/coopsys/v1/company/:company_id/picture/:picture_id', function(req, res) {
+        var comp_id = req.params.company_id;
+        var picture_id = req.params.picture_id;
+        CompanyController.delCompanyPicture(res, comp_id, picture_id);
+    });   
+
+    // Update a contact of specific company
+    app.put('/coopsys/v1/company/:company_id/contact/', function(req, res) {
+        var comp_id = req.params.company_id;
+        CompanyController.updateCompanyContact(res, comp_id, req.body);
+    });
+
+    // Update a contact of specific company
+    app.delete('/coopsys/v1/company/:company_id/contact/', function(req, res) {
+        var comp_id = req.params.company_id;
+        CompanyController.updateCompanyContact(res, comp_id, {});
+    });   
+
+    // Update a contact of specific company
+    app.put('/coopsys/v1/company/:company_id/coordinator/', function(req, res) {
+        var comp_id = req.params.company_id;
+        CompanyController.updateCompanyCoor(res, comp_id, req.body);
+    });
+
+    // Update a contact of specific company
+    app.delete('/coopsys/v1/company/:company_id/coordinator/', function(req, res) {
+        var comp_id = req.params.company_id;
+        CompanyController.updateCompanyCoor(res, comp_id, {});
+    });  
+
+    //================================ Application ====================================
+    
+    // Get all application
+    app.get('/coopsys/v1/application', function(req, res) {
+        console.log("Get all applications");
+        ApplicationController.getApplication(res);
+    });
+        // Get all application of specific student
+    app.get('/coopsys/v1/application/student/:student_id', function(req, res) {
+        var stu_id = req.params.student_id || "noname";
+        console.log("Get application of " + "student " + stu_id);
+        ApplicationController.getApplicationByStudent(res, stu_id);
+    });
+        // Get all application of specific company
+    app.get('/coopsys/v1/application/company/:company_id', function(req, res) {
+        var comp_id = req.params.company_id || "noname";
+        console.log("Get application of " + comp_id + " company");
+        ApplicationController.getApplicationByCompany(res, comp_id);
+    });
+        // Get all unreply application
+    app.get('/coopsys/v1/application/unreply', function(req, res) {
+        console.log("Get all unreply applications");
+        ApplicationController.getApplicationUnreply(res);
+    });
+
+    // Get a specific application
+    app.get('/coopsys/v1/application/:applica_id', function(req, res) {
+        var app_id = req.params.applica_id || "noname";
+        console.log("Get " +  app_id + " application");
+        ApplicationController.findApplicationById(res, app_id);
+    });
+    
+    // Create an application
+    app.post('/coopsys/v1/application', function(req, res) {
+        var title = req.body.student || "noname";
+        console.log("Create " + title + " application");
+        ApplicationController.createApplication(res, req.body);
+    });
+
+    // Edit an application
+    app.put('/coopsys/v1/application', function(req, res) {
+        var title = req.body.student || "noname";
+        console.log("Update " + title + " application");
+        ApplicationController.updateApplication(res, req.body);
+    });
+
+    // Delete an application
+    app.delete('/coopsys/v1/application/:application_id', function(req, res) {
+        var app_id = req.params.application_id || "noname";
+        console.log("Remove " + app_id + " application");
+        ApplicationController.delApplication(res, app_id);
     });
 
 
+    //================================ Announcement ====================================
+    
+    // Create an announcement
+    app.post('/coopsys/v1/announce', function(req, res) {
+        var title = req.body.title || "noname";
+        console.log("Create " + title + " news");
+        AnnounceController.createAnnounce(res, req.body);
+    });
 
+    // Edit an announcement
+    app.put('/coopsys/v1/announce', function(req, res) {
+        var title = req.body.title || "noname";
+        console.log("Update " + title + " news");
+        AnnounceController.updateAnnounce(res, req.body, req.decoded.display_name);
+    });
+
+    // Delete an announcement
+    app.delete('/coopsys/v1/announce/:announce_id', function(req, res) {
+        var anc_id = req.params.announce_id || "noname";
+        console.log("Remove " + anc_id + " company");
+        AnnounceController.delAnnounce(res, anc_id);
+    });
+
+
+    //================================ DLC ====================================
+
+    // Create a DLC
+    app.post('/coopsys/v1/dlc', upload.single('file'), function(req, res, next) {
+        console.log(req.file);
+        var title = req.body.title || "noname";
+        console.log("Create " + title + " dlc");
+        DlcController.createDlc(res, req);
+    });
+
+    // Delete a DLC
+    app.delete('/coopsys/v1/dlc/:dlc_id', function(req, res) {
+        var dlc_id = req.params.dlc_id || {};
+        console.log("Remove " + dlc_id);
+        DlcController.delDlc(res, dlc_id);
+    });
 
     // application -------------------------------------------------------------
-    app.get('*', function(req, res) {
+    app.get('/v1/coopsys*', function(req, res) {
         res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
     });
 };

@@ -1,45 +1,150 @@
-.round-button {
-	width:25%;
+/*
+.show-grid [class^=col-] {
+    background-color: #eee;
+    background-color: rgba(86,61,124,.15);
+    border: 1px solid #ddd;
+    border: 1px solid rgba(86,61,124,.2);
+}*/
+
+body::-webkit-scrollbar { 
+    display: none; 
 }
-.round-button-circle {
-	width: 100%;
-	height:0;
-	padding-bottom: 100%;
-    border-radius: 50%;
-	border:3px solid #cfdcec;
-    overflow:hidden;
-    
-    background: #4679BD; 
-    box-shadow: 0 0 3px gray;
-}
-.round-button-circle:hover {
-	background:#30588e;
-}
-.round-button a {
-    display:block;
-	width:100%;
-	padding-top:50%;
-    padding-bottom:50%;
-	line-height:1em;
-	margin-top:-0.5em;
-    
-	text-align:center;
-	color:#e2eaf3;
-    font-family:Verdana;
-    font-size:1.2em;
-    font-weight:bold;
-    text-decoration:none;
+th>a:hover{
+    text-decoration: none;
 }
 
-.side-menu-show {
-	position:fixed;
-	right:15px;
-	top:5em;
-	background-color: white;
+.main-view {
+    padding:20px 10px 10px 10px;
 }
 
-.side-menu-hid {
-	position:fixed;
-	right:-10px;
-	top:5em;
+.mini-red {
+    font-size: 0.7em;
+    font-style: italic;
+    color: #CC0000;
 }
+
+.mini-gray {
+    font-size: 0.7em;
+    font-style: italic;
+    color: #888888;
+}
+
+
+.little-frame {
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 15px 15px 15px 15px;
+    margin: 15px 15px 15px 15px;
+    border: 1px dashed #eee;
+}
+
+.typeahead .custom-popup-wrapper {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    background-color: #f9f9f9;
+}
+
+.typeahead .custom-popup-wrapper > .message {
+    padding: 0px 20px;
+    border-bottom: 1px solid #ddd;
+    color: #868686;
+}
+
+.typeahead .custom-popup-wrapper > .dropdown-menu {
+    position: static;
+    float: none;
+    display: block;
+    min-width: 160px;
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.touched-validate input.ng-invalid.ng-touched {
+    border: #39e600;
+    box-shadow: 0px 0px 5px #FA787E;
+}
+
+.touched-validate input.ng-valid.ng-touched {
+    border: green;
+    box-shadow: 0px 0px 5px #39e600;
+}
+
+.ex-touched {
+    border: 1px solid #ccc !important;
+    box-shadow: 0px 0px 0px #ffffff !important;
+}
+.form-inline > input {
+    margin: 5px 5px 5px 5px !important;
+}
+
+.form-group > input {
+    margin-left: 5px !important;
+}
+
+.text-short {
+    max-width:150px;
+}
+.text-med {
+    max-width:250px;
+    margin-bottom: 5px;
+}
+
+th.scode {
+    width:110px;
+}
+
+th.status {
+    width:75px;
+}
+
+th.student-status {
+    width:150px;
+}
+
+th.action {
+    width:32px;
+}
+
+select.title-name {
+    margin-left: 5px;
+    max-width:120px;
+}
+
+.form-column {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.green {
+    color: #00cc00;
+}
+
+.red {
+    color: #ff0000;
+}
+
+.orange {
+    color: #ff6600;
+}
+
+.tooltip-status{
+    width:250px;
+}
+
+.profile-display{
+    border: 2px dashed #cccccc;
+    border-radius: 5px;
+    width: 124px;
+    height: 165px;
+}
+
+/*
+input:valid{
+    border: green;
+    box-shadow: 0px 0px 5px #39e600;
+}*/

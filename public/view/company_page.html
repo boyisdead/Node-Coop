@@ -1,0 +1,56 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="page-header">
+                <h1>
+                    สถานประกอบการ
+                </h1>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6" style="position:relative;min-height:90px;">
+            <form class="form-inline" style="position:absolute;right:15px;bottom:5px;">
+                <button disabled class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-trash"></span></button>
+                <button class="btn btn-default btn-sm" type="button" ng-click="openAddCompany()">เพิ่มสถานประกอบการ <span class="glyphicon glyphicon-plus"></span></button>
+                <div class="form-group">
+                    <div class="input-group input-group-sm" style="max-width:200px;">
+                        <span class="input-group-addon" id="searchBox"><span class="glyphicon glyphicon-search"></span></span>
+                        <input type="text" class="form-control" placeholder="Keyword" aria-describedby="searchBox" ng-model="searchKey">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th>ชื่อ</th>
+                        <th>ชื่อย่อ</th>
+                        <th>เว็บไซต์</th>
+                        <th class="action"></th>
+                        <th class="action"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="company in companies |orderBy: company.name.full |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
+                        <td ng-bind="company.name.full"></td>
+                        <th ng-bind="company.name.init + company.s_index"></th>
+                        <th><a href="http://{{company.website}}/" target="_blank"><span ng-bind="company.website"></span></a></th>
+                        <td>
+                            <a ng-click="deleteCompany(company._id)"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                        <td> 
+                            <a ng-click="openEditCompany(company._id)"><span class="glyphicon glyphicon-pencil"></span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-spin fa-3x"></span></p>
+            <uib-pagination ng-model="currentPage" total-items="companies.length" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
+        </div>
+    </div>
+</div>
+<script type="text/ng-template" id="descTemplate.html">
+    
+</script>
