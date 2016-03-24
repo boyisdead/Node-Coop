@@ -20,8 +20,8 @@ var studentSchema = mongoose.Schema({
         "address": { type: String, default: '' }
     },
     "preferred_company" : {
-        "first": { type: String, default: '' }
-        "second": { type: String, default: '' }
+        "first": { type: String, default: '' },
+        "second": { type: String, default: '' },
         "third": { type: String, default: '' }
     },
     "emergency_contact": {

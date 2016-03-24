@@ -109,8 +109,10 @@ var updateTeacher = function(res, item) {
         _id: item._id
     }, function(err, doc) {
         if (doc != null) {
-            objectAssign(doc.contact, item.contact);
-            objectAssign(doc.name, item.name);
+            if(item.contact)
+                objectAssign(doc.contact, item.contact);
+            if(item.name)
+                objectAssign(doc.name, item.name);
             objectAssign(doc, item);
             if (typeof item.password != 'undefined')
                 doc.password = passwordHash.generate(item.password);
@@ -213,21 +215,31 @@ var delTeacher = function(res, item) {
     Teacher.findOne({
         _id: item
     }, function(err, doc) {
-        if (err) 
-            res.send(err);
-        else if (!doc)
-            res.send({success:false});
-        else if(doc.profile_picture!=default_profile_picture){
-            var remainFile = [];
-            remainFile.push(doc.profile_picture.replace('./','./public/'));
-            console.log(remainFile);
-            deleteFiles(remainFile, function(err) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('all files removed');
-                }
+        if(err)
+            res.status(200).send({
+                success: false,
+                message: "Something went wrong while removing. try again.",
+                err :err
             });
+        else if (!doc)
+            res.status(200).send({
+                success: false,
+                message: "Teacher not found",
+                err :err
+            });
+        else {
+            if(doc.profile_picture != default_profile_picture){
+                var remainFile = [];
+                remainFile.push(doc.profile_picture.replace('./','./public/'));
+                console.log(remainFile);
+                deleteFiles(remainFile, function(err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('all files removed');
+                    }
+                });
+            }
             Teacher.findOneAndRemove({"_id": item}, function(err, doc){
                 if(err)
                     res.status(200).send({

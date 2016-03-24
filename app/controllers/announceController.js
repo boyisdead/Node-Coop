@@ -55,13 +55,14 @@ var createAnnounce = function(res, item) {
 
 // Update
 
-var updateAnnounce = function(res, item) {
+var updateAnnounce = function(res, item, announcer) {
     Announce.findOne({
         _id: item._id
     }, function(err, doc) {
         if (doc != null) {
             objectAssign(doc, item);
-            doc.annouce_date = Date.now;
+            doc.announcer = announcer;
+            doc.annouce_date = Date.now();
             doc.save();
         } else console.log("Not found - not update");
 

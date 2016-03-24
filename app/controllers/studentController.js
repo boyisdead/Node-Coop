@@ -318,17 +318,9 @@ var changePreferredCompany = function (res, owner, item) {
                 var preferred = new Student().preferred_company;
                 objectAssign(preferred, item);
                 doc.save();
-                    if(err){
-                        res.status(200).send({
-                            success: false,
-                            message: "Something went wrong while saving Student. try again.",
-                            err : err
-                        });
-                    }
-                    res.status(200).send({
-                        success : true,
-                        message: "Preferred companies updated."
-                    });
+                res.status(200).send({
+                    success : true,
+                    message: "Preferred companies updated."
                 });
             } else {
                 res.status(404).send({
@@ -456,15 +448,31 @@ var delStudent = function(res, item) {
 };
 
 var getAttachments = function (res, academic_year){
+    academic_year = academic_year || {$ne:""};
+    var result = [];
+    console.log(academic_year);
     Student.aggregate([
-        {$project:{_id:0,attachments:1}}, 
-        {$match:{"attachments":{$exists:true}}}
+        {$project:{attachments:1, academic_year:1}}, 
+        {$match:{"attachments":{$exists:true}, "academic_year":academic_year}}
     ])
     .unwind("attachments")
     .exec(function(err,docs){
         if(err)
-            res.send(err);
-        res.json(docs);
+            res.status(200).send({
+                success: false,
+                message: "Something went wrong while removing. try again.",
+                err :err
+            });
+        else { 
+            while (docs.length>=1){
+                result.push(docs.pop().attachments);
+            }
+            res.status(200).send({
+                success: true,
+                data: result,
+                message: "Here you go."
+            });
+        }
     });
 }
 

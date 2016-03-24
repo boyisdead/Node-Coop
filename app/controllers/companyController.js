@@ -76,7 +76,7 @@ var updateCompany = function(res, item) {
         else if(!doc)
             res.status(200).send({
                 success: false,
-                message: "File not exist."
+                message: "Company not exist."
             })
         else { 
             var newContact = new Company();
