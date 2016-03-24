@@ -4,27 +4,67 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
     <title>Coop transforming</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css"> -->
+
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="mian-style.css">
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-    <script src="js/core.js"></script>
+    <script src="bower_components/ng-file-upload/ng-file-upload.min.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.min.js"></script>
     <!-- load main application -->
+    <script src="js/core.js"></script>
+
+    <!-- load controllers -->
+    <script src="js/controllers/loginCtrl.js"></script>
+    <script src="js/controllers/loginModalCtrl.js"></script>
+
     <script src="js/controllers/homeCtrl.js"></script>
+
     <script src="js/controllers/studentCtrl.js"></script>
     <script src="js/controllers/addStudentCtrl.js"></script>
+    <script src="js/controllers/editStudentCtrl.js"></script>
+    <script src="js/controllers/studentDetailCtrl.js"></script>
+
     <script src="js/controllers/teacherCtrl.js"></script>
     <script src="js/controllers/addTeacherCtrl.js"></script>
-    <!-- load controller -->
+    <script src="js/controllers/editTeacherCtrl.js"></script>
+
+    <script src="js/controllers/documentCtrl.js"></script>
+    <script src="js/controllers/addDocumentCtrl.js"></script>
+
+    <script src="js/controllers/companyCtrl.js"></script>
+    <script src="js/controllers/addCompanyCtrl.js"></script>
+    <script src="js/controllers/editCompanyCtrl.js"></script>
+
+    <script src="js/controllers/chngAcaYrCtrl.js"></script>
+
+    <!-- load services -->
     <script src="js/services/students.js"></script>
     <script src="js/services/teachers.js"></script>
-    <!-- load students service -->
+    <script src="js/services/users.js"></script>
+    <script src="js/services/documents.js"></script>
+    <script src="js/services/companies.js"></script>
+    <script src="js/services/others.js"></script>
+
+    <!-- load filters -->
+    <script src="js/filter/start-from-filter.js"></script>
+
+    <!-- load directive -->
+    <link rel="stylesheet" href="bower_components/sweetalert/dist/sweetalert.css">
+    <script src="bower_components/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="bower_components/ng-sweet-alert/ng-sweet-alert.js"></script>
+
+    <!-- load third party -->
+    <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+    <script src="bower_components/angular-jwt/dist/angular-jwt.min.js"></script>
+    <script src="bower_components/ng-file-upload/ng-file-upload.min.js"></script>
+
 </head>
 
-<body ng-controller="studentCtrl">
+<body>
     <header class="navbar navbar-default navbar-fixed-top navbar-inner">
         <div class="container">
             <div class="navbar-header">
@@ -34,15 +74,18 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand visible-xs" href="#">Coop transforming</a>
+                <a class="navbar-brand visible-xs" href="#">Coop Transforming</a>
             </div>
             <nav class="hidden-xs">
                 <ul class="nav navbar-nav">
                     <a ui-sref="home" class="navbar-brand" role="button">Dashboard</a>
-                    <li><a ui-sref="student">Student</a></li>
-                    <li><a ui-sref="login">Login</a></li>
-                    <li><a ui-sref="teacher">Teacher</a></li>
-                    <!-- Under construction
+                    <li><a ui-sref="studentList">Student</a></li>
+                    <li><a ui-sref="teacherList">Teacher</a></li>
+                    <li><a ui-sref="documentList">Document</a></li>
+                    <li><a ui-sref="companyList">Company</a></li>
+                    <li><a ui-sref="login"><span ng-show="!currentUser">Login</span><span ng-show="currentUser">Logout</span></a></li>
+
+            <!-- Under construction
                 <li class="dropdown" uib-dropdown="">
                     <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
                         Directives <b class="caret"></b>
@@ -65,10 +108,9 @@
                         <li><a href="#tooltip">Tooltip</a></li>
                         <li><a href="#typeahead">Typeahead</a></li>
                     </ul>
-                </li> -->
-                    
-
-                    <!-- Under construntion
+                </li>
+             -->
+            <!-- Under construntion
                 <li class="dropdown" uib-dropdown="">
                     <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
                         Previous docs <b class="caret"></b>
@@ -79,20 +121,28 @@
                             <a ng-href="/bootstrap" class="ng-binding" href="/bootstrap">Current</a>
                         </li>
                     </ul>
-                </li> -->
+                </li> 
+            -->
                 </ul>
             </nav>
             <nav class="visible-xs collapse" uib-collapse="!isCollapsed" style="height: 0px;">
                 <ul class="nav navbar-nav">
                     <li><a ui-sref="home" ng-click="isCollapsed = !isCollapsed">Dashboard</a></li>
-                    <li><a ui-sref="student" ng-click="isCollapsed = !isCollapsed">Student</a></li>
-                    <li><a ui-sref="login" ng-click="isCollapsed = !isCollapsed">Login</a></li>
-                    <li><a ui-sref="teacher" ng-click="isCollapsed = !isCollapsed">Teacher</a></li>
+                    <li><a ui-sref="studentList" ng-click="isCollapsed = !isCollapsed">Student</a></li>
+                    <li><a ui-sref="teacherList" ng-click="isCollapsed = !isCollapsed">Teacher</a></li>
+                    <li><a ui-sref="documentList" ng-click="isCollapsed = !isCollapsed">Document</a></li>
+                    <li><a ui-sref="conpanyList" ng-click="isCollapsed = !isCollapsed">Company</a></li>
+                    <li><a ui-sref="login" ng-click="isCollapsed = !isCollapsed"><span ng-show="!currentUser">Login</span><span ng-show="currentUser">Logout</span></a></li>
                 </ul>
             </nav>
         </div>
     </header>
-    <div ui-view style="position:relative;top:62px;"></div>
-</body>
+    <div class="container" >
+        <div class="row show-grid">
+            <div class="col-xs-12 main-view"   ui-view>
 
+            </div>
+        </div>
+    </div>
+</body>
 </html>

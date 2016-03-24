@@ -1,0 +1,31 @@
+{
+  "name": "nood-coop",
+  "homepage": "https://github.com/boyisdead/Node-Coop",
+  "authors": [
+    "boyisdead <nattawut_k@cmu.ac.th>"
+  ],
+  "description": "a 499 project",
+  "main": "index.html",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-bootstrap": "~0.14.2",
+    "angular-jwt": "~0.0.9",
+    "angular-ui-router": "~0.2.15",
+    "auth0-angular": "~4.0.5",
+    "bootstrap": "~3.3.5",
+    "jquery": "~2.1.4",
+    "ng-file-upload": "~9.1.2",
+    "ng-flow": "~2",
+    "ng-sweet-alert": "~1.0.5",
+    "a0-angular-storage": "~0.0.12",
+    "angular-cookies": "~1.4.7"
+  }
+}

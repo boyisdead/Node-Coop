@@ -1,36 +1,100 @@
-teacherModule.controller('addTeacherCtrl', ['$scope', '$modalInstance','TeachersService', function($scope, $modalInstance, TeachersService) {
+teacherModule.controller('addTeacherCtrl', ['$scope', '$modalInstance', 'TeachersService', 'OthersService', function($scope, $modalInstance, TeachersService, OthersService) {
 
-	
-    // CREATE ==================================================================
-    // when submitting the add form, send the text to the node API
-
-    $scope.createTeacher = function() {
-
-        // validate the formData to make sure that something is there
-        // if form is empty, nothing will happen
-        if ($scope.formData.staff_code != undefined) {
-            $scope.loading = true;
-
-            // call the create function from our service (returns a promise object)
-            TeachersService.create($scope.formData)
-
-            // if successful creation, call our get function to get all the new teachers
-            .success(function(data) {
-                $scope.loading = false;
-                $scope.formData = {}; // clear the form so our teacher is ready to enter another
-                $scope.teachers = data; // assign our new list of teachers
-            });
-        }
+    var getTitleName = function() {
+        OthersService.getTitleName().success(function(titledata) {
+            $scope.titleNameList = titledata;
+            console.log($scope.titleNameList[0].title_th);
+        });
+    };
+    var getAcadePos = function() {
+        OthersService.getAcadePos().success(function(posdata) {
+            $scope.acadePosList = posdata;
+        });
     };
 
+    getAcadePos();
+    getTitleName();
+    var formData = {};
 
-  $scope.ok = function () {
-  	//can return something
-    $modalInstance.close();
-  };
+    $scope.sexChange = function() {
+        if ($scope.formData.title._id == 1)
+            $scope.formData.sex = "ชาย";
+        else
+            $scope.formData.sex = "หญิง";
+    }
 
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
+    $scope.validateForm = function(msg) {
+        var errList = "";
+        if (typeof $scope.formData != 'undefined') {
+            if (msg.staffCode.$error.required) {
+                errList += "รหัสประจำตัว ไม่ถูกกรอก\n";
+            } else if (msg.staffCode.$error.minlength) {
+                errList += "รหัสประจำตัว สั้นเกินไป\n";
+            }
+
+            if (msg.titleName.$error.required) {
+                errList += "คำนำหน้าชื่อ ไม่ถูกเลือก\n";
+            }
+
+            if (msg.th_name_first.$error.required) {
+                errList += "ชื่อภาษาไทย ไม่ถูกกรอก\n";
+            }
+            if (msg.th_name_last.$error.required) {
+                errList += "นามสกุลภาษาไทย ไม่ถูกกรอก\n";
+            }
+            if (msg.en_name_first.$error.required) {
+                errList += "ชื่อภาษาอังกฤษ ไม่ถูกกรอก\n";
+            }
+            if (msg.en_name_last.$error.required) {
+                errList += "นามสกุลภาษาอังกฤษ ไม่ถูกกรอก\n";
+            }
+
+            if (msg.acaPos.$error.required) {
+                errList += "ตำแหน่งทางวิชาการ ไม่ถูกกรอก\n";
+            }
+
+            if (msg.password.$error.required) {
+                errList += "รหัสผ่าน ไม่ถูกกรอก\n";
+            } else if (msg.password.$error.minlength) {
+                errList += "รหัสผ่านสั้นเกินไป\n";
+            }
+
+            if ($scope.formData.password != $scope.formData.password_confirm) {
+                errList += "การยืนยันรหัสผ่านไม่ถูกต้อง\n";
+            }
+
+            if (errList != "") {
+                sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
+            } else {
+                console.log("aaa");
+                createTeacher();
+            }
+        }
+
+    }
+
+
+    var showAlert = function(message) {
+        sweetAlert("ฟอร์มไม่ถูกต้อง!", message, 'error');
+    }
+
+
+    var createTeacher = function() {
+        $scope.loading = true;
+        TeachersService.create($scope.formData).success(function(data) {
+            sweetAlert("สำเร็จ", "อาจารย์" + $scope.formData.name.f_th + " ถูกเพิ่มแล้ว", "success");
+            $scope.loading = false;
+            $modalInstance.close();
+        });
+    }
+
+    $scope.ok = function() {
+        //can return something
+        $modalInstance.close();
+    };
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss('cancel');
+    };
 
 }]);

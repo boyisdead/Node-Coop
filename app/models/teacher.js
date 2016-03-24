@@ -1,11 +1,21 @@
 var mongoose = require('mongoose');
+var default_profile_picture = require('../../config/setting').default_profile_picture;
 
-module.exports = mongoose.model('Teacher', {
-	staff_code :{type : String, default: ''}, 
-	password : {type : String, default: ''},
-	name_en : {type : String, default: ''},
-	name_th : {type : String, default: ''},
-	contact_email : {type : String, default: ''},
-	tel : {type : String, default: ''},
-	sex : {type : String, default: ''},
+var teacherSchema = mongoose.Schema({
+	_id :{type : String, default: ''}, 
+	password : {type : String, required: true},
+	profile_picture : {type : String, default : default_profile_picture},
+	academic_pos: {type : String, default: ''},
+    name : {
+    	title : { type : String, default: '' },
+		first : { type : String, required: true },
+		last : { type : String, default: '' }
+    },
+    contact : { 
+    	email : {type : String, required: true, index: { unique: true }},
+		tel : {type : String, default: ''}
+	},
+	sex : {type : String, default: ''}
 });
+
+module.exports = mongoose.model('Teacher', teacherSchema);
