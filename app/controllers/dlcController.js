@@ -25,25 +25,15 @@ var getDlc = function(res, criteria) {
     criteria = criteria || {};
     Dlc.find(criteria, function(err, dlcs) {
         if (err)
-            res.send(err)
-        if(!dlcs || typeof dlcs[0] == "undefined") {
-            res.status(204).send({
-                success : true,
-                message : "No Teacher was found."
+            return res.status(500).send({
+                success : false,
+                error : err
             });
-        } else if(dlcs.length<=1){
-            res.status(200).send({
-                data : dlcs[0],
-                success : true,
-                message : "Here you go."
-            });
-        } else {
-            res.status(200).send({
-                data : dlcs,
-                success : true,
-                message : "Here you go."
-            });
-        }
+        return res.status(200).send({
+            result : dlcs,
+            success : true,
+            message : "Here you go."
+        });
     });
 };
 
@@ -57,8 +47,8 @@ var createDlc = function(res, item) {
     var time_stamp = Date.now();
     var newDlc = new Dlc();
 
-    Counter.findOneAndUpdate({ _id: "dlcs" }, { $inc: { "seq": 1 } }, function (err, doc) {
-        if (err) return res.send(err); 
+    Counter.findOneAndUpdate({ _id: "dlcs" }, {$inc: { "seq": 1 } }, function (err, doc) {
+        if (err) return res.status(500).send({success: false, error: err}); 
         var new_file_name = item.body.title.replace(/ /g,"_").toLowerCase() + getFileExtension(item.file.originalname);
         var target_path = destination_folder + new_file_name;
         console.log("new file name ",new_file_name);
@@ -72,15 +62,14 @@ var createDlc = function(res, item) {
         src.pipe(dest);
         src.on('end', function() {
             newDlc.save(function(err) {
-                if (err)
-                    res.send(err);
-                res.json({ success: true });
+                if (err) return res.status(500).send({success: false, error: err}); 
             });
         });
         src.on('error', function(err) {
-            res.send(err);
+           return res.status(500).send({success: false, error: err});
         });
         fs.unlinkSync(tmp_path);
+        return res.status(201).send({success: true}); 
     });
 }
 
@@ -88,46 +77,44 @@ var delDlc = function(res, item) {
     
     Dlc.findOne({_id: item}, function (err, doc){
         if(err)
-            res.status(500).send({
+            return res.status(500).send({
                 success: false,
                 message: "Something went wrong while retrieving. try again."
             })
         if(!doc)
-            res.status(200).send({
+            return res.status(404).send({
                 success: false,
                 message: "File not exist."
             })
-        else {
-            console.log("doc in findOne : ",doc);
-            var file_path = doc.file_path.replace('./','./public/');
-            console.log("doc loc:", file_path);
-            fs.stat(file_path, function(err, stats) {
-                if(typeof stats != 'undefined'){
-                    console.log("File : ", stats);
-                    console.log("File : ", stats.isFile());
-                    if(stats.isFile())
-                        fs.unlink(file_path),function (err) {
-                            if (err) throw err;
-                        }
-                    console.log("Deleted - " + file_path);
-                } else {
-                    console.log("File not exist - "+ file_path);
-                }
+        console.log("doc in findOne : ",doc);
+        var file_path = doc.file_path.replace('./','./public/');
+        console.log("doc loc:", file_path);
+        fs.stat(file_path, function(err, stats) {
+            if(typeof stats != 'undefined'){
+                console.log("File : ", stats);
+                console.log("File : ", stats.isFile());
+                if(stats.isFile())
+                    fs.unlink(file_path),function (err) {
+                        if (err) throw err;
+                    }
+                console.log("Deleted - " + file_path);
+            } else {
+                console.log("File not exist - "+ file_path);
+            }
+        });
+        Dlc.findOneAndRemove({"_id": item}, function(err, doc){
+            if(err)
+                return res.status(500).send({
+                    success: false,
+                    message: "Something went wrong while removing. try again.",
+                    err :err
+                });
+            return res.status(200).send({
+                success: true,
+                message: "Dlc removed."
             });
-            Dlc.findOneAndRemove({"_id": item}, function(err, doc){
-                if(err)
-                    res.status(200).send({
-                        success: false,
-                        message: "Something went wrong while removing. try again.",
-                        err :err
-                    });
-                else
-                    res.status(200).send({
-                        success: true,
-                        message: "Dlc removed."
-                    });
-            });
-        }
+        });
+        
     })
 }
 
