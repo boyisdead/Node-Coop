@@ -1,6 +1,6 @@
 var fs = require("fs");
-var multipart = require('connect-multiparty');
-var multipartMiddleware = multipart();
+// var multipart = require('connect-multiparty');
+// var multipartMiddleware = multipart();
 var multer = require('multer');
 var upload = multer({
     dest: './public/uploads/'

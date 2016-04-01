@@ -10,7 +10,7 @@ var database = require('./config/database'); 			// load the database config
 var authToken = require('./config/authenticate');
 var hashKey = require('./config/security');
 //var uuid = require('uuid');
-var multiparty = require('multiparty');
+//var multiparty = require('multiparty');
 
 var port  	 = process.env.PORT || 8080; 				// set the port
 var methodOverride = require('method-override');

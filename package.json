@@ -1,14 +1,11 @@
 {
-  "name": "node-cocp",
+  "name": "node-coop-ed",
   "version": "0.0.0",
-  "description": "Coop Ed Assistant",
+  "description": "Cooperative Education Web API",
   "main": "server.js",
-  "author": "Scotch",
+  "author": "Nattawut Kongchatri",
   "dependencies": {
-    "angular": "^1.4.7",
     "body-parser": "~1.4.3",
-    "connect-multiparty": "^1.0.4",
-    "ejs": "^2.3.4",
     "express": "~4.6.1",
     "jsonwebtoken": "^0.4.1",
     "method-override": "~2.1.1",
@@ -16,10 +13,7 @@
     "mongoose": "~3.8.13",
     "morgan": "~1.1.1",
     "multer": "^1.1.0",
-    "multiparty": "^4.1.2",
-    "ng-file-upload": "^9.1.2",
     "object-assign": "^4.0.1",
-    "password-hash": "^1.2.2",
-    "uuid": "^2.0.1"
+    "password-hash": "^1.2.2"
   }
 }
