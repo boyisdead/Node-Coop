@@ -2,19 +2,19 @@ teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance', 'Teache
 
     $scope.getTeacherData = function() {
         TeachersService.find($scope.params.teacherId, 'i').success(function(data) {
-            $scope.formData = data;
+            $scope.formData = data.result[0];
         });
     }
 
     var getAcadePos = function() {
         OthersService.getAcadePos().success(function(posdata) {
-            $scope.acadePosList = posdata;
+            $scope.acadePosList = posdata.result;
         });
     };
 
     var getTitleName = function() {
         OthersService.getTitleName().success(function(titledata) {
-            $scope.titleNameList = titledata;
+            $scope.titleNameList = titledata.result;
         });
     };
 

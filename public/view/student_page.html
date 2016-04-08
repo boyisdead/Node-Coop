@@ -38,8 +38,8 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="student in students |orderBy: student.stu_code |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
-                        <th ng-bind="student.stu_code"></th>
-                        <td ng-bind="student.name.t_th + ' ' + student.name.f_th + ' ' + student.name.l_th"></td>
+                        <th ng-bind="student._id"></th>
+                        <td ng-bind="student.name.title + ' ' + student.name.first + ' ' + student.name.last"></td>
                         <td class="student-status">
                             <span ng-class="{'label label-success':student.status.profile,'label label-danger':!student.status.profile}">
                                 P

@@ -6,9 +6,10 @@ var acadePosTypeAhead = function(res) {
         if(err)
             return res.status(500).send({
                 success: false,
-                message: "Something went wrong while retrieving. try again."
+                message: "Something went wrong while retrieving. try again.",
+                error: err
             })
-        return res.status(500).send({
+        return res.status(200).send({
             success: true,
             result: acadePos
         });
@@ -20,9 +21,10 @@ var titleNameTypeAhead = function(res) {
         if(err)
             return res.status(500).send({
                 success: false,
-                message: "Something went wrong while retrieving. try again."
+                message: "Something went wrong while retrieving. try again.",
+                error: err
             })
-        return res.status(500).send({
+        return res.status(200).send({
             success: true,
             result: titleName
         });

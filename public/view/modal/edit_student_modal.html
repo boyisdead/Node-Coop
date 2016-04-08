@@ -10,28 +10,23 @@
                         <label for="profile_pic">
                             รูปนักศึกษา
                         </label>
-                        <img class="profile-display" ngf-thumbnail=" formData.profile_picture || './images/no-profile.png'" >
-                        <input type="file" class="form-control" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="profile_pic" placeholder="รหัสนักศึกษา" id="profile_pic" name="profile_pic" ngf-resize-if="$width > 150 || $height > 200" ngf-resize="{width: 150, height: 200,requality: .8, centerCrop: true}">
+                        <img class="profile-display" ngf-thumbnail="formData.profile_picture || './images/no-profile.png'" >
+                        <input type="file" class="form-control" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="profile_pic" placeholder="รหัสนักศึกษา" id="profile_pic" name="profile_pic" ngf-resize-if="$width > 150 || $height > 180" ngf-resize="{width: 150, height: 180,requality: .8, centerCrop: true}">
                     </div>
                     <div class="form-group">
-                        <label for="fnameTh">ชื่อภาษาไทย <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.f_th" placeholder="ชื่อ" for="fnameTh" name="th_name_first" autocomplete="off" autofocus required>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.l_th" placeholder="นามสกุล" name="th_name_last" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="fnameEn">ชื่อภาษาอังกฤษ <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.f_en" placeholder="First name" id="fnameEn" name="en_name_first" autocomplete="off" required>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.l_en" placeholder="Last name" id="lnameEn" name="en_name_last" autocomplete="off" required>
+                        <label for="fname">ชื่อภาษาไทย <span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.first" placeholder="ชื่อ" for="fname" name="first_name" autocomplete="off" autofocus required>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.last" placeholder="นามสกุล" name="last_name" autocomplete="off" required>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="email">อีเมล์ <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.contact_email" placeholder="Email" id="email" name="email" autocomplete="off" required>
+                        <input type="text" class="form-control text-med" ng-model="formData.contact.email" placeholder="Email" id="email" name="email" autocomplete="off" required>
                     </div>
                     <div class="form-group">
                         <label for="tel">เบอร์โทรศัพท์</label>
-                        <input type="text" class="form-control text-med" ng-model="formData.tel" placeholder="Telephone" id="tel" name="tel" autocomplete="off">
+                        <input type="text" class="form-control text-med" ng-model="formData.contact.tel" placeholder="Telephone" id="tel" name="tel" autocomplete="off">
                     </div>
                     <!-- advisor remove
                     <div class="form-group">

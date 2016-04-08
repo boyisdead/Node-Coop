@@ -13,6 +13,10 @@ var getFileExtension = function(filename){
     return '.' + filename.substr(filename.lastIndexOf('.') + 1);
 }
 
+var toFileName = function(str){
+    return str.replace(/ /g, "_").toLowerCase();
+}
+
 var numToLengthString = function(num, length) {
     var newNum = "" + num.toString();
     while (newNum.length < length) {
@@ -46,7 +50,7 @@ var getAcaYrs = function(res){
     var queryGroup = Student.distinct("academic_year");
     queryGroup.exec(function(err, acaYrs) {
         if (err)
-            return res.status(200).send({
+            return res.status(500).send({
                 success: false, 
                 message: "Something went wrong while retrieving. try again.", 
                 error : err
@@ -226,7 +230,14 @@ var createStudent = function(res, item) {
         if(!doc){
             var newStudent = new Student();
             objectAssign(newStudent, item);
-            newStudent.password = passwordHash.generate(item.password);
+            if (item.password == "" || typeof item.password == "undefined")
+                return res.status(500).send({
+                    error: "Missing password", 
+                    message : "No password provided!", 
+                    success : false
+                });
+            console.log(item.password);
+            newStudent.password = passwordHash.generate(item.password.toString());
             newStudent.save(function(err){
                 if(!err){
                     return res.status(201).send({
@@ -338,19 +349,18 @@ var changePreferredCompany = function (res, owner, item) {
     }
 }
 
-var uploadPicture = function(res, id, item){
-    if(item.file)
+var uploadPicture = function(res, id, file){
+    if(!file)
         return res.status(400).send({
             success: false, 
             message: "No picture provided."
         });
 
-    var tmp_path = item.file.path;
+    var tmp_path = file.path;
     var time_stamp = Date.now();
-        console.log(tmp_path, time_stamp);
-    console.log("Creating...", item.body);
+    console.log(tmp_path, time_stamp);
 
-    var new_file_name = item.file.filename + time_stamp + getFileExtension(item.file.originalname);
+    var new_file_name = file.filename + time_stamp + getFileExtension(file.originalname);
     var target_path = '/uploads/pictures/profile/' + new_file_name;
     console.log("file name: " + new_file_name);
     var src = fs.createReadStream(tmp_path);
@@ -358,7 +368,7 @@ var uploadPicture = function(res, id, item){
     src.pipe(dest);
     src.on('end', function() {
         Student.findOne({
-            _id: item.body.student_id
+            _id: id
         }, function(err, doc){
             if(err)
                 return res.status(500).send({
@@ -452,7 +462,7 @@ var delStudent = function(res, item) {
             })
         console.log("doc in findOne : ", doc);
         if (doc.profile_picture != default_profile) {
-            deleteFiles(doc.profile_picture.replace('./', './public/'), function(err) {
+            deleteFiles([doc.profile_picture.replace('./', './public/')], function(err) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -559,7 +569,9 @@ var findAttachmentById = function (res, item){
 }
 
 var createAttachment = function (res, file, attachment, student){
-
+    attachment.file_name = toFileName(attachment.file_type) + "_of_" + student;
+    if(attachment.description!="" && typeof attachment.description!="undefined")
+        attachment.file_name = toFileName(attachment.description) + "_" + attachment.file_name;
     student = student || attachment.owner || -1;
     console.log("old file: " , attachment, file, student);
     if(student == -1) {
@@ -580,7 +592,7 @@ var createAttachment = function (res, file, attachment, student){
                 error: err
             });
         }
-        var new_file_name = autoPrefixId("AT", cnt.seq, 6) + "_" + attachment.file_name.replace(/ /g, "_").toLowerCase() + getFileExtension(file.originalname);
+        var new_file_name = autoPrefixId("AT", cnt.seq, 6) + "_" + toFileName(attachment.file_name) + getFileExtension(file.originalname);
         var target_path = destination_folder + new_file_name;
         var src = fs.createReadStream(tmp_path);
         var dest = fs.createWriteStream('./public' + target_path);

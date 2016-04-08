@@ -9,7 +9,7 @@ teacherModule.controller('teacherCtrl', ['$scope','$rootScope', '$cookies', 'jwt
 
     var getTeacher = function () {
         TeachersService.get().success(function(data) {
-            $scope.teachers = data;
+            $scope.teachers = data.result;
             $scope.loading = false;
             console.log($scope.teachers);
         });

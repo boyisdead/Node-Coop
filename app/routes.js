@@ -409,9 +409,9 @@ module.exports = function(app) {
     });
 
     // 
-    app.post('/coopsys/v1/student/upload_myprofile_picture', upload.single('file'), function(req, res, next) {
+    app.post('/coopsys/v1/student/:student_id/upload_profile_picture', upload.single('file'), function(req, res, next) {
         console.log(req.file);
-        StudentController.uploadPicture(res, req, next);
+        StudentController.uploadPicture(res, req.params.student_id, req.file);
     });
 
     // update a student
@@ -426,7 +426,7 @@ module.exports = function(app) {
     });
 
     // Get academic year available
-    app.get('/coopsys/v1/student/acaYrs', function(res, req) {
+    app.get('/coopsys/v1/typehead/academic-years', function(req, res) {
         StudentController.getAcaYrs(res);
     });
 

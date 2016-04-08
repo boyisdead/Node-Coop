@@ -20,9 +20,10 @@ documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', 'Documen
         DocumentsService.get().success(function(data) {
             console.log("Documents data retrieving success.");
             console.log("data : " , data);
-            $scope.documents = data.map(function(obj){
-                return obj.documents;
-            });
+            $scope.documents = data.result;
+            // $scope.documents = data.map(function(obj){
+            //     return obj.documents;
+            // });
             console.log("after map : " , $scope.documents);
             console.log("first doc : " , $scope.documents[0]);
             $scope.loading = false;

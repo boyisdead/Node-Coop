@@ -11,7 +11,7 @@ companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$l
         CompaniesService.get().success(function(data) {
             console.log("Companies data retrieving success.");
             console.log(data);
-            $scope.companies = data.data;
+            $scope.companies = data.result;
             $scope.loading = false;
         });
     }
