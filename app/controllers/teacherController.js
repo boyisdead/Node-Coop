@@ -104,7 +104,7 @@ var updateTeacher = function(res, item) {
             return res.status(500).send({success: false, error: err});
         if (!doc) 
             return res.status(500).send({success: false, error: err});
-
+        console.log(item);
         if(item.contact)
             objectAssign(doc.contact, item.contact);
         if(item.name)
@@ -112,6 +112,7 @@ var updateTeacher = function(res, item) {
         objectAssign(doc, item);
         if (typeof item.password != 'undefined')
             doc.password = passwordHash.generate(item.password);
+        console.log(doc);
         doc.save(function(err){
             if (err)
                 return res.status(500).send({success: false, error: err});

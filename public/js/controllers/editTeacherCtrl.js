@@ -40,17 +40,11 @@ teacherModule.controller('editTeacherCtrl', ['$scope', '$modalInstance', 'Teache
         var errList = "";
         if (typeof $scope.formData != 'undefined') {
 
-            if (msg.th_name_first.$error.required) {
-                errList += "ชื่อภาษาไทย ไม่ถูกกรอก\n";
+            if (msg.first_name.$error.required) {
+                errList += "ชื่อ ไม่ถูกกรอก\n";
             }
-            if (msg.th_name_last.$error.required) {
-                errList += "นามสกุลภาษาไทย ไม่ถูกกรอก\n";
-            }
-            if (msg.en_name_first.$error.required) {
-                errList += "ชื่อภาษาอังกฤษ ไม่ถูกกรอก\n";
-            }
-            if (msg.en_name_last.$error.required) {
-                errList += "นามสกุลภาษาอังกฤษ ไม่ถูกกรอก\n";
+            if (msg.last_name.$error.required) {
+                errList += "นามสกุล ไม่ถูกกรอก\n";
             }
 
             if (msg.acaPos.$error.required) {

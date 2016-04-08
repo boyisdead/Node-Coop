@@ -37,8 +37,7 @@ teacherModule.controller('teacherCtrl', ['$scope','$rootScope', '$cookies', 'jwt
             if(isConfirm) {
                 $scope.loading = true;
                 TeachersService.delete(id).success(function(data) {
-                    $scope.loading = false;
-                    $scope.teachers = data; // assign our new list of teachers
+                    getTeacher();
                 });
                 swal("ลบ!","ข้อมูลนี้ถูกลบออกแล้ว","success");
             } else {

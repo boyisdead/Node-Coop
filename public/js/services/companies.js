@@ -13,7 +13,7 @@ companyModule.factory('CompaniesService', ['$http', function($http){
 			return $http.put('/coopsys/v1/company', companyData);
 		},
 		find : function(id) {
-			return $http.get('/coopsys/v1/' + id);
+			return $http.get('/coopsys/v1/company/' + id);
 		}
 	};
 }])

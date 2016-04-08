@@ -7,7 +7,7 @@
             <form class="form-horizontal touched-validate" name="editForm" novalidate>
                 <div class="col-sm-6 form-column">
                     <div class="form-group">
-                        <label for="fnameTh">ชื่อภาษาไทย <span class="mini-red">*</span></label>
+                        <label for="fnameTh">ชื่อ<span class="mini-red">*</span></label>
                             <input type="text" class="form-control text-med" ng-model="formData.name.first" placeholder="ชื่อ" id="fnameTh" name="first_name" autofocus required>
                             <input type="text" class="form-control text-med" ng-model="formData.name.last" placeholder="นามสกุล" id="lnameTh" name="last_name"  required>
                     </div>
@@ -15,7 +15,7 @@
                 <div class="col-sm-6 form-column">
                     <div class="form-group">
                         <label for="acaPos">ตำแหน่งทางวิชาการ <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" id="acaPos" name="acaPos" ng-model="formData.academic_pos" uib-typeahead="acadePos as acadePos.full.th for acadePos in acadePosList | filter:$viewValue | limitTo:8" required>
+                        <input type="text" class="form-control text-med" id="acaPos" name="acaPos" ng-model="formData.academic_pos" uib-typeahead="acadePos.full.th as acadePos.full.th for acadePos in acadePosList | filter:$viewValue | limitTo:8" required>
                     </div>
                     <div class="form-group">
                         <label for="con_email">อีเมล์ <span class="mini-red">*</span></label>

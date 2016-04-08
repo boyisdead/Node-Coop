@@ -49,7 +49,7 @@ authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies'
                             var tokenPayload = jwtHelper.decodeToken(data.result.token);
                             $rootScope.currentUser = tokenPayload;
                             swal({
-                                title: "สวัสดี คุณ!"+$rootScope.currentUser.display_name,
+                                title: "สวัสดี"+$rootScope.currentUser.display_name,
                                 type: "success",
                                 confirmButtonText: "ปิด"
                             });
