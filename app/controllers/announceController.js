@@ -40,34 +40,35 @@ var createAnnounce = function(res, item) {
     var msg;
     var newAnnounce = new Announce();
     Counter.findOneAndUpdate({_id:"announces"},{$inc:{"seq":1 }}, function (err, cntr) {
-        if (err) return res.send(err); // Space Ghost is a talk show host.
+        if (err) return res.status(500).send(err); // maybe collections counter is missing
         newAnnounce._id  = autoPrefixId("ANC", cntr.seq, 3);
         objectAssign(newAnnounce, item);
         newAnnounce.save(function(err) {
             if (err)
-                msg = {success:false,err:err};
-            else
-                msg = {success:true};
-            res.json(msg);
+                return res.status(500).send({success:false,error:err});
+            return res.status(200).send({success:true});
         })
     });
 };
 
 // Update
 
-var updateAnnounce = function(res, item) {
+var updateAnnounce = function(res, item, announcer) {
     Announce.findOne({
         _id: item._id
     }, function(err, doc) {
-        if (doc != null) {
-            objectAssign(doc, item);
-            doc.annouce_date = Date.now;
-            doc.save();
-        } else console.log("Not found - not update");
-
         if (err)
-            res.send(err);
-        res.json({success:true});
+            return res.status(500).send(err);
+        if (doc) {
+            objectAssign(doc, item);
+            doc.announcer = announcer;
+            doc.annouce_date = Date.now();
+            doc.save();        
+            return res.status(200).send({success:true});
+        } else { 
+            console.log("Not found - not update");
+            return res.status(404).send({success:false,error:err});
+        }
     });
 };
 
@@ -78,9 +79,8 @@ var delAnnounce = function(res, item) {
         _id: item
     }, function(err) {
         if (err)
-            res.send(err);
-        else
-            res.json({success:true});
+            return res.status(500).send({success:false,error:err});
+        res.status(200).send({success:true});
     })
 };
 

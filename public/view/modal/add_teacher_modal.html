@@ -7,44 +7,29 @@
             <form class="form-horizontal touched-validate container-fluid" name="addForm" ng-hide="allowPwChange" novalidate>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="staffCode">
-                            รหัสประจำตัว
-                            <span class="mini-red">*อย่างน้อย 4 ตัวออักษร</span>
-                        </label>
-                        <input type="text" class="form-control text-short" ng-model="formData.staff_code" placeholder="รหัสประจำตัว" id="staffCode" name="staffCode" autocomplete="off" ng-minlength="4"  autofocus="on"  required>
-                    </div>
-                    <div class="form-group">
                         <label for="titleName">คำนำหน้าชื่อ <span class="mini-red">*</span></label>
-                        <select class="form-control title-name" ng-model="formData.title" ng-options="titleName as titleName.t_th for titleName in titleNameList" ng-change="sexChange()" id="titleName" name="titleName" required>
+                        <select class="form-control title-name" ng-model="formData.name.title" ng-options="titleName as titleName.th for titleName in titleNameList" ng-change="sexChange()" id="titleName" name="titleName" required>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="fnameTh">ชื่อภาษาไทย <span class="mini-red">*</span></label>
-                     
-                            <input type="text" class="form-control text-med" ng-model="formData.name.f_th" placeholder="ชื่อ" id="fnameTh" name="th_name_first" autocomplete="off" required>
-                            <input type="text" class="form-control text-med" ng-model="formData.name.l_th" placeholder="นามสกุล" id="lnameTh" name="th_name_last" autocomplete="off" required>
+                        <label for="fname">ชื่อ<span class="mini-red">*</span></label>
+                            <input type="text" class="form-control text-med" ng-model="formData.name.first" placeholder="ชื่อ" id="fname" name="first_name" autocomplete="off" required>
+                            <input type="text" class="form-control text-med" ng-model="formData.name.last" placeholder="นามสกุล" id="lname" name="last_name" autocomplete="off" required>
                        
-                    </div>
-                    <div class="form-group">
-                        <label for="fnameEn">ชื่อภาษาอังกฤษ <span class="mini-red">*</span></label>
-                      
-                            <input type="text" class="form-control text-med" ng-model="formData.name.f_en" placeholder="First name" id="fnameEn" name="en_name_first" autocomplete="off" required>
-                            <input type="text" class="form-control text-med" ng-model="formData.name.l_en" placeholder="Last name" id="lnameEn" name="en_name_last" autocomplete="off" required>
-                      
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="acaPos">ตำแหน่งทางวิชาการ <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" id="acaPos" name="acaPos" ng-model="formData.acade_pos" uib-typeahead="acadePos as acadePos.full_th for acadePos in acadePosList | filter:$viewValue | limitTo:8" placeholder="ตำแหน่งทางวิชาการ" autocomplete="off" required>
+                        <input type="text" class="form-control text-med" id="acaPos" name="acaPos" ng-model="formData.academic_pos" uib-typeahead="acadePos.full.th as acadePos.full.th for acadePos in acadePosList | filter:$viewValue | limitTo:8" placeholder="ตำแหน่งทางวิชาการ" autocomplete="off" required>
                     </div>
                     <div class="form-group">
                         <label for="email">อีเมล์ <span class="mini-red">*</span></label>
-                        <input type="email" class="form-control text-med" ng-model="formData.contact_email" placeholder="Email" id="email" autocomplete="off" ng-minlength="10" required>
+                        <input type="email" class="form-control text-med" ng-model="formData.contact.email" placeholder="Email" id="email" autocomplete="off" ng-minlength="10" required>
                     </div>
                     <div class="form-group">
                         <label for="tel">เบอร์โทรศัพท์ <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.tel" placeholder="Telephone" id="tel" name="tel" autocomplete="off" ng-minlength="8" required>
+                        <input type="text" class="form-control text-med" ng-model="formData.contact.tel" placeholder="Telephone" id="tel" name="tel" autocomplete="off" ng-minlength="8" required>
                     </div>
                     <div class="form-group">
                         <label for="newPw">

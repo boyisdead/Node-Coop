@@ -10,7 +10,7 @@ var studentSchema = mongoose.Schema({
         "title": { type: String, default: '' }
     },
     "adviser_id": { type: String, default: '' },
-    "sex": { type: String, default: '', enum : ['M','F'] },
+    "sex": { type: String, default: '', enum : ['M','F','ชาย','หญิง'] },
     "password": { type: String, default: '' },
     "academic_year": { type: String, default: this_year },
     "status": {type: Boolean, default: false},
@@ -20,8 +20,8 @@ var studentSchema = mongoose.Schema({
         "address": { type: String, default: '' }
     },
     "preferred_company" : {
-        "first": { type: String, default: '' }
-        "second": { type: String, default: '' }
+        "first": { type: String, default: '' },
+        "second": { type: String, default: '' },
         "third": { type: String, default: '' }
     },
     "emergency_contact": {

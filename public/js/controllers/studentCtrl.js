@@ -1,8 +1,9 @@
 studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibModal', '$log', 'StudentsService', 'OthersService', function($scope, $rootScope, $http, $uibModal, $log, StudentsService, OthersService) {
 
     var getAcaYrs = function () {
+        console.log("get academic year");
         OthersService.getAcaYrs().success(function(data){
-            $scope.acaYrs = data;
+            $scope.acaYrs = data.result;
             $scope.acaYrs.sort(function(a,b){return b-a});
             $scope.acaYrs.splice(0,0,"ทั้งหมด");
             console.log($scope.acaYrs);
@@ -21,11 +22,14 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
         $scope.loading = true;
         StudentsService.get(acaYr)
             .success(function(data) {
-                $scope.students = data;
-                $scope.loading = false;
-        });
+                $scope.students = data.result;
+                $scope.loading = false;  
+            }).error(function(err){
+                console.log("nosuccess", err);
+                $scope.academicYear = $scope.acaYrs[0];
+                getStudent($scope.academicYear);
+            });
     }
-
     getAcaYrs();
 
     // DELETE ==================================================================
@@ -48,9 +52,8 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
                 $scope.loading = true;
                 StudentsService.delete(id)
                     // if successful creation, call our get function to get all the new students
-                    .success(function(data) {
-                        $scope.loading = false;
-                        $scope.students = data; // assign our new list of students
+                    .success(function() {
+                        getStudent($scope.academicYear);
                     });
                 swal("ลบ!", "ข้อมูลนักศึกษานี้ถูกลบออกแล้ว", "success");
             } else {
@@ -132,4 +135,5 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             getStudent($scope.academicYear);
         });
     }
-}]);
+}]
+);

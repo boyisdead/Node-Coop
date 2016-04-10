@@ -19,8 +19,11 @@ var getCompany = function(res, criteria, projection){
     projection = projection || {"name":1, "status":1, "website":1, "area":1};
     Company.find(criteria,projection,function(err, companies) {
         if (err)
-            res.send(err)
-        res.json(companies); 
+            return res.status(500).send({success:false, error:err})
+        return res.status(200).send({
+            succes: true,
+            result: companies
+        }); 
     });
 };
 
@@ -43,7 +46,6 @@ var findCompanyById = function(res, code) {
 // Create
 
 var createCompany = function(res, item) {
-    var msg;
     var new_s_index;
     var newCompany = new Company();
     Counter.findOneAndUpdate({_id:"companies"},{$inc:{"seq":1 }}, function (err, esb) {
@@ -54,10 +56,9 @@ var createCompany = function(res, item) {
         console.log(newCompany);
         newCompany.save(function(err) {
             if (err)
-                msg = {success:false,err:err};
-            else
-                msg = {success:true};
-            res.json(msg);
+                return res.status(500).send({success: false, error: err})
+            return res.status(201).send({success: true})
+
         })
     });
 };
@@ -69,31 +70,33 @@ var updateCompany = function(res, item) {
         _id: item._id
     }, function(err, doc) {
         if(err)
-            res.status(500).send({
+            return res.status(500).send({
                 success: false,
-                message: "Something went wrong while retrieving. try again."
+                error: err
             })
-        else if(!doc)
-            res.status(200).send({
+        if(!doc)
+            return res.status(404).send({
                 success: false,
-                message: "File not exist."
+                error: "Company not exist."
             })
-        else { 
-            var newContact = new Company();
-            if(item) { 
-                objectAssign(doc, item);
-                doc.save();
-                res.status(200).send({
-                    success: true,
-                    message: ""
-                })   
-            } else {
-                res.status(400).send({
+        if(!item)  
+            return res.status(400).send({
+                success: false,
+                error: "No company info provided."
+            })   
+
+        var newContact = new Company();
+        objectAssign(doc, item);
+        doc.save(function(err) {
+            if(err)
+                return res.status(500).send({
                     success: false,
-                    message: "No contact info provided."
-                })   
-            }
-        }
+                    error: err
+                });
+            return res.status(200).send({
+                success: true
+            });
+        });
     });
 }
 
@@ -103,32 +106,30 @@ var updateCompanyContact = function(res, owner, item){
         _id: owner
     }, function(err, doc) {
         if(err)
-            res.status(500).send({
+            return res.status(500).send({
                 success: false,
+                error: err,
                 message: "Something went wrong while retrieving. try again."
             })
-        else if(!doc)
-            res.status(200).send({
+        if(!doc)
+            return res.status(404).send({
                 success: false,
                 message: "File not exist."
             })
-        else {
-            var newContact = new Company().contact;
-            if(item) { 
-                objectAssign(newContact, item);
-                doc.contact = newContact;
-                doc.save();
-                res.status(200).send({
-                    success: true,
-                    message: ""
-                })   
-            } else {
-                res.status(400).send({
-                    success: false,
-                    message: "No contact info provided."
-                })   
-            }
-        }
+        if(!item || owner)
+            return res.status(400).send({
+                success: false,
+                message: "No contact info provided."
+            })
+       
+        var newContact = new Company().contact;
+        objectAssign(newContact, item);
+        doc.contact = newContact;
+        doc.save(function(){
+            return res.status(200).send({
+                success: true
+            })   
+        });
     })
 };
 
@@ -138,32 +139,30 @@ var updateCompanyCoor = function(res, owner, item){
         _id: owner
     }, function(err, doc) {
         if(err)
-            res.status(500).send({
+            return res.status(500).send({
                 success: false,
-                message: "Something went wrong while retrieving. try again."
+                message: "Something went wrong while retrieving. try again.",
+                error: err
             })
-        else if(!doc)
-            res.status(200).send({
+        if(!doc)
+            return res.status(404).send({
                 success: false,
                 message: "File not exist."
             })
-        else {
-            var newCoor = new Company().coordinator;
-            if(item) { 
-                objectAssign(newCoor, item);
-                doc.coordinator = newCoor;
-                doc.save();
-                res.status(200).send({
-                    success: true,
-                    message: ""
-                })   
-            } else {
-                res.status(400).send({
-                    success: false,
-                    message: "No contact info provided."
-                })   
-            }
-        }
+        if(!item)
+            return res.status(400).send({
+                success: false,
+                message: "No coordinator info provided."
+            })   
+        
+        var newCoor = new Company().coordinator;
+        objectAssign(newCoor, item);
+        doc.coordinator = newCoor;
+        doc.save(function(){
+            return res.status(200).send({
+                success: true
+            })   
+        });
     })
 };
 
@@ -171,47 +170,48 @@ var updateCompanyCoor = function(res, owner, item){
 var delCompany = function(res, item) {
     Company.findOne({_id: item}, function (err, doc){
         if(err)
-            res.status(500).send({
+            return res.status(500).send({
                 success: false,
                 message: "Something went wrong while retrieving. try again."
             })
         if(!doc)
-            res.status(200).send({
+            return res.status(404).send({
                 success: false,
                 message: "File not exist."
             })
-        else {
-
-            var remainFiles = [];
-            while(doc.picture.length>0){
-                var nextFile = doc.picture.pop().file_path;
-                console.log(nextFile);
-                remainFiles.push(nextFile.replace('./','./public/'));
-            }
-
-            console.log("sending : ", remainFiles);
-            deleteFiles(remainFiles, function(err) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    console.log('all files removed');
-                }
-            });
-
-            Company.findOneAndRemove({"_id": item}, function(err, doc){
-                if(err)
-                    res.status(200).send({
-                        success: false,
-                        message: "Something went wrong while removing. try again.",
-                        err :err
-                    });
-                else
-                    res.status(200).send({
-                        success: true,
-                        message: "Company removed."
-                    });
-            });
+        var remainFiles = [];
+        while(doc.picture.length>0){
+            var nextFile = doc.picture.pop().file_path;
+            console.log(nextFile);
+            remainFiles.push(nextFile.replace('./','./public/'));
         }
+
+        console.log("sending : ", remainFiles);
+        deleteFiles(remainFiles, function(err) {
+            if (err) {
+                console.log(err);
+                return res.status(500).send({
+                    success: false,
+                    message: "Cannot remove pictures.",
+                    error: err
+                })
+            } else {
+                console.log('all files removed');
+            }
+        });
+
+        Company.findOneAndRemove({"_id": item}, function(err, doc){
+            if(err)
+                return res.status(500).send({
+                    success: false,
+                    message: "Something went wrong while removing. try again.",
+                    error :err
+                });
+            return res.status(200).send({
+                success: true,
+                message: "Company removed."
+            });
+        });
     })     
 };
 
@@ -229,7 +229,12 @@ var addCompanyPicture = function(res, file, item, owner){
         fs.unlinkSync(tmp_path);
         console.log("Picture uploaded");
         Company.findOneAndUpdate({_id: owner}, {$addToSet:{picture : item}}, function (err) {
-            res.status(200).send({
+            if (err)
+                return res.status(200).send({
+                    success: false,
+                    error: err
+                })
+            return res.status(200).send({
                 success: true,
                 message: "Picture uploaded."
             })
@@ -237,9 +242,9 @@ var addCompanyPicture = function(res, file, item, owner){
     });
     src.on('error', function(err) {
         fs.unlinkSync(tmp_path);
-        res.status(500).send({
+        return res.status(500).send({
             success: false,
-            err: err,
+            error: err,
             message: "Something went wrong while retrieving. try again"
         })
     });
@@ -248,43 +253,51 @@ var addCompanyPicture = function(res, file, item, owner){
 var delCompanyPicture = function (res, owner, item) {
     Company.findOne({"_id": owner , "picture._id":item}, {_id:0,"picture.$":1}, function (err, doc){
         if(err)
-            res.status(500).send({
+            return res.status(500).send({
                 success: false,
+                error: err,
                 message: "Something went wrong while retrieving. try again."
             })
         if(!doc)
-            res.status(200).send({
+            return res.status(404).send({
                 success: false,
                 message: "File not exist."
             })
-        else {
-            var picture_path = doc.picture[0].file_path.replace('./','./public/') || "";
-            fs.stat(picture_path, function(err, stats) {
-                if(typeof stats != 'undefined'){
-                    if(stats.isFile())
-                        fs.unlinkSync(picture_path),function (err) {
-                            if (err) throw err;
-                        }
-                    console.log("Deleted - " + picture_path);
-                } else {
-                    console.log("File not exist - "+ picture_path);
+
+        var picture_path = doc.picture[0].file_path.replace('./','./public/') || "";
+        fs.stat(picture_path, function(err, stats) {
+            if(typeof stats != 'undefined'){
+                if(stats.isFile())
+                    fs.unlinkSync(picture_path),function (err) {
+                        if (err) throw err;
+                    }
+                console.log("Deleted - " + picture_path);
+            } else {
+                console.log("File not exist - "+ picture_path);
+            }
+        });
+        Company.findOneAndUpdate({
+            "_id": owner, 
+            "picture._id": item
+        }, {
+            $pull: {
+                "picture": {
+                    "_id": item
                 }
+            }
+        }, function(err, doc){
+            if(err)
+                return res.status(500).send({
+                    success: false,
+                    message: "Something went wrong while removing. try again.",
+                    error :err
+                });
+            return res.status(402).send({
+                success: true,
+                message: "Picture removed."
             });
-            Company.findOneAndUpdate({"_id": owner, "picture._id":item},{$pull:{"picture":{"_id":item}}}, function(err, doc){
-                console.log(doc);
-                if(err)
-                    res.status(200).send({
-                        success: false,
-                        message: "Something went wrong while removing. try again.",
-                        err :err
-                    });
-                else
-                    res.status(200).send({
-                        success: true,
-                        message: "Picture removed."
-                    });
-            });
-        }
+        });
+        
     }) 
 }
 

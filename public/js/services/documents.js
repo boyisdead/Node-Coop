@@ -1,7 +1,7 @@
 documentModule.factory('DocumentsService', ['$http','Upload', function($http,Upload){
 	return{
 		get : function (){
-			return $http.get('/admin/document/acaYrs/all');
+			return $http.get('/coopsys/v1/attachment');
 		},
 		delete : function (id){
 			return $http.delete('/admin/document/' + id);

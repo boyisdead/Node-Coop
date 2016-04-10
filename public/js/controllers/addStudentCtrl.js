@@ -4,13 +4,13 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
 
     var getTitleName = function() {
         OthersService.getTitleName().success(function(titledata){
-            $scope.titleNameList = titledata;
+            $scope.titleNameList = titledata.result;
         });
     };
 
     var getAdvisor = function() {
         OthersService.getAdvisor().success(function(advisors){
-            $scope.advisorList = advisors;
+            $scope.advisorList = advisors.result;
         });
     };
 
@@ -35,17 +35,11 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
                 errList += "คำนำหน้าชื่อ ไม่ถูกเลือก\n";
             }
 
-            if (msg.th_name_first.$error.required) {
-                errList += "ชื่อภาษาไทย ไม่ถูกกรอก\n";
+            if (msg.first_name.$error.required) {
+                errList += "ชื่อ ไม่ถูกกรอก\n";
             }
-            if (msg.th_name_last.$error.required) {
-                errList += "นามสกุลภาษาไทย ไม่ถูกกรอก\n";
-            }
-            if (msg.en_name_first.$error.required) {
-                errList += "ชื่อภาษาอังกฤษ ไม่ถูกกรอก\n";
-            }
-            if (msg.en_name_last.$error.required) {
-                errList += "นามสกุลภาษาอังกฤษ ไม่ถูกกรอก\n";
+            if (msg.last_name.$error.required) {
+                errList += "นามสกุล ไม่ถูกกรอก\n";
             }
 
             if (msg.conMail.$error.required) {
@@ -79,13 +73,13 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
     }
 
     var createStudent = function() {
-        if ($scope.formData.stu_code != undefined) {
+        if ($scope.formData._id != undefined) {
             $scope.loading = true;
             StudentsService.create($scope.formData).success(function(data) {
                 $scope.loading = false;
                 //upload picture here
                 if($scope.profile_pic&& typeof $scope.profile_pic!='undefined'){
-                    StudentsService.uploadPicture($scope.profile_pic,data._id).success(function(data2){
+                    StudentsService.uploadPicture($scope.profile_pic, $scope.formData._id).success(function(data2){
                     // some kind of alert
                         console.log(data2);
                     });
@@ -97,7 +91,7 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
     };
 
     $scope.sexChange = function () {
-        if ($scope.formData.title._id == 1)
+        if ($scope.formData.name.title._id == 1)
             $scope.formData.sex = "ชาย";
         else 
             $scope.formData.sex = "หญิง";
