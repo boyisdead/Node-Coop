@@ -15,22 +15,18 @@
                     </div>
                     <div class="form-group">
                         <label for="compInit">ชื่อย่อ </label><span class="mini-gray">(ไม่เกิน 10 ตัวอักษร) </span>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.init" placeholder="ชื่อย่อ" id="compInit" name="compInit" autocomplete="off" ng-maxlength="10">
+                        <input type="text" class="form-control text-med" ng-model="formData.name.initial" placeholder="ชื่อย่อ" id="compInit" name="compInit" autocomplete="off" ng-maxlength="10">
                     </div>
                     <div class="form-group">
                         <label for="tel">เบอร์โทรศัพท์ </label><span class="mini-gray"> (ตัวเลขไม่มี '-') </span>
                         <div class="form-inline">
-                        <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.tel.head" placeholder="เบอร์โทรศัพท์" id="tel" name="tel" autocomplete="off">
-                        <span> ต่อ </span>
-                        <input type="text" pattern="^[0-9]*$" class="form-control" ng-model="formData.tel.tail" placeholder="xx" id="tel" name="tel" autocomplete="off" style="width:50px">
+                        <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.tel" placeholder="เบอร์โทรศัพท์" id="tel" name="tel" autocomplete="off">
                         </div>
                     </div>
                     <div class="form-group">
                          <label for="fax">เบอร์โทรสาร </label><span class="mini-gray"> (ตัวเลขไม่มี '-') </span>
                         <div class="form-inline">
-                            <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.fax.head" placeholder="เบอร์โทรสาร" id="fax" name="fax" autocomplete="off">
-                            <span> ต่อ </span>
-                            <input type="text" pattern="^[0-9]*$" class="form-control" ng-model="formData.fax.tail" placeholder="xx" name="faxTail" autocomplete="off" style="width:50px">
+                            <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.fax" placeholder="เบอร์โทรสาร" id="fax" name="fax" autocomplete="off">
                         </div>
                     </div>                
                 </div>

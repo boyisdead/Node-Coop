@@ -1,6 +1,6 @@
 var fs = require("fs");
-var multipart = require('connect-multiparty');
-var multipartMiddleware = multipart();
+// var multipart = require('connect-multiparty');
+// var multipartMiddleware = multipart();
 var multer = require('multer');
 var upload = multer({
     dest: './public/uploads/'
@@ -154,7 +154,7 @@ module.exports = function(app) {
             // return an error
             return res.status(403).send({
                 success: false,
-                message: 'No token provided.'
+                error: 'No token provided.'
             });
 
         }
@@ -175,7 +175,7 @@ module.exports = function(app) {
         allow = ["teacher","student"];
         if(checkPermission(allow, req.decoded.access_type)){
             next();
-        } else  res.status(403).send({success:false, message:"Unauthurized"});
+        } else  res.status(403).send({success:false, error:"Unauthurized"});
     });
 
     app.put('/coopsys/v1/change_password', function(req, res) {
@@ -187,7 +187,7 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only " + allow + " allow in this section."
+                error: "only " + allow + " allow in this section."
             });
         }
     })
@@ -203,7 +203,7 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only " + allow + " allow in this section."
+                error: "only " + allow + " allow in this section."
             });
         }
     });
@@ -221,13 +221,13 @@ module.exports = function(app) {
             } else {
                 res.status(403).send({
                     success: false,
-                    message: "only " + allow + " allow in this section."
+                    error: "only " + allow + " allow in this section."
                 });
             }
         } else {
             res.status(400).send({
                     success: false,
-                    message: "File not provided"
+                    error: "File not provided"
                 });
         }
     });
@@ -243,7 +243,21 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only " + allow + " allow in this section."
+                error: "only " + allow + " allow in this section."
+            });
+        }
+    });
+    app.post('/coopsys/v1/myprofile/picture', upload.single('file'), function(req, res) {
+        var allow = ["teacher","student"];
+        var id = req.decoded.access_id;
+        if(req.decoded.access_type == allow[0]){ 
+            TeacherController.uploadPicture(res, id, req.file);
+        } else if (req.decoded.access_type==allow[1]) {
+            StudentController.uploadPicture(res, id, req.file);
+        } else {
+            res.status(403).send({
+                success: false,
+                error: "only " + allow + " allow in this section."
             });
         }
     });
@@ -259,7 +273,7 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only " + allow + " allow in this section."
+                error: "only " + allow + " allow in this section."
             });
         }
     });
@@ -346,7 +360,7 @@ module.exports = function(app) {
         allow = "teacher";
         if(checkPermission(allow,req.decoded.access_type)){
             next();
-        } else  res.status(403).send({success:false,message:"Unauthurized"});
+        } else  res.status(403).send({success:false, error:"Unauthurized"});
     });
 
     // ================================= Self ========================================
@@ -365,7 +379,7 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only Teachers allow in this section."
+                error: "only Teachers allow in this section."
             });
         }
     });
@@ -378,7 +392,7 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only Teachers allow in this section."
+                error: "only Teachers allow in this section."
             });
         }
     });
@@ -395,9 +409,9 @@ module.exports = function(app) {
     });
 
     // 
-    app.post('/coopsys/v1/student/upload_myprofile_picture', upload.single('file'), function(req, res, next) {
+    app.post('/coopsys/v1/student/:student_id/upload_profile_picture', upload.single('file'), function(req, res, next) {
         console.log(req.file);
-        StudentController.uploadPicture(res, req, next);
+        StudentController.uploadPicture(res, req.params.student_id, req.file);
     });
 
     // update a student
@@ -412,7 +426,7 @@ module.exports = function(app) {
     });
 
     // Get academic year available
-    app.get('/coopsys/v1/student/acaYrs', function(res, req) {
+    app.get('/coopsys/v1/typehead/academic-years', function(req, res) {
         StudentController.getAcaYrs(res);
     });
 

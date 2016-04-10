@@ -35,7 +35,7 @@
                 <tbody>
                     <tr ng-repeat="company in companies |orderBy: company.name.full |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                         <td ng-bind="company.name.full"></td>
-                        <th ng-bind="company.name.init + company.s_index"></th>
+                        <th ng-bind="company.name.initial || company._id"></th>
                         <th><a href="http://{{company.website}}/" target="_blank"><span ng-bind="company.website"></span></a></th>
                         <td>
                             <a ng-click="deleteCompany(company._id)"><span class="glyphicon glyphicon-trash"></span></a>

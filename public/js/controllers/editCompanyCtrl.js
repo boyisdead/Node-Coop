@@ -1,8 +1,13 @@
 companyModule.controller('editCompanyCtrl', ['$scope','$modalInstance', 'CompaniesService', function($scope, $modalInstance, CompaniesService){
 	
 	var getCompanyData = function() {
-        CompaniesService.find($scope.params.company_id, 'i').success(function(data) {
-            $scope.formData = data;
+        CompaniesService.find($scope.params.company_id).success(function(data) {
+            $scope.formData = data.result[0];
+            $scope.formData.tel.head = $scope.formData.tel.substr(0,$scope.formData.tel.lastIndexOf('-'));
+            $scope.formData.tel.tail = $scope.formData.tel.substr($scope.formData.tel.lastIndexOf('-')+1); 
+            $scope.formData.fax.head = $scope.formData.fax.substr(0,$scope.formData.fax.lastIndexOf('-'));
+            $scope.formData.fax.tail = $scope.formData.fax.substr($scope.formData.fax.lastIndexOf('-')+1); 
+            console.log($scope.formData.tel,$scope.formData.tel.head,$scope.formData.fax,$scope.formData.fax.lastIndexOf('-'));
         });
     }
 

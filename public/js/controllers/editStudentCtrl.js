@@ -1,19 +1,19 @@
 studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'StudentsService', 'OthersService', function($scope, $modalInstance, StudentsService, OthersService) {
 
     $scope.getStudentData = function() {
-        StudentsService.find($scope.params.studentId, 'i').success(function(data) {
-            $scope.formData = data;
+        StudentsService.find($scope.params.studentId).success(function(data) {
+            $scope.formData = data.result[0];
         });
     }
 
     var getTitleName = function() {
         OthersService.getTitleName().success(function(titledata) {
-            $scope.titleNameList = titledata;
+            $scope.titleNameList = titledata.result;
         });
     };
     var getAdvisor = function() {
         OthersService.getAdvisor().success(function(advisors) {
-            $scope.advisorList = advisors;
+            $scope.advisorList = advisors.result;
         });
     };
 
@@ -25,17 +25,11 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
         var errList = "";
         if (typeof $scope.formData != 'undefined') {
 
-            if (msg.th_name_first.$error.required) {
+            if (msg.first_name.$error.required) {
                 errList += "ชื่อภาษาไทย ไม่ถูกกรอก\n";
             }
-            if (msg.th_name_last.$error.required) {
+            if (msg.last_name.$error.required) {
                 errList += "นามสกุลภาษาไทย ไม่ถูกกรอก\n";
-            }
-            if (msg.en_name_first.$error.required) {
-                errList += "ชื่อภาษาอังกฤษ ไม่ถูกกรอก\n";
-            }
-            if (msg.en_name_last.$error.required) {
-                errList += "นามสกุลภาษาอังกฤษ ไม่ถูกกรอก\n";
             }
             // // advisor remove
             // if (msg.advisor.$error.required) {
@@ -55,6 +49,12 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
     var updateStudent = function() {
         console.log("Updating...");
         StudentsService.update($scope.formData).success(function(data) {
+            if($scope.profile_pic&& typeof $scope.profile_pic!='undefined'){
+                StudentsService.uploadPicture($scope.profile_pic, $scope.formData._id).success(function(data2){
+                // some kind of alert
+                    console.log(data2);
+                });
+            }
             swal({
                 title: "บันทึก!",
                 type: "success",

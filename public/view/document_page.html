@@ -24,13 +24,18 @@
                 <thead>
                     <tr>
                         <th class="scode">ชื่อเอกสาร</th>
+                        <th class="scode">คำอธิบาย</th>
                     </tr>
                 </thead>
                 <tbody  ng-repeat="document in documents |orderBy: documents.file_name |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                     <tr>
                         <td>
-                            <a href="document.file_path" ><span ng-bind="document.file_name"></span></a>
+                            <a href="{{document.file_path}}" download ><span ng-bind="document.file_name"></span></a>
                         </td>
+                        <td>
+                            <span ng-bind="document.description"></span>
+                        </td>
+
                     </tr>
                 </tbody>
             </table>

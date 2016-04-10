@@ -16,9 +16,10 @@ authenticationModule.factory('UsersService', ['$http', function($http){
 				console.log("in factory");
 				console.log(loginData);
 				if(loginType=="teacher"){
-					return $http.post('/api/auth/teacher',loginData);
-				} else if (loginType=="student"){
-					return $http.post('/api/auth/student',loginData);
+					return $http.post('/coopsys/v1/login/teacher',loginData);
+				}
+				if(loginType=="student"){
+					return $http.post('/coopsys/v1/login/student',loginData);
 				}
 			}
 		}

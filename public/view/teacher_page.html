@@ -34,10 +34,10 @@
                 <tbody>
                     <tr ng-repeat="teacher in teachers |orderBy: teacher.staff_code |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
 
-                        <th ng-bind="teacher.staff_code"></th>
-                        <td ng-bind="teacher.name.t_th + ' ' + teacher.name.f_th + ' ' + teacher.name.l_th"></td>
-                        <td class="hidden-xs" ng-bind="teacher.contact_email"></td>
-                        <td class="hidden-xs" ng-bind="teacher.tel"></td>
+                        <th ng-bind="teacher._id"></th>
+                        <td ng-bind="teacher.name.title + ' ' + teacher.name.first + ' ' + teacher.name.last"></td>
+                        <td class="hidden-xs" ng-bind="teacher.contact.email"></td>
+                        <td class="hidden-xs" ng-bind="teacher.contact.tel"></td>
                         <td>
                             <a ng-click="deleteTeacher(teacher._id)"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>

@@ -202,11 +202,6 @@ var studentRegistration = function (res, item) { // wait for mailing module
             newStudent.password = passwordHash.generate(item.password);
             newStudent.save(function(err){
                 if(!err){
-// <<<<<<< HEAD
-//                     return res.status(201).send({
-//                         success: true, 
-//                         message: "Your account has been created."
-// =======
                     var mailOption = { 
                         from : "coopsys_admin@cmu.ac.th",
                         to : item.contact.email,
@@ -218,7 +213,6 @@ var studentRegistration = function (res, item) { // wait for mailing module
                         success: true, 
                         message: "Your account has been created.",
                         result : mailRes
-// >>>>>>> nCoop-nodeMailer
                     });
                 }
                 return res.send(err);

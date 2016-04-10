@@ -6,7 +6,6 @@ var jwt = require('jsonwebtoken');
 var fs = require("fs");
 var objectAssign = require('object-assign');
 var ObjectId = require('mongoose').Types.ObjectId; 
-var MailController = require('./mailController');
 
 var default_profile = './uploads/pictures/profile/default.png';
 
@@ -202,23 +201,9 @@ var studentRegistration = function (res, item) { // wait for mailing module
             newStudent.password = passwordHash.generate(item.password);
             newStudent.save(function(err){
                 if(!err){
-// <<<<<<< HEAD
-//                     return res.status(201).send({
-//                         success: true, 
-//                         message: "Your account has been created."
-// =======
-                    var mailOption = { 
-                        from : "coopsys_admin@cmu.ac.th",
-                        to : item.contact.email,
-                        subject : "Your coopsys account has been created.",
-                        text : "user : " + item._id + " password : " + item.password
-                    }
-                    var mailRes = MailController.sendMail(mailOption);                    
                     return res.status(201).send({
                         success: true, 
-                        message: "Your account has been created.",
-                        result : mailRes
-// >>>>>>> nCoop-nodeMailer
+                        message: "Your account has been created."
                     });
                 }
                 return res.send(err);
