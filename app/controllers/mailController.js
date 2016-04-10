@@ -16,7 +16,7 @@ var sendMail = function (item) {
 	var smtpTransport = nodemailer.createTransport(smtpConfig);
 
 	var mailOptions = {
-		from : mailConfig.auth.user,
+	    from : mailConfig.auth.user,
 	    to: item.to,
 	    subject: item.subject,
 	    text: item.text
