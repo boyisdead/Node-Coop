@@ -21,9 +21,11 @@ var autoPrefixId = function(prefix, max, numLong) {
     return new_id;
 };
 
-var getDlc = function(res, criteria) {
+var getDlc = function(res, criteria, project, option) {
     criteria = criteria || {};
-    Dlc.find(criteria, function(err, dlcs) {
+    project = project || {};
+    option = option || {};
+    Dlc.find(criteria, project, option, function(err, dlcs) {
         if (err)
             return res.status(500).send({
                 success : false,

@@ -108,7 +108,8 @@ var getStudents = function(res, criteria, project, option) {
     criteria = criteria || {};
     project = project || { name: 1, profile_picture: 1, status: 1, sex: 1 };
     option = option || {};
-    Student.find(criteria, project, function(err, docs){
+    console.log(criteria, project, option);
+    Student.find(criteria, project, option, function(err, docs){
         if(err)
             return res.status(500).send({
                 success: false, 
@@ -284,6 +285,7 @@ var createStudent = function(res, item) {
 };
 
 var updateStudent = function(res, item) {
+    console.log("update student", item._id)
     if (typeof item.password != 'undefined')
         item.password = passwordHash.generate(item.password);
 
@@ -319,7 +321,7 @@ var updateStudent = function(res, item) {
             objectAssign(doc, item);
             doc.save(function (err){
                 if(err){
-                    return res.status(200).send({
+                    return res.status(500).send({
                         success: false, 
                         message: "Something went wrong while saving Student. try again.", 
                         error: err
@@ -339,8 +341,8 @@ var updateStudent = function(res, item) {
     });
 };
 
-var changePreferredCompany = function (res, owner, item) {
-    if (item){    
+var changePreferedCompany = function (res, owner, item) {
+    if (typeof item != "undefined"){    
         Student.findOne({_id: owner}, function(err, doc){
             if(err)
                 return res.status(500).send({
@@ -349,12 +351,14 @@ var changePreferredCompany = function (res, owner, item) {
                     error: err
                 });
             if(doc){            
-                var preferred = new Student().preferred_company;
-                objectAssign(preferred, item);
+                var prefered = new Student().prefered_company;
+                console.log(prefered, item);
+                objectAssign(prefered, item);
+                objectAssign(doc.prefered_company, prefered);
                 doc.save();
                 return res.status(200).send({
                     success : true, 
-                    message: "Preferred companies updated."
+                    message: "prefered companies updated."
                 });
             } else {
                 return res.status(404).send({
@@ -655,29 +659,44 @@ var createAttachment = function (res, file, attachment, student){
 
 var updateAttachment = function (res, attachment) {
     if(attachment && typeof attachment != "undefined"){
-        Student.findOneAndUpdate({"attachments._id": attachment._id}, { 
-            $set: {
-                "attachments.$.file_name": attachment.file_name, 
-                "attachments.$.file_type": attachment.file_type, 
-                "attachments.$.comment": attachment.comment, 
-                "attachments.$.status": attachment.status, 
-                "attachments.$.reviewed": attachment.reviewed, 
-                "attachments.$.description": attachment.description
-            }
+        var set = {};
+        var attach_id = attachment._id;
+        delete attachment._id;
+        for (var field in attachment) {
+          set['attachments.$.' + field] = attachment[field];
+        }
+        console.log(set);
+        Student.findOneAndUpdate({"attachments._id": attach_id}, { 
+            $set : set
+            // $set: {
+            //     "attachments.$.file_type": attachment.file_type, 
+            //     "attachments.$.comment": attachment.comment, 
+            //     "attachments.$.status": attachment.status, 
+            //     "attachments.$.reviewed": attachment.reviewed, 
+            //     "attachments.$.description": attachment.description
+            // }
         }, function(err, doc){
+            console.log(err);
             if(err)
                 return res.status(500).send({
                     success: false, 
-                    message: "Something went wrong while removing. try again.", 
+                    message: "Something went wrong while updating. try again.", 
                     error: err
                 });
-            else 
-                return res.status(200).send({
-                    success: true, 
-                    message: "Attachment updated."
-                });
+            return res.status(200).send({
+                success: true, 
+                message: "Attachment updated."
+            });
         });
     }
+}
+
+
+var apprroveAttachment = function (res, item) {
+    updateAttachment(res, {_id: item, status: true, reviewed: true});
+}
+var declineAttachment = function (res, item) {
+    updateAttachment(res, {_id: item, status: false, reviewed: true});
 }
 
 var delAttachment = function (res, item, student){
@@ -777,6 +796,8 @@ module.exports = {
     'createAttachment': createAttachment, 
     'updateAttachment': updateAttachment, 
     'delAttachment': delAttachment, 
-    'studentRegistration': studentRegistration
-
+    'studentRegistration': studentRegistration,
+    'changePreferedCompany':changePreferedCompany,
+    'apprroveAttachment': apprroveAttachment,
+    'declineAttachment': declineAttachment
 }

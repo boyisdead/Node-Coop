@@ -14,10 +14,11 @@ var company_picture_dir = require('../../config/setting').company_picture_dir;
 
 // Get
 
-var getCompany = function(res, criteria, projection){
+var getCompany = function(res, criteria, project, option) {
     criteria = criteria || {};
-    projection = projection || {"name":1, "status":1, "website":1, "area":1};
-    Company.find(criteria,projection,function(err, companies) {
+    option = option || {};
+    project = projection || {"name":1, "status":1, "website":1, "area":1};
+    Company.find(criteria, project, option,function(err, companies) {
         if (err)
             return res.status(500).send({success:false, error:err})
         return res.status(200).send({

@@ -77,7 +77,14 @@ module.exports = function(app) {
     });
 
     app.get('/coopsys/v1/teacher', function(req, res) {
-        TeacherController.getTeacher(res);
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip;
+        TeacherController.getTeacher(res, req.query || {}, undefined, option);
     });
 
     app.get('/coopsys/v1/teacher/:id', function(req, res) {
@@ -86,7 +93,14 @@ module.exports = function(app) {
 
     app.get('/coopsys/v1/company', function(req, res) {
         console.log("Get all company");
-        CompanyController.getCompany(res);
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip;
+        CompanyController.getCompany(res, req.query || {}, undefined, option);
     });
 
     app.get('/coopsys/v1/company/participating', function(req, res) {
@@ -106,7 +120,14 @@ module.exports = function(app) {
 
     app.get('/coopsys/v1/announce', function(req, res) {
         console.log("Get all announce");
-        AnnounceController.getAnnounce(res);
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip;
+        AnnounceController.getAnnounce(res, req.query || {}, undefined, option);
     });
 
     app.get('/coopsys/v1/announce/:item', function(req, res) {
@@ -115,8 +136,15 @@ module.exports = function(app) {
     });
 
     app.get('/coopsys/v1/dlc', function(req, res) {
-        console.log("Get all DLC");
-        DlcController.getDlc(res);
+        console.log("Get all DLC");        
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip;
+        DlcController.getDlc(res, req.query || {}, undefined, option);
     });
 
     app.get('/coopsys/v1/dlc/:id', function(req, res) {
@@ -235,11 +263,12 @@ module.exports = function(app) {
     // Edit Self profile
     app.put('/coopsys/v1/myprofile', function(req, res) {
         var allow = ["teacher","student"];
-        var item = req.decoded.access_id;
+        req.body._id = req.decoded.access_id;
         if(req.decoded.access_type == allow[0]){ 
-            TeacherController.updateTeacher(res, item);
+            TeacherController.updateTeacher(res, req.body);
         } else if (req.decoded.access_type==allow[1]) {
-            StudentController.updateStudent(res, item);
+            console.log("student", req.body);
+            StudentController.updateStudent(res, req.body);
         } else {
             res.status(403).send({
                 success: false,
@@ -324,6 +353,9 @@ module.exports = function(app) {
         StudentController.findAttachmentById(res, req.params.id);
     });
 
+    // app.put('/coopsys/v1/myprofile', function (req, res){
+    //     StudentController.updateStudent(res, req.body);
+    // })
     // Creat the token owner's a attachment
     app.post('/coopsys/v1/myattach', upload.single('file'), function (req, res) {
         console.log("create my attach");
@@ -342,7 +374,7 @@ module.exports = function(app) {
 
     // Set the token owner's company preferrence
     app.put('/coopsys/v1/myprefer', function (req, res) {
-        res.status(200).send({success:true});
+        StudentController.changePreferedCompany(res, req.decoded.access_id, req.body);
     });
 
     //================================================================================
@@ -375,7 +407,15 @@ module.exports = function(app) {
     // get all students
     app.get('/coopsys/v1/student', function(req, res) {
         if(checkPermission(allow, req.decoded.access_type)) {
-            StudentController.getStudents(res);
+            var sort = req.query.sort || "_id";
+            var limit = req.query.limit || {};
+            var skip = req.query.skip || 0;
+            var option = { "sort": sort, "limit": limit, "skip": skip};
+            delete req.query.sort;
+            delete req.query.limit;
+            delete req.query.skip;
+            console.log(req.query, option);
+            StudentController.getStudents(res, req.query || {}, undefined, option);
         } else {
             res.status(403).send({
                 success: false,
@@ -465,8 +505,18 @@ module.exports = function(app) {
         StudentController.updateAttachment(res, req.body);
     });
 
+    app.put('/coopsys/v1/attachment/:attach_id/approve', function (req, res) {
+        console.log("approve an attach");
+        StudentController.apprroveAttachment(res, req.params.attach_id);
+    });
+
+    app.put('/coopsys/v1/attachment/:attach_id/decline', function (req, res) {
+        console.log("approve an attach");
+        StudentController.declineAttachment(res, req.params.attach_id);
+    });
+
     // Delete the token owner's a specific attachment
-    app.delete('/coopsys/v1/attachment/:id', function (req, res) {
+    app.delete('/coopsys/v1/attachment/:attach_id', function (req, res) {
         StudentController.delAttachment(res, req.params.id);
     });
 
@@ -583,8 +633,15 @@ module.exports = function(app) {
     
     // Get all application
     app.get('/coopsys/v1/application', function(req, res) {
-        console.log("Get all applications");
-        ApplicationController.getApplication(res);
+        console.log("Get all applications");  
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip;
+        ApplicationController.getApplication(res, req.query || {}, undefined, option);
     });
         // Get all application of specific student
     app.get('/coopsys/v1/application/student/:student_id', function(req, res) {

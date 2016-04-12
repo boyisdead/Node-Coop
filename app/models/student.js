@@ -12,7 +12,7 @@ var studentSchema = mongoose.Schema({
     "gpa" : { type : Number },
     "date_of_birth" : { type : Date },
     "adviser_id": { type: String, default: '' },
-    "sex": { type: String, default: '', enum : ['M','F','ชาย','หญิง'] },
+    "sex": { type: String, default: '', enum : ['M','F','male','female','ชาย','หญิง'] },
     "password": { type: String, default: '' },
     "academic_year": { type: String, default: this_year },
     "status": {type: Boolean, default: false},
@@ -21,7 +21,7 @@ var studentSchema = mongoose.Schema({
         "email": { type: String, default: '' },
         "address": { type: String, default: '' }
     },
-    "preferred_company" : {
+    "prefered_company" : {
         "first": { type: String, default: '' },
         "second": { type: String, default: '' },
         "third": { type: String, default: '' }
@@ -45,8 +45,8 @@ var studentSchema = mongoose.Schema({
         "file_path": { type: String, default: "Missing" },
         "file_type": { type: String, default: "Other"},
         "comment": { type: String, default: '' },
-        "status": { type: Boolean, default: false },
-        "reviewed": { type: Boolean, default: false },
+        "status": { type: Boolean, default: false }, // is approved or not 
+        "reviewed": { type: Boolean, default: false }, // has approved or not
         "description": { type: String, default: '' }
     }],
     "job" : {
@@ -65,6 +65,14 @@ var studentSchema = mongoose.Schema({
         },
         "note" : {type : String, default: '' }
     }
+});
+
+studentSchema.pre('save', function(next) {
+    if(this.sex=='M' || this.sex.toLowerCase() == 'male')
+        this.sex = "ชาย";
+    else if(this.sex=='F' || this.sex.toLowerCase() == 'female')
+        this.sex = "หญิง";
+    next();
 });
 
 module.exports = mongoose.model('Student', studentSchema);

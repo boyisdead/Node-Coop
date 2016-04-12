@@ -21,9 +21,11 @@ var autoPrefixId = function(prefix, max, numLong){
 
 // Get
 
-var getAnnounce = function(res, criteria){
+var getAnnounce = function(res, criteria, project, option) {
     criteria = criteria || {};
-    Announce.find(criteria,function(err, announces) {
+    project = project || {};
+    option = option || {};
+    Announce.find(criteria, project, option, function(err, announces) {
         if (err)
             res.send(err)
         res.json(announces); 

@@ -53,10 +53,11 @@ var teacherLogin = function(res, item, secretToken,expireTime) {
     })
 }
 
-var getTeacher = function(res, criteria, projection) {
+var getTeacher = function(res, criteria, project, option) {
     criteria = criteria || {};
-    projection = projection || {};
-    Teacher.find(criteria, projection, function(err, teachers) {
+    project = project || {};
+    option = option || {};
+    Teacher.find(criteria, project, option, function(err, teachers) {
         if(err)
             return res.status(500).send({
                 success: false,

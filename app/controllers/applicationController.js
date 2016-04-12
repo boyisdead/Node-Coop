@@ -8,9 +8,11 @@ var objectAssign = require('object-assign');
 
 // Get
 
-var getApplication = function(res, criteria){
+var getApplication = function(res, criteria, project, option) {
     criteria = criteria || {};
-    Application.find(criteria,function(err, applications) {
+    project = project || {};
+    option = option || {};
+    Application.find(criteria, project, option, function(err, applications) {
         if (err)
             return res.status(500).send({
                 success: false,
