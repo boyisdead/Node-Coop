@@ -9,6 +9,8 @@ var studentSchema = mongoose.Schema({
         "last": { type: String, default: '' },
         "title": { type: String, default: '' }
     },
+    "gpa" : { type : Number },
+    "date_of_birth" : { type : Date },
     "adviser_id": { type: String, default: '' },
     "sex": { type: String, default: '', enum : ['M','F','ชาย','หญิง'] },
     "password": { type: String, default: '' },

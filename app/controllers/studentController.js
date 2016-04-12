@@ -77,7 +77,7 @@ var studentLogin = function(res, item, secretToken, expireTime) {
         if (err)
             return res.status(500).send(err);
         if (!student) 
-            return res.status(404).send({
+            return res.status(403).send({
                 success: false, // not found
                 message: 'Authentication failed. No Account was found.'
             });
@@ -208,7 +208,7 @@ var studentRegistration = function (res, item) { // wait for mailing module
 //                         message: "Your account has been created."
 // =======
                     var mailOption = { 
-                        from : "coopsys_admin@cmu.ac.th",
+                        from : "nattawut_k@cmu.ac.th",
                         to : item.contact.email,
                         subject : "Your coopsys account has been created.",
                         text : "user : " + item._id + " password : " + item.password
@@ -255,6 +255,13 @@ var createStudent = function(res, item) {
             newStudent.password = passwordHash.generate(item.password.toString());
             newStudent.save(function(err){
                 if(!err){
+                    var mailOption = { 
+                        from : "nattawut_k@cmu.ac.th",
+                        to : item.contact.email,
+                        subject : "Your coopsys account has been created.",
+                        text : "user : " + item._id + " password : " + item.password
+                    }
+                    var mailRes = MailController.sendMail(mailOption);
                     return res.status(201).send({
                         success: true, 
                         message: "Account has been created."

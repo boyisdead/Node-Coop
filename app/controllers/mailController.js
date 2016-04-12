@@ -19,7 +19,8 @@ var sendMail = function (item) {
 		from : mailConfig.auth.user,
 	    to: item.to,
 	    subject: item.subject,
-	    text: item.text
+	    text: item.text,
+	    attachments : item.attachments
 	}
 
 	smtpTransport.verify(function(error, success) {
