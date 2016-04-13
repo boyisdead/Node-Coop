@@ -12,7 +12,8 @@ var hashKey = require('./config/security');
 //var uuid = require('uuid');
 var multiparty = require('multiparty');
 
-var port  	 = process.env.PORT || 8080; 				// set the port
+var server_port = process.env.OPENSHIFT_NODEJS_PORT || 8080
+var server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'			// set the port
 var methodOverride = require('method-override');
 
 var mkdirp = require('mkdirp');
@@ -34,7 +35,13 @@ mkdirp('./public/uploads/pictures/company', function(err) {
 });
 
 // configuration ===============================================================
-mongoose.connect(database.url); 	// connect to mongoDB 
+// //provide a sensible default for local development
+mongodb_connection_string = database.url + database.name;
+//take advantage of openshift env vars when available:
+if(process.env.OPENSHIFT_MONGODB_DB_URL){
+  mongodb_connection_string = process.env.OPENSHIFT_MONGODB_DB_URL + database.name;
+}
+mongoose.connect(mongodb_connection_string); 	// connect to mongoDB 
 app.set('secretToken',authToken.secret);
 app.set('secretHash',hashKey.key);
 app.set('expireTime',authToken.exp_time);
@@ -52,5 +59,5 @@ app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-M
 require('./app/routes.js')(app);
 
 // listen (start app with node server.js) ======================================
-app.listen(port);
-console.log("App listening on port " + port);
+app.listen(server_port, server_ip_address);
+console.log("App listening on " + server_ip_address + ", server_port " + port);
