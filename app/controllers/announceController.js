@@ -3,20 +3,8 @@ var Counter = require('./../models/counter');
 var objectAssign = require('object-assign');
 
 // Misc
-
-var numToLengthString = function(num, length){
-    var newNum = "" + num.toString();
-    while(newNum.length<length){
-        newNum = "0" + newNum;
-    }
-    return newNum;
-}
-
-var autoPrefixId = function(prefix, max, numLong){
-    var new_id = prefix.concat(numToLengthString(max,numLong));
-    console.log(new_id);
-    return new_id;
-};
+var numToLengthString = require('./../utilities/misc').numToLengthString;
+var autoPrefixId = require('./../utilities/misc').autoPrefixId;
 
 
 // Get

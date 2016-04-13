@@ -10,42 +10,11 @@ var MailController = require('./mailController');
 
 var default_profile = './uploads/pictures/profile/default.png';
 
-var getFileExtension = function(filename){
-    return '.' + filename.substr(filename.lastIndexOf('.') + 1);
-}
+var getFileExtension = require('./../utilities/misc').getFileExtension;
+var numToLengthString = require('./../utilities/misc').numToLengthString;
+var autoPrefixId = require('./../utilities/misc').autoPrefixId;
 
-var toFileName = function(str){
-    return str.replace(/ /g, "_").toLowerCase();
-}
-
-var numToLengthString = function(num, length) {
-    var newNum = "" + num.toString();
-    while (newNum.length < length) {
-        newNum = "0" + newNum;
-    }
-    return newNum;
-}
-
-var autoPrefixId = function(prefix, max, numLong) {
-    var new_id = prefix.concat(numToLengthString(max, numLong));
-    console.log(new_id);
-    return new_id;
-};
-
-function deleteFiles(files, callback){
-    var i = files.length;
-    files.forEach(function(filepath){
-        fs.unlink(filepath, function(err) {
-            i--;
-            if (err) {
-                callback(err);
-                return;
-            } else if (i <= 0) {
-                callback(null);
-            }
-        });
-    });
-}
+var deleteFiles = require('./../utilities/deleteFiles').deleteFiles;
 
 var getAcaYrs = function(res){
     var queryGroup = Student.distinct("academic_year");

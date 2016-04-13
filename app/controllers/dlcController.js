@@ -3,23 +3,9 @@ var Counter = require('./../models/counter');
 var fs = require("fs");
 var objectAssign = require('object-assign');
 
-var getFileExtension = function(filename) {
-    return '.' + filename.substr(filename.lastIndexOf('.') + 1);
-}
-
-var numToLengthString = function(num, length) {
-    var newNum = "" + num.toString();
-    while (newNum.length < length) {
-        newNum = "0" + newNum;
-    }
-    return newNum;
-}
-
-var autoPrefixId = function(prefix, max, numLong) {
-    var new_id = prefix.concat(numToLengthString(max, numLong));
-    console.log(new_id);
-    return new_id;
-};
+var getFileExtension = require('./../utilities/misc').getFileExtension;
+var numToLengthString = require('./../utilities/misc').numToLengthString;
+var autoPrefixId = require('./../utilities/misc').autoPrefixId;
 
 var getDlc = function(res, criteria, project, option) {
     criteria = criteria || {};
