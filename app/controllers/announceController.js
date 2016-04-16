@@ -15,8 +15,20 @@ var getAnnounce = function(res, criteria, project, option) {
     option = option || {};
     Announce.find(criteria, project, option, function(err, announces) {
         if (err)
-            res.send(err)
-        res.json(announces); 
+            return res.status(500).send({
+                error:err,
+                success: false
+            });
+        res.status(200).send({
+            success: true,
+            result: announces,
+            message: "Here you go.",
+            meta : {
+                limit : option.limit,
+                skip : option.skip,
+                total : announces.length
+            }
+        }); 
     });
 };
 

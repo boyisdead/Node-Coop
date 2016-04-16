@@ -1,0 +1,12 @@
+Change Attachment format of Student's collection -> Sperate to a new collection 
+  Attachment's collection contains atts. : Owner { type: student._id }
+  
+Usecase still lack of usecase(s) : [
+  {  Student_CheckUp : call profile info checking if it complete }
+]
+
+Status attribute of Student's collection has changed -> { Status {type: Boolean{
+  
+	status.document -> qeury from attachment itself 
+	status.apply -> query from application status
+	status.accept -> query from application reply

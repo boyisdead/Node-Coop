@@ -9,8 +9,6 @@ var jwt = require('jsonwebtoken');
 var allow;
 
 
-
-var DocumentController = require('./controllers/documentController');
 var OtherController = require('./controllers/otherController');
 var TeacherController = require('./controllers/teacherController');
 var StudentController = require('./controllers/studentController');
@@ -79,11 +77,11 @@ module.exports = function(app) {
     app.get('/coopsys/v1/teacher', function(req, res) {
         var sort = req.query.sort || "_id";
         var limit = req.query.limit || {};
-        var skip = req.query.skip || 0;
+        var skip = req.query.skip || req.query.offset || 0;
         var option = { "sort": sort, "limit": limit, "skip": skip};
         delete req.query.sort;
         delete req.query.limit;
-        delete req.query.skip;
+        delete req.query.skip; delete req.query.offset;
         TeacherController.getTeacher(res, req.query || {}, undefined, option);
     });
 
@@ -95,11 +93,11 @@ module.exports = function(app) {
         console.log("Get all company");
         var sort = req.query.sort || "_id";
         var limit = req.query.limit || {};
-        var skip = req.query.skip || 0;
+        var skip = req.query.skip || req.query.offset || 0;
         var option = { "sort": sort, "limit": limit, "skip": skip};
         delete req.query.sort;
         delete req.query.limit;
-        delete req.query.skip;
+        delete req.query.skip; delete req.query.offset;
         CompanyController.getCompany(res, req.query || {}, undefined, option);
     });
 
@@ -122,11 +120,11 @@ module.exports = function(app) {
         console.log("Get all announce");
         var sort = req.query.sort || "_id";
         var limit = req.query.limit || {};
-        var skip = req.query.skip || 0;
+        var skip = req.query.skip || req.query.offset || 0;
         var option = { "sort": sort, "limit": limit, "skip": skip};
         delete req.query.sort;
         delete req.query.limit;
-        delete req.query.skip;
+        delete req.query.skip; delete req.query.offset;
         AnnounceController.getAnnounce(res, req.query || {}, undefined, option);
     });
 
@@ -139,11 +137,11 @@ module.exports = function(app) {
         console.log("Get all DLC");        
         var sort = req.query.sort || "_id";
         var limit = req.query.limit || {};
-        var skip = req.query.skip || 0;
+        var skip = req.query.skip || req.query.offset || 0;
         var option = { "sort": sort, "limit": limit, "skip": skip};
         delete req.query.sort;
         delete req.query.limit;
-        delete req.query.skip;
+        delete req.query.skip; delete req.query.offset;
         DlcController.getDlc(res, req.query || {}, undefined, option);
     });
 
@@ -372,6 +370,10 @@ module.exports = function(app) {
         StudentController.delAttachment(res, req.params.id, req.decoded.access_id);
     });
 
+    app.get('/coopsys/v1/myprefer', function (req, res) {
+        StudentController.getStudents(res, {_id: req.decoded.access_id}, { prefered_company:1 });
+    });
+
     // Set the token owner's company preferrence
     app.put('/coopsys/v1/myprefer', function (req, res) {
         StudentController.changePreferedCompany(res, req.decoded.access_id, req.body);
@@ -409,11 +411,11 @@ module.exports = function(app) {
         if(checkPermission(allow, req.decoded.access_type)) {
             var sort = req.query.sort || "_id";
             var limit = req.query.limit || {};
-            var skip = req.query.skip || 0;
+            var skip = req.query.skip || req.query.offset || 0;
             var option = { "sort": sort, "limit": limit, "skip": skip};
             delete req.query.sort;
             delete req.query.limit;
-            delete req.query.skip;
+            delete req.query.skip; delete req.query.offset;
             console.log(req.query, option);
             StudentController.getStudents(res, req.query || {}, undefined, option);
         } else {
@@ -473,12 +475,22 @@ module.exports = function(app) {
     // Get all attachment of owners who are in specific academic year
     app.get('/coopsys/v1/attachment/', function(req, res) {
         console.log("get all Attachment");
-        StudentController.getAttachments(res);
+        var sort = req.query.sort;
+        var limit = req.query.limit;
+        var skip = req.query.skip || req.query.offset || 0;
+        var option = { "sort": sort, "skip": skip};
+        if (typeof limit != "undefined")
+            option.limit = limit;
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip; delete req.query.offset;
+        console.log(req.query, option);
+        StudentController.getAttachments(res, req.query || {}, undefined, option);
     });
     // Get all attachment of owners who are in specific academic year
     app.get('/coopsys/v1/attachment/acaYrs/:acaYrs', function(req, res) {
         console.log("get Docs of " + req.params.acaYrs);
-        StudentController.getAttachments(res, req.params.acaYrs);
+        StudentController.getAttachments(res, {academic_year : req.params.acaYrs});
     });
 
     // Get all attachments of all students in specific academic year
@@ -582,8 +594,6 @@ module.exports = function(app) {
 
     // Edit a company
     app.put('/coopsys/v1/company', function(req, res) {
-        var compName = req.body.name.full || "noname";
-        console.log("Update " + compName + " company");
         CompanyController.updateCompany(res, req.body);
     });
 
@@ -636,11 +646,11 @@ module.exports = function(app) {
         console.log("Get all applications");  
         var sort = req.query.sort || "_id";
         var limit = req.query.limit || {};
-        var skip = req.query.skip || 0;
+        var skip = req.query.skip || req.query.offset || 0;
         var option = { "sort": sort, "limit": limit, "skip": skip};
         delete req.query.sort;
         delete req.query.limit;
-        delete req.query.skip;
+        delete req.query.skip; delete req.query.offset;
         ApplicationController.getApplication(res, req.query || {}, undefined, option);
     });
         // Get all application of specific student

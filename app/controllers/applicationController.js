@@ -18,9 +18,14 @@ var getApplication = function(res, criteria, project, option) {
                 success: false,
                 error:err
             }); 
-        return res.status(200).send({
+        res.status(200).send({
             success: true,
-            result: applications
+            result: applications,
+            meta : {
+                limit : option.limit,
+                skip : option.skip,
+                total : applications.length
+            }
         }); 
     });
 };

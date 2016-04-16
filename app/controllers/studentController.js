@@ -13,6 +13,7 @@ var default_profile = './uploads/pictures/profile/default.png';
 var getFileExtension = require('./../utilities/misc').getFileExtension;
 var numToLengthString = require('./../utilities/misc').numToLengthString;
 var autoPrefixId = require('./../utilities/misc').autoPrefixId;
+var toFileName = require('./../utilities/misc').toFileName;
 
 var deleteFiles = require('./../utilities/deleteFiles').deleteFiles;
 
@@ -78,23 +79,28 @@ var getStudents = function(res, criteria, project, option) {
     project = project || { name: 1, profile_picture: 1, status: 1, sex: 1 };
     option = option || {};
     console.log(criteria, project, option);
-    Student.find(criteria, project, option, function(err, docs){
+    Student.find(criteria, project, option, function(err, students){
         if(err)
             return res.status(500).send({
                 success: false, 
                 message: "Something went wrong while retrieving. try again.", 
                 error: err, 
             });
-        if(!docs || typeof docs[0] == "undefined") {
+        if(!students || typeof students[0] == "undefined") {
             return res.status(404).send({
                 success : false, 
                 message : "No Student was found."
             });
         } 
         return res.status(200).send({
-            result : docs, 
+            result : students, 
             success : true, 
-            message : "Here you go."
+            message : "Here you go.",
+            meta : {
+                limit : option.limit,
+                skip : option.skip,
+                total : students.length
+            }
         });
         
     });
@@ -499,15 +505,52 @@ var delStudent = function(res, item) {
     })     
 };
 
-var getAttachments = function (res, academic_year){
-    academic_year = academic_year || {$ne: ""};
+var getAttachments = function (res, criteria, project, option){
+    criteria = criteria || {};
+    criteria.academic_year = criteria.academic_year || {$ne: ""};
+    criteria.attachments = {$exists: true}
+    project = project || {
+        "_id": "$attachments._id",
+        "description": "$attachments.description",
+        "reviewed": "$attachments.reviewed",
+        "status": "$attachments.status",
+        "comment": "$attachments.comment",
+        "file_type": "$attachments.file_type",
+        "file_path": "$attachments.file_path",
+        "file_name": "$attachments.file_name",
+    };
+    option = option || {};
+    var sortField = option.sort || "_id" ;
+    var notAllowSort = [
+        "_id",
+        "status",
+        "reviewed",
+        "file_path"
+    ];
+    // sortField = "file_name";
+    var aggregateStage = [
+        {$match: criteria},
+        {$project: {attachments: 1}},
+        {$unwind: "$attachments"},
+        {$match: {"attachments": {$exists: true}}}
+    ];
+    if (notAllowSort.lastIndexOf(sortField)<0){
+        project.insensitive = { "$toLower": "$attachments." + sortField };
+        sortField = {$sort: {"insensitive": 1}};
+    } else {
+        console.log(sortField, "not allow");
+        sortField = {$sort : {"file_type": 1, "file_name": 1}};
+    }
+
+    aggregateStage.push({$project: project});
+    aggregateStage.push(sortField);
+
+    if(typeof option.limit != "undefined")
+        aggregateStage.push({$limit: option.limit});
+
+    console.log("a", aggregateStage);
     var result = [];
-    console.log(academic_year);
-    Student.aggregate([
-        {$project: {attachments: 1, academic_year: 1}}, 
-        {$match: {"attachments": {$exists: true}, "academic_year": academic_year}}
-    ])
-    .unwind("attachments")
+    Student.aggregate(aggregateStage)
     .exec(function(err, docs){
         if(err)
             return res.status(500).send({
@@ -515,12 +558,14 @@ var getAttachments = function (res, academic_year){
                 message: "Something went wrong while removing. try again.", 
                 error: err
             });
-        while (docs.length>=1){
-            result.push(docs.pop().attachments);
-        }
+        // while (docs.length>=1){
+        //     result.push(docs.pop().attachments);
+        // }
+        // delete docs.insensitive;
         return res.status(200).send({
             success: true, 
-            result: result, 
+            //result: result, 
+            result: docs,
             message: "Here you go."
         });
     });

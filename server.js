@@ -12,7 +12,8 @@ var hashKey = require('./config/security');
 //var uuid = require('uuid');
 //var multiparty = require('multiparty');
 
-var port  	 = process.env.PORT || 8080; 				// set the port
+var server_ip_address = process.env.IP || '127.0.0.1'	
+var server_port  	 = process.env.PORT || 8080; 				// set the port
 var methodOverride = require('method-override');
 
 var mkdirp = require('mkdirp');
@@ -52,5 +53,5 @@ app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-M
 require('./app/routes.js')(app);
 
 // listen (start app with node server.js) ======================================
-app.listen(port);
-console.log("App listening on port " + port);
+app.listen(server_port, server_ip_address);
+console.log("App listening on port " + server_port);

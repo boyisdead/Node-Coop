@@ -17,8 +17,13 @@ var autoPrefixId = function(prefix, max, numLong){
     return new_id;
 };
 
+var toFileName = function(str){
+    return str.replace(/ /g, "_").toLowerCase();
+}
+
 module.exports = {
 	'getFileExtension': getFileExtension,
 	'numToLengthString': numToLengthString,
-	'autoPrefixId': autoPrefixId
+	'autoPrefixId': autoPrefixId,
+    'toFileName': toFileName
 }

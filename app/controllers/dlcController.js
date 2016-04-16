@@ -20,7 +20,12 @@ var getDlc = function(res, criteria, project, option) {
         return res.status(200).send({
             result : dlcs,
             success : true,
-            message : "Here you go."
+            message : "Here you go.",
+            meta : {
+                limit : option.limit,
+                skip : option.skip,
+                total : dlcs.length
+            }
         });
     });
 };

@@ -18,7 +18,7 @@ var studentSchema = mongoose.Schema({
     "status": {type: Boolean, default: false},
     "contact": {
         "tel": { type: String, default: '' },
-        "email": { type: String, default: '' },
+        "email": { type: String, default: '' , required : true },
         "address": { type: String, default: '' }
     },
     "prefered_company" : {

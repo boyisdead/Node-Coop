@@ -66,7 +66,12 @@ var getTeacher = function(res, criteria, project, option) {
             });
         return res.status(200).send({
             result : teachers,
-            success : true
+            success : true,
+            meta : {
+                limit : option.limit,
+                skip : option.skip,
+                total : teachers.length
+            }
         });
     });
 };
