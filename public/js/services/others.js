@@ -11,6 +11,9 @@ mainModule.factory('OthersService', ['$http', function($http){
 		},
 		getAcaYrs : function() {
 			return $http.get('/coopsys/v1/typehead/academic-years');
+		},
+		getCompany : function() {
+			return $http.get('/coopsys/v1/typehead/company');
 		}
 	};
 }])

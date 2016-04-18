@@ -286,7 +286,7 @@ var delTeacher = function(res, item) {
     })
 };
 
-var TeacherTypeAhead = function(res){
+var teacherTypehead = function(res){
     Teacher.find(function(err, teacher) {
         if(err)
             return res.status(500).send({
@@ -312,5 +312,5 @@ module.exports = {
     'uploadPicture': uploadPicture,
     'pwChangeTeacher': pwChangeTeacher,
     'delTeacher': delTeacher,
-    'TeacherTypeAhead': TeacherTypeAhead
+    'teacherTypehead': teacherTypehead
 }

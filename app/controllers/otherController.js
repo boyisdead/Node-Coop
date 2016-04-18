@@ -1,7 +1,7 @@
 var Title_name = require('./../models/titlename');
 var Acade_pos = require('./../models/acadepos');
 
-var acadePosTypeAhead = function(res) {
+var acadePosTypehead = function(res) {
     Acade_pos.find(function(err, acadePos) {
         if(err)
             return res.status(500).send({
@@ -16,7 +16,7 @@ var acadePosTypeAhead = function(res) {
     });
 }
 
-var titleNameTypeAhead = function(res) {
+var titleNameTypehead = function(res) {
     Title_name.find(function(err, titleName) {
         if(err)
             return res.status(500).send({
@@ -31,7 +31,7 @@ var titleNameTypeAhead = function(res) {
     });
 }
 module.exports = {
-	'acadePosTypeAhead': acadePosTypeAhead,
-	'titleNameTypeAhead': titleNameTypeAhead
+	'acadePosTypehead': acadePosTypehead,
+	'titleNameTypehead': titleNameTypehead
 }
 

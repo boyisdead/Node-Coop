@@ -47,7 +47,7 @@ var findApplicationById = function(res, item) {
 };
 
 var getStudentApplyStatus = function(res, item){
-    Application.find({student:item,apply_date:{$exists:true}},function(err, application) {
+    Application.find({student:item, apply_date:{$exists:true}, reply: false},function(err, application) {
         if (err)
             return res.status(500).send({
                 success: false,

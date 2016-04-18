@@ -31,11 +31,6 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
             if (msg.last_name.$error.required) {
                 errList += "นามสกุลภาษาไทย ไม่ถูกกรอก\n";
             }
-            // // advisor remove
-            // if (msg.advisor.$error.required) {
-            //     errList += "รหัสอาจารย์ที่ปรึกษา ไม่ถูกกรอก\n";
-            // }
-
             if (errList != "") {
                 sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
             } else {
@@ -43,9 +38,7 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
                 updateStudent();
             }
         }
-
     }
-
     var updateStudent = function() {
         console.log("Updating...");
         StudentsService.update($scope.formData).success(function(data) {

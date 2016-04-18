@@ -59,15 +59,19 @@ module.exports = function(app) {
     //=============================================================================
     
     app.get('/coopsys/v1/typehead/title_name', function(req, res) {
-        OtherController.titleNameTypeAhead(res);
+        OtherController.titleNameTypehead(res);
     });
 
     app.get('/coopsys/v1/typehead/academic_position', function(req, res) {
-        OtherController.acadePosTypeAhead(res);
+        OtherController.acadePosTypehead(res);
     });
 
     app.get('/coopsys/v1/typehead/adviser', function(req, res) {
-        TeacherController.TeacherTypeAhead(res);
+        TeacherController.teacherTypehead(res);
+    });
+
+    app.get('/coopsys/v1/typehead/company', function(req, res) {
+        CompanyController.companyTypehead(res);
     });
 
     app.post('/coopsys/v1/register',function(req, res){
@@ -332,6 +336,11 @@ module.exports = function(app) {
     });
 
     // Get the token owner's apply status
+    app.get('/coopsys/v1/myapply', function (req, res) {
+        ApplicationController.getApplicationByStudent(res, req.decoded.access_id);
+    });
+
+    // Get the token owner's application
     app.get('/coopsys/v1/mystatus/apply', function (req, res) {
         ApplicationController.getStudentApplyStatus(res, req.decoded.access_id);
     });
@@ -418,6 +427,28 @@ module.exports = function(app) {
             delete req.query.skip; delete req.query.offset;
             console.log(req.query, option);
             StudentController.getStudents(res, req.query || {}, undefined, option);
+        } else {
+            res.status(403).send({
+                success: false,
+                error: "only Teachers allow in this section."
+            });
+        }
+    });
+
+    // get all students's job
+    app.get('/coopsys/v1/student/job', function(req, res) {
+        if(checkPermission(allow, req.decoded.access_type)) {
+            var sort = req.query.sort || "_id";
+            var limit = req.query.limit || {};
+            var skip = req.query.skip || req.query.offset || 0;
+            var option = { "sort": sort, "limit": limit, "skip": skip};
+            var query = req.query;
+            console.log({job:query});
+            delete req.query.sort;
+            delete req.query.limit;
+            delete req.query.skip; delete req.query.offset;
+            console.log(req.query, option);
+            StudentController.getStudents(res, {job:query} || {}, {job:1}, option);
         } else {
             res.status(403).send({
                 success: false,

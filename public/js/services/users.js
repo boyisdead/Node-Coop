@@ -9,8 +9,6 @@
 // }]);
 
 authenticationModule.factory('UsersService', ['$http', function($http){
-
-
 	return {
 			get : function(loginData,loginType) {
 				console.log("in factory");

@@ -1,4 +1,4 @@
-studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibModal', '$log', 'StudentsService', 'OthersService', function($scope, $rootScope, $http, $uibModal, $log, StudentsService, OthersService) {
+studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibModal', '$log', '$location', '$anchorScroll', 'StudentsService', 'OthersService', function($scope, $rootScope, $http, $uibModal, $log, $location, $anchorScroll,StudentsService, OthersService) {
 
     var getAcaYrs = function () {
         console.log("get academic year");
@@ -84,9 +84,34 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
         };
         var modalInstance = $uibModal.open({
             scope: scope,
+            size: 'lg',
             animation: true,
             templateUrl: 'view/modal/edit_student_modal.html',
             controller: 'editStudentCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getStudent($scope.academicYear);
+        });
+    };
+
+    $scope.openEditStudentJob = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {
+            studentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            size: 'lg',
+            animation: true,
+            templateUrl: 'view/modal/edit_student_job_modal.html',
+            controller: 'editStudentJobCtrl'
         });
 
         modalInstance.result.then(function(data) {
@@ -133,6 +158,19 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
                 });
             }
             getStudent($scope.academicYear);
+        });
+    }
+
+    $scope.viewStudent = function(id){
+        StudentsService.find(id).success(function(data){
+            if(data.success){
+                $scope.currentViewStudent = data.result[0] || data.result;
+
+                $location.hash('detail');
+
+                // call $anchorScroll()
+                $anchorScroll();
+            }
         });
     }
 }]
