@@ -1,4 +1,4 @@
-studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibModal', '$log', '$location', '$anchorScroll', 'StudentsService', 'OthersService', function($scope, $rootScope, $http, $uibModal, $log, $location, $anchorScroll,StudentsService, OthersService) {
+studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibModal', '$log', '$location', '$anchorScroll', 'StudentsService', 'OthersService', function($scope, $rootScope, $http, $uibModal, $log, $location, $anchorScroll, StudentsService, OthersService) {
 
     var getAcaYrs = function () {
         console.log("get academic year");
@@ -122,6 +122,7 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
                 console.log("call swal");
             }
             getStudent($scope.academicYear);
+            $scope.currentViewStudent = false;
         });
     };
 

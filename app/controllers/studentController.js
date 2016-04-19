@@ -593,7 +593,21 @@ var getStudentAttachments = function (res, item){
 
 var findAttachmentById = function (res, item){
     var newItem = new ObjectId(item);
-    Student.findOne({"attachments._id": newItem}, {attachments: 1}, function(err, doc){
+    Student.aggregate([
+        {$project:{"_id": 1, "attachments": 1}},
+        {$unwind: "$attachments"},
+        {$match:{"attachments._id": newItem}}, 
+        {$project:{
+            "_id": "$attachments._id",
+            "description": "$attachments.description",
+            "reviewed": "$attachments.reviewed",
+            "status": "$attachments.status",
+            "comment": "$attachments.comment",
+            "file_type": "$attachments.file_type",
+            "file_path": "$attachments.file_path",
+            "file_name": "$attachments.file_name",
+            "owner": "$_id"
+        }}], function(err, doc){
         if(err)
             return res.status(500).send({
                 success: false, 
@@ -602,7 +616,7 @@ var findAttachmentById = function (res, item){
             });
         return res.status(200).send({
             success: true, 
-            result: doc.attachments[0], 
+            result: doc, 
             message: "Here you go."
         });
     });

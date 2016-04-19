@@ -1,4 +1,4 @@
-documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', 'DocumentsService', function($scope,$uibModal,$log, DocumentsService) {
+documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', '$location', '$anchorScroll', 'DocumentsService', function($scope,$uibModal,$log, $location, $anchorScroll, DocumentsService) {
     $scope.loading = true;
     
     $scope.students = []
@@ -75,6 +75,17 @@ documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', 'Documen
         modalInstance.result.then(function() {
             $log.info('Modal dismissed at: ' + new Date());
             getDocument();
+        });
+    }
+
+    $scope.viewAttach = function(id){
+        DocumentsService.find(id).success(function(data){
+            if(data.success){
+                $scope.currentViewAttach = data.result[0] || data.result;
+                $location.hash('detail');
+                // call $anchorScroll()
+                $anchorScroll();
+            }
         });
     }
 
