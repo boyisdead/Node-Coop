@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var default_profile_picture = require('../../config/setting').default_profile_picture;
 var this_year  = new Date().getFullYear() + 543;
+var newId = mongoose.Types.ObjectId();
 
 var studentSchema = mongoose.Schema({
     "_id": { type: String, default: '' },
@@ -9,6 +10,7 @@ var studentSchema = mongoose.Schema({
         "last": { type: String, default: '' },
         "title": { type: String, default: '' }
     },
+    "secretKey":{ type: mongoose.Schema.ObjectId },
     "gpa" : { type : Number },
     "date_of_birth" : { type : Date },
     "adviser_id": { type: String, default: '' },

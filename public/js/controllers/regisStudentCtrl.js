@@ -1,6 +1,5 @@
-studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','StudentsService','OthersService', function($scope, $modalInstance, StudentsService, OthersService) {
+studentModule.controller('regisStudentCtrl', ['$scope', '$modalInstance','StudentsService','OthersService', function($scope, $modalInstance, StudentsService, OthersService) {
 
-    var allowPwChange = false;
 
     var getTitleName = function() {
         OthersService.getTitleName().success(function(titledata){
@@ -8,14 +7,7 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
         });
     };
 
-    var getAdvisor = function() {
-        OthersService.getAdvisor().success(function(advisors){
-            $scope.advisorList = advisors.result;
-        });
-    };
-
     getTitleName();
-    getAdvisor();
 
     $scope.validateForm = function(msg) {
         var errList = "";
@@ -41,6 +33,10 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
             if (msg.last_name.$error.required) {
                 errList += "นามสกุล ไม่ถูกกรอก\n";
             }
+            if (msg.gpa.$error.required) {
+                errList += "เกรดเฉลี่ย ไม่ถูกกรอก\n";
+            } else if(gpa>4.00||gpa<1.5)
+                errList += "เกรดเฉลี่ย ไม่ถูกต้อง"
 
             if (msg.conMail.$error.required) {
                 errList += "ปีที่สมัคร ไม่ถูกกรอก\n";
@@ -65,27 +61,18 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
             if (errList != "") {
                 sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
             } else {
-                console.log("aaa");
-                createStudent();
+                regisStudent();
             }
         }
 
     }
 
-    var createStudent = function() {
+    var regisStudent = function() {
         if ($scope.formData._id != undefined) {
             $scope.loading = true;
-            StudentsService.create($scope.formData).success(function(data) {
+            StudentsService.regisStudent($scope.formData).success(function(data) {
                 $scope.loading = false;
-                //upload picture here
-                if($scope.profile_pic&& typeof $scope.profile_pic!='undefined'){
-                    StudentsService.uploadPicture($scope.profile_pic, $scope.formData._id).success(function(data2){
-                    // some kind of alert
-                        console.log(data2);
-                    });
-                }
-                console.log($scope.formData.academic_year);
-                $modalInstance.close({success:true,acaYr:$scope.formData.academic_year});
+                $modalInstance.close({success:true});
             });
         }
     };
@@ -98,7 +85,7 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
     }
 
     $scope.ok = function () {
-  	//can return something
+    //can return something
     $modalInstance.close();
     };
 

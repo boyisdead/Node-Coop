@@ -118,6 +118,7 @@ var mailingStudentApplicant = function(student_id, company_id, attachmentList){
         _id : student_id 
     },{
         attachments: 1,
+        contact: 1,
         name: 1,
         gpa: 1,
         sex: 1
@@ -134,7 +135,10 @@ var mailingStudentApplicant = function(student_id, company_id, attachmentList){
                     message: "Student doesn't exist."
                 }
             })
-        var attach = initialAttachment(studentInfo.attachments, attachmentList);
+        var attach =[];
+        console.log("attachs: ", studentInfo.attachments, studentInfo.attachments.length>0, studentInfo.attachments.length, typeof attach);
+        if(studentInfo.attachments && studentInfo.attachments.length>0)
+            attach = initialAttachment(studentInfo.attachments, attachmentList);
         Company.findOne({
             _id: company_id
         },{
@@ -154,25 +158,41 @@ var mailingStudentApplicant = function(student_id, company_id, attachmentList){
                         message: "Company doesn't exist."
                     }
                 })
-
+            var studentEmail = studentInfo.contact.email;
             var mailContent = "Student name : " + studentInfo.name.title + studentInfo.name.first + " " + studentInfo.name.last + "\n";
             mailContent = mailContent + "ID : " + student_id + "\n";
+            mailContent = mailContent + "Email : " + studentEmail + " Tel : " + studentInfo.contact.tel + "\n";
             mailContent = mailContent + "GPA : " + studentInfo.gpa + "\n";
             mailContent = mailContent + "Sex : " + studentInfo.sex + "\n";
+            mailContent = mailContent + "Company : " + companyInfo.name.full + "\n";
 
-            var mailOption = { 
-                from : "nattawut_k@cmu.ac.th",
-                to : companyInfo.contact.email + ', "' + companyInfo.contact.name.first + " " + companyInfo.contact.name.last +'"',
-                subject : "Student application",
+            var mailCompanyOption = { 
+                from : {
+                    name: 'CoopSys Admin',
+                    address: 'nattawut_k@cmu.ac.th'
+                },
+                to : companyInfo.contact.email || companyInfo.coordinator.email || companyInfo.email + ', "' + companyInfo.contact.name.first  || companyInfo.coordinator.name.first + " " + companyInfo.contact.name.last  || companyInfo.coordinator.name.last+'"',
+                subject : "CS CMU Cooperative plan's student application",
                 text : mailContent,
                 attachments : attach
             }
-            var mailRes = MailController.sendMail(mailOption);
+            var mailStudentOption = { 
+                from : {
+                    name: 'CoopSys Admin',
+                    address: 'nattawut_k@cmu.ac.th'
+                },
+                to : studentEmail,
+                subject : "You have been apply to " + companyInfo.name.full,
+                text : mailContent
+            }
+            MailController.sendMail(mailCompanyOption);
+            MailController.sendMail(mailStudentOption);
         })
     });
 }
 
 var initialAttachment = function(attachments, needAttachments){
+    attachments = attachments || [];
     console.log("init : ",needAttachments);
     var result = [];
     var i = 0; 
@@ -209,13 +229,9 @@ var updateApplication = function(res, item) {
                 result:err
             });
         }
-
-        if(item.attachments)
-            delete item.attachments;
+        // if(item.attachments)
+        //     delete item.attachments;
         objectAssign(doc, item);
-        doc.reply_date = new Date;
-        console.log(doc.reply_date);
-        doc.reply = true;
         doc.save(function(err){
             if (err)
                 return res.status(500).send({

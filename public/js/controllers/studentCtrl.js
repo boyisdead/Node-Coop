@@ -20,18 +20,17 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
     // use the service to get all the students
     var getStudent = function(acaYr) {
         $scope.loading = true;
+        $scope.currentViewStudent = false;
         StudentsService.get(acaYr)
             .success(function(data) {
                 $scope.students = data.result;
                 $scope.loading = false;  
             }).error(function(err){
-                console.log("nosuccess", err);
-                $scope.academicYear = $scope.acaYrs[0];
-                getStudent($scope.academicYear);
+                console.log("no success", err);
             });
     }
     getAcaYrs();
-
+    getStudent();
     // DELETE ==================================================================
     // delete a student after click it
     $scope.deleteStudent = function(id) {
@@ -69,10 +68,11 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             controller: 'addStudentCtrl'
         });
 
-        modalInstance.result.then(function(newCreateYr) {
+        modalInstance.result.then(function(res) {
             $log.info('Modal dismissed at: ' + new Date());
-            console.log(newCreateYr);
-            $scope.academicYear = newCreateYr;
+            if(res.success){
+                swal("สำเร็จ!", "สร้างนักศึกษาแล้ว", "success");
+            }
             getAcaYrs();
         });
     };
@@ -123,6 +123,30 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             }
             getStudent($scope.academicYear);
             $scope.currentViewStudent = false;
+        });
+    };
+
+    $scope.openEditStudentPrefer = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {
+            studentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            size: 'lg',
+            animation: true,
+            templateUrl: 'view/modal/edit_student_prefer_modal.html',
+            controller: 'editStudentPreferCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getStudent($scope.academicYear);
         });
     };
 

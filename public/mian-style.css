@@ -117,6 +117,9 @@ th.action {
     width:32px;
 }
 
+th.filetype{
+    width: 150px;
+}
 select.title-name {
     margin-left: 5px;
     max-width:120px;

@@ -8,21 +8,20 @@
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="titleName">คำนำหน้าชื่อ <span class="mini-red">*</span></label>
-                        <select class="form-control title-name" ng-model="formData.name.title" ng-options="titleName as titleName.th for titleName in titleNameList" ng-change="sexChange()" id="titleName" name="titleName" required>
+                        <select class="form-control title-name" ng-model="formData.name.title" ng-options="titleName as titleName.th for titleName.th in titleNameList" ng-change="sexChange()" id="titleName" name="titleName" required>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="fname">ชื่อ<span class="mini-red">*</span></label>
                             <input type="text" class="form-control text-med" ng-model="formData.name.first" placeholder="ชื่อ" id="fname" name="first_name" autocomplete="off" required>
                             <input type="text" class="form-control text-med" ng-model="formData.name.last" placeholder="นามสกุล" id="lname" name="last_name" autocomplete="off" required>
-                       
                     </div>
-                </div>
-                <div class="col-sm-6">
                     <div class="form-group">
                         <label for="acaPos">ตำแหน่งทางวิชาการ <span class="mini-red">*</span></label>
                         <input type="text" class="form-control text-med" id="acaPos" name="acaPos" ng-model="formData.academic_pos" uib-typeahead="acadePos.full.th as acadePos.full.th for acadePos in acadePosList | filter:$viewValue | limitTo:8" placeholder="ตำแหน่งทางวิชาการ" autocomplete="off" required>
                     </div>
+                </div>
+                <div class="col-sm-6">
                     <div class="form-group">
                         <label for="email">อีเมล์ <span class="mini-red">*</span></label>
                         <input type="email" class="form-control text-med" ng-model="formData.contact.email" placeholder="Email" id="email" autocomplete="off" ng-minlength="10" required>
@@ -48,14 +47,12 @@
                         <span class="mini-red" ng-hide="formData.password==formData.password_confirm">การยืนยันรหัสผ่านไม่ตรงกัน</span>
                     </div>
                 </div>
-                <div class="col-md-6" ng-show="addForm.$valid && formData.password==formData.password_confirm ">
-                    <button type="submit" class="btn btn-success" ng-click="validateForm(addForm)">บันทึก</button>
-                    <button type="reset" class="btn btn-warning">ล้างค่า</button>
-                </div>
             </form>
         </div>
     </div>
 </div>
 <div class="modal-footer">
+    <button type="submit" class="btn btn-success" ng-click="validateForm(addForm)">บันทึก</button>
+    <button type="reset" class="btn btn-warning">ล้างค่า</button>
     <button class="btn btn-default" ng-click="ok()">ปิด</button>
 </div>

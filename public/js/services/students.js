@@ -12,6 +12,9 @@
 	            }
 
 	        },
+	        getStudentAttachment: function(id) {
+	            return $http.get('/coopsys/v1/student/'+ id +'/attachment');
+	        },
 	        create: function(studentData) {
 	            return $http.post('/coopsys/v1/student', studentData);
 	        },
@@ -34,21 +37,12 @@
 	            console.log("get" + id);
 	            return $http.get('/coopsys/v1/student/' + id);
 	        },
-	        pwChange: function(pwData, id) {
-	            pwData._id = id;
-	            return $http.put('/admin/student/pw_change', pwData);
-	        },
-	        unlockProfile: function(id) {
-	            var student = {
-	                id: id
-	            }
-	            return $http.put('/admin/student/unlock_profile', student);
-	        },
-	        lockProfile: function(id) {
-	            var student = {
-	                id: id
-	            }
-	            return $http.put('/admin/student/lock_profile', student);
+	        // pwChange: function(pwData, id) {
+	        //     pwData._id = id;
+	        //     return $http.put('/admin/student/pw_change', pwData);
+	        // },
+	        regisStudent : function(studentData) {
+	        	return $http.post('/coopsys/v1/register',studentData);
 	        }
 	    }
 	}]);

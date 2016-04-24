@@ -74,6 +74,11 @@ module.exports = function(app) {
         CompanyController.companyTypehead(res);
     });
 
+    // Get academic year available
+    app.get('/coopsys/v1/typehead/academic-years', function(req, res) {
+        StudentController.getAcaYrs(res);
+    });
+
     app.post('/coopsys/v1/register',function(req, res){
         StudentController.studentRegistration(res, req.body);
     });
@@ -92,6 +97,10 @@ module.exports = function(app) {
     app.get('/coopsys/v1/teacher/:id', function(req, res) {
         TeacherController.findTeacherById(res, req.params.id);
     });
+
+    app.get('/coopsys/v1/student/:stu_id/activate/:key', function(req, res){
+        StudentController.activeStudent(res, req.params.stu_id, req.params.key)
+    })
 
     app.get('/coopsys/v1/company', function(req, res) {
         console.log("Get all company");
@@ -158,8 +167,8 @@ module.exports = function(app) {
     //suspended due to working
     // verify token for every request
     app.use(function(req, res, next) {
-        if(req.headers.cookie)
-            var cookieToken = req.headers.cookie.substr(9) || {};
+        if(req.cookies)
+            var cookieToken = req.cookies.tokenJWT;
         // check header or url parameters or post parameters for token
         var token = req.body.token || req.query.token || req.headers['x-access-token'] || cookieToken;
         // decode token
@@ -376,7 +385,7 @@ module.exports = function(app) {
 
     // Delete the token owner's a specific attachment
     app.delete('/coopsys/v1/myattach/:id', function (req, res) {
-        StudentController.delAttachment(res, req.params.id, req.decoded.access_id);
+        StudentController.delMyAttachment(res, req.params.id, req.decoded.access_id);
     });
 
     app.get('/coopsys/v1/myprefer', function (req, res) {
@@ -498,11 +507,6 @@ module.exports = function(app) {
         StudentController.delStudent(res, req.params.student_id);
     });
 
-    // Get academic year available
-    app.get('/coopsys/v1/typehead/academic-years', function(req, res) {
-        StudentController.getAcaYrs(res);
-    });
-
     // Get all attachment of owners who are in specific academic year
     app.get('/coopsys/v1/attachment/', function(req, res) {
         console.log("get all Attachment");
@@ -560,7 +564,8 @@ module.exports = function(app) {
 
     // Delete the token owner's a specific attachment
     app.delete('/coopsys/v1/attachment/:attach_id', function (req, res) {
-        StudentController.delAttachment(res, req.params.id);
+        
+        StudentController.delAttachment(res, req.params.attach_id);
     });
 
     // app.put('/coopsys/v1/student/unlock_profile', function(req, res) {

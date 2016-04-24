@@ -49,7 +49,6 @@
                         </td>
                         <td>
                             <a ng-hide="student.profileLock" ng-click="openEditStudent(student._id)"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a ng-show="student.profileLock" ng-click="unlockProfile(student._id)"><span class="glyphicon glyphicon-lock"></span></a>
                         </td>
                     </tr>
                 </tbody>
@@ -62,7 +61,7 @@
         <div class="col-xs-12 detail-panel">
             <div class="col-xs-12 col-sm-3 side-bar">
                 <div style="display:inline-block;width:100%">
-                    <img class="profile-display" ngf-thumbnail="currentViewStudent.profile_picture || './images/no-profile.png'">
+                    <img class="profile-display" ngf-thumbnail="currentViewStudent.profile_picture || './images/no-profile.png'" alt="Profile image">
                     <strong>Status</strong> <span ng-show="currentViewStudent.status" class="label label-success">Active</span>
                     <span ng-hide="currentViewStudent.status" class="label label-danger">Inactive</span>
                 </div>
@@ -113,7 +112,10 @@
                     </div>
                 </div>
                 <div class="panel panel-default main-panel" style="display:inline-block;">
-                    <div class="panel-heading">Prefered Company</div>
+                    <div class="panel-heading">Prefered Company 
+                        <a ng-click="openEditStudentPrefer(currentViewStudent._id)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a></div>
                     <div class="panel-body">
                         <ol class="prefer">
                             <li><span ng-bind="currentViewStudent.prefered_company.first || '-' |capitalize"></span></li>
@@ -128,9 +130,9 @@
                         <span ng-show="currentViewStudent.job.status=='active'" class="label label-success right" ng-bind="currentViewStudent.job.status || '-' | capitalize"></span>
                         <span ng-show="currentViewStudent.job.status=='suspend'" class="label label-danger right" ng-bind="currentViewStudent.job.status || '-' | capitalize"></span>
                         <span ng-show="currentViewStudent.job.status=='finished'" class="label label-info right" ng-bind="currentViewStudent.job.status || '-' | capitalize"></span>
-                        <button ng-click="openEditStudentJob(currentViewStudent._id)">
+                        <a ng-click="openEditStudentJob(currentViewStudent._id)">
                             <span class="glyphicon glyphicon-pencil"></span>
-                        </button>
+                        </a>
                     </div>
                     <div class="panel-body">
                         <table>
@@ -158,7 +160,7 @@
                             </tr>
                              <tr>
                                 <th><span >Report Date</span> </th>
-                                <td><span ng-bind="currentViewStudent.job.report_date || '-' "></span> </td>
+                                <td><span ng-bind="currentViewStudent.job.report_date || '-' | date:'fullDate'"></span> </td>
                                 <td>Period</td>
                                 <td>
                                     <span ng-bind="currentViewStudent.job.payment.period || '-' |capitalize"></span>
@@ -166,7 +168,7 @@
                             </tr>
                              <tr>
                                 <th><span >Finish Date</span> </th>
-                                <td><span ng-bind="currentViewStudent.job.finish_date || '-' "></span> </td>
+                                <td><span ng-bind="currentViewStudent.job.finish_date || '-' | date:'fullDate'"></span> </td>
                                 <td>Amount per period</td>
                                 <td>
                                     <span ng-bind="currentViewStudent.job.payment.amount_per_period || '-' |capitalize"></span>
@@ -174,7 +176,7 @@
                              </tr>
                              <tr>
                                 <th><span >Launch Date</span> </th>
-                                <td><span ng-bind="currentViewStudent.job.launch_date || '-' "></span> </td>
+                                <td><span ng-bind="currentViewStudent.job.launch_date || '-' | date:'fullDate'"></span> </td>
                                 <th><span >Note</span> </th>
                                 <td><span ng-bind="currentViewStudent.job.note || '-' |capitalize"></span> </td>
                              </tr>

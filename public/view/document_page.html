@@ -23,21 +23,34 @@
             <table class="table table-hover table-condensed">
                 <thead>
                     <tr>
-                        <th class="scode">ชื่อเอกสาร</th>
-                        <th class="scode">ประเภท</th>
-                        <th class="scode">คำอธิบาย</th>
+                        <th class="scode">เจ้าของ</th>
+                        <th class="filetype">ประเภท</th>
+                        <th class="">คำอธิบาย</th>
+                        <th class="action"></th>
+                        <th class="action"></th>
+                        <th class="action"></th>
+                        <th class="action"></th>
                     </tr>
                 </thead>
-                <tbody ng-repeat="document in documents |orderBy: documents.file_name |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
+                <tbody ng-repeat="document in documents  |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
                     <tr ng-click="viewAttach(document._id)">
                         <td>
-                            <a href="{{document.file_path}}" target="_blank"><span ng-bind="document.file_name"></span></a>
+                            <span ng-bind="document.owner"></span></a>
                         </td>
                         <td>
                             <span ng-bind="document.file_type"></span></a>
                         </td>
                         <td>
                             <span ng-bind="document.description"></span>
+                        </td><td ng-click="openEditDocument(document._id)">
+                            <a><span class="glyphicon glyphicon-pencil"></span></a>
+                        </td>
+                        <td>
+                            <a href="{{document.file_path}}" target="_blank"><span class="glyphicon glyphicon-eye-open"></span></a>
+                        </td><td>
+                            <a href="{{document.file_path}}" download><span class="glyphicon glyphicon-download"></span></a>
+                        </td><td ng-click="deleteDocument(document._id)">
+                            <a><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
                     </tr>
                 </tbody>

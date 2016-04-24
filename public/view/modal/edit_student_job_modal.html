@@ -29,8 +29,8 @@
                     </div>
                     <div class="form-group">
                         <label for="tel">วันรายงานตัว</label>
-                        <p class="input-group">
-                            <input type="text" class="form-control text-med" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.job.report_date" is-open="report_date_popup" datepicker-options="dateOption" close-text="Close" />
+                        <p class="input-group  text-med">
+                            <input type="text" class="form-control" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.job.report_date" is-open="report_date_popup" datepicker-options="dateOption" close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openReportDate()">
                                     <i class="glyphicon glyphicon-calendar"></i>
@@ -40,8 +40,8 @@
                     </div>
                     <div class="form-group">
                         <label for="tel">วันเริ่มฝึกงาน</label>
-                        <p class="input-group">
-                            <input type="text" class="form-control text-med" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.job.launch_date" is-open="launch_date_popup" popup-placement="top-right" close-text="Close" />
+                        <p class="input-group text-med">
+                            <input type="text" class="form-control" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.job.launch_date" is-open="launch_date_popup" popup-placement="top-right" close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openLaunchDate()">
                                     <i class="glyphicon glyphicon-calendar"></i>
@@ -51,8 +51,8 @@
                     </div>
                     <div class="form-group">
                         <label for="tel">วันสิ้นสุดการทำงาน</label>
-                        <p class="input-group">
-                            <input type="text" class="form-control text-med" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.job.finish_date" is-open="finish_date_popup" popup-placement="top-right" close-text="Close" />
+                        <p class="input-group text-med">
+                            <input type="text" class="form-control" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.job.finish_date" is-open="finish_date_popup" popup-placement="top-right" close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openFinishDate()">
                                     <i class="glyphicon glyphicon-calendar"></i>
@@ -79,31 +79,26 @@
                             </li>
                         </ul>
                     </div>
-
                     <div class="form-group">
-                        <label for="welfares">สวัสดิการ<span class="mini-red">*</span></label>
+                        <label for="welfares">สวัสดิการ<span class="mini-gray">*คั่นแต่ละรายการด้วยเครื่องหมายจุลภาค (',': comma)</span></label>
                         <textarea  type="text" class="form-control text-med" cols="40" rows="2" ng-model="welfares" placeholder="Welfares" id="welfares" name="welfares" autocomplete="off"></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label for="note">หมายเหตุ<span class="mini-red">*</span></label>
+                        <label for="note">หมายเหตุ</label>
                         <textarea  type="text" class="form-control text-med" cols="40" rows="2" ng-model="formData.job.note" placeholder="Note" id="note" name="note" autocomplete="off"></textarea>
                     </div>
-                    <!-- advisor remove
                     <div class="form-group">
-                        <label for="advisor">รหัสอาจารย์ที่ปรึกษา <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" id="advisor" name="advisor" ng-model="formData.advisor_id" uib-typeahead="advisor.staff_code as advisor.staff_code + ' ('+ advisor.name.f_th + ' ' + advisor.name.l_th +')' for advisor in advisorList | filter:$viewValue | limitTo:8" autocomplete="off" placeholder="อาจารย์ที่ปรึกษา" required>
+                        <label for="advisor">รหัสอาจารย์ที่ปรึกษา <span class="mini-gray">*พิมพ์ชื่ออาจารย์เพื่อค้นหาได้</span></label>
+                        <input type="text" class="form-control text-med" id="advisor" name="advisor" ng-model="formData.advisor_id" uib-typeahead="advisor._id as advisor.academic_pos + advisor.name.first + ' ' + advisor.name.last for advisor in advisorList | filter:$viewValue | limitTo:8" autocomplete="off" placeholder="อาจารย์ที่ปรึกษา" required>
                     </div>
-                    -->
-                </div>
-                <div class="col-md-6 col-md-offset-6">
-                    <button type="submit" class="btn btn-success" ng-click="validateJobForm(editForm)">บันทึก</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 <div class="modal-footer inline-block">
+                    <button type="submit" class="btn btn-success" ng-click="validateJobForm(editForm)">บันทึก</button>
     <button type="button" class="btn btn-warning" ng-click="getStudentData()">คืนค่า</button>
     <button class="btn btn-default" ng-click="ok()">ปิด</button>
 </div>

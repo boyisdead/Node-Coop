@@ -1,0 +1,75 @@
+<div class="modal-header">
+    <h3 class="modal-title">เพิ่มใบสมัคร<small><span ng-bind="formData._id"></span></small></h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid" style="width:100%">
+        <div class="row">
+            <form class="form-horizontal touched-validate" name="editForm" novalidate>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="student">รหัสนักศึกษา <span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" id="student" name="student" ng-model="formData.student" uib-typeahead="student._id as student._id + ' ' + student.name.first for student in studentList | filter:$viewValue | limitTo:5" placeholder="Student" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">สถานประกอบการ <span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" id="company" name="company" ng-model="formData.company" uib-typeahead="company as company.name for company in companyList | filter:$viewValue | limitTo:5" placeholder="Company" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apply_date">วันที่ส่งใบสมัคร</label>
+                        <p class="input-group text-med">
+                            <input type="text" name="apply_date" class="form-control" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.apply_date" is-open="apply_date_popup" popup-placement="top-right" close-text="Close" required/>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openApplyDate()">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="reply_date">วันที่ตอบรับ</label>
+                        <p class="input-group  text-med">
+                            <input type="text" name="reply_date"  class="form-control" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.reply_date" is-open="reply_date_popup" popup-placement="top-right" close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openReplyDate()">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="response">การตอบ</label>
+                        <div class="btn-group">
+                            <label class="btn btn-danger btn-sm" name="response" ng-model="formData.response" uib-btn-radio="false" uncheckable>Declined</label>
+                            <label class="btn btn-success btn-sm" name="response" ng-model="formData.response" uib-btn-radio="true" uncheckable>Accepted</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="detail">รายละเอียด</label>
+                        <textarea  type="text" class="form-control text-med" cols="40" rows="2" ng-model="formData.detail" placeholder="Detail" id="detail" name="detail" autocomplete="off"></textarea>
+                    </div>
+                </div>
+                <div class="col-sm-12"  ng-if="!!formData.student">
+                    <div class="form-group">
+                        <label for="attach">เอกสารประกอบ</label>
+                        <div ng-if="!!attachList"> 
+                            <input type="text" class="form-control text-med" id="attach" name="attach" ng-model="newAttach" uib-typeahead="attach as attach.file_name for attach in attachList | filter:$viewValue | limitTo:5" placeholder="Attachments" autocomplete="off" required>
+                            <button type="button" class="btn btn-defalut" ng-click="addAttach(newAttach)">เพิ่ม</button>
+                            <ul ng-repeat="attachment in showAttach">
+                                <li><span ng-bind="attachment"></span> <span ng-click="removeAttach($index)" class="glyphicon glyphicon-trash"></span></li>
+                            </ul>
+                        </div>
+                        <div ng-if="!attachList">
+                            <button type="button" class="btn btn-defalut" ng-click="getStudentAttach(formData.student)">เรียกรายการ</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer inline-block">
+    <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
+</div>

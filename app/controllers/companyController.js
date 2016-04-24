@@ -34,7 +34,7 @@ var getCompany = function(res, criteria, project, option) {
 };
 
 var companyTypehead = function(res){ 
-    Company.aggregate([{$project:{ "_id": 0, "name" : "$name.full"}}], function(err, companies) {
+    Company.aggregate([{$project:{ "_id": 1, "name" : "$name.full"}}], function(err, companies) {
     if (err)
         return res.status(500).send({success:false, error:err})
         return res.status(200).send({

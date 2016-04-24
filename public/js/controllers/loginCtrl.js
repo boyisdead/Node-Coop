@@ -1,21 +1,16 @@
-authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies', 'jwtHelper', 'UsersService', function($scope, $rootScope, $cookies, jwtHelper, UsersService) {
+authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies', 'jwtHelper', '$uibModal','$log', 'UsersService', function($scope, $rootScope, $cookies, jwtHelper, $uibModal,$log, UsersService) {
 
+    $scope.openRegis = function (){
+    	var modalInstance = $uibModal.open({
+    		animation: true,
+    		templateUrl: 'view/modal/register_modal.html',
+    		controller: 'regisStudentCtrl',
+    		size: 'md'
+    	});
+        modalInstance.result.then(function() {
+            $log.info('Modal dismissed at: ' + new Date());        });
+    };
 
-    // $scope.openTeacherLogin = function (){
-    // 	console.log("teacher");
-    // 	var modalInstance = $uibModal.open({
-    // 		animation: true,
-    // 		templateUrl: 'view/modal/teacher_login_modal.html',
-    // 		controller: 'teacherLoginCtrl',
-    // 		size: 'md'
-    // 	});
-
-    // 	modalInstance.result.then(function(){
-
-    // 	}, function(){
-    // 		$log.info('Modal dismissesd at: ' + new Date());
-    // 	});
-    // };
     var alreadyLogin;
     if (typeof $rootScope.currentUser != 'undefined')
         alreadyLogin = true;

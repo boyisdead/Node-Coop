@@ -1,9 +1,9 @@
-documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', '$location', '$anchorScroll', 'DocumentsService', function($scope,$uibModal,$log, $location, $anchorScroll, DocumentsService) {
+documentModule.controller('documentCtrl', ['$scope', '$rootScope','$uibModal','$log', '$location', '$anchorScroll', 'DocumentsService', function($scope, $rootScope, $uibModal, $log, $location, $anchorScroll, DocumentsService) {
     $scope.loading = true;
     
     $scope.students = []
         ,$scope.currentPage = 1
-        ,$scope.numPerPage = 5
+        ,$scope.numPerPage = 10
         ,$scope.maxSize = 5;
 
     var sumDocuments = function (owners) {
@@ -24,8 +24,8 @@ documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', '$locati
             // $scope.documents = data.map(function(obj){
             //     return obj.documents;
             // });
-            console.log("after map : " , $scope.documents);
-            console.log("first doc : " , $scope.documents[0]);
+            //console.log("after map : " , $scope.documents);
+            //console.log("first doc : " , $scope.documents[0]);
             $scope.loading = false;
             $scope.totalDouments = $scope.documents.length;
         });
@@ -51,13 +51,16 @@ documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', '$locati
             if(isConfirm) {
                 $scope.loading = true;
                 DocumentsService.delete(id).success(function(data) {
-                    $scope.documents = data;
                     $scope.loading = false;
                     console.log(data);
                     swal("สำเร็จ!","ไฟล์ถูกลบแล้ว","success");
                 }).then(function(data){
-                    console.log("then");
+                    console.log("then", data);
                     getDocument();
+                }, function errorCallback(response){
+                    console.log(response);
+                    if(response.status == 404)
+                        swal("ผิดพลาด!","ไม่มีไฟล์นี้","error");
                 });
             } else {
                 swal("ยกเลิก", " ","error");
@@ -77,6 +80,30 @@ documentModule.controller('documentCtrl', ['$scope','$uibModal','$log', '$locati
             getDocument();
         });
     }
+
+    $scope.openEditDocument = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {
+            documentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            size: 'lg',
+            animation: true,
+            templateUrl: 'view/modal/edit_document_modal.html',
+            controller: 'editDocumentCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getDocument();
+        });
+    };
 
     $scope.viewAttach = function(id){
         DocumentsService.find(id).success(function(data){
