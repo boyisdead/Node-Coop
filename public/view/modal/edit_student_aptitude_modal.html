@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <h3 class="modal-title">แก้ไขข้อมูลนักศึกษา <small><span ng-bind="formData._id"></span></small></h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid" style="width:100%">
+        <div class="row" ng-hide="allowPwChange">
+            <form class="form-horizontal touched-validate" name="editForm" novalidate>
+                <div class="col-sm-6">
+                    <div class="form-group  text-med">
+                        <label for="aptitude">ความถนัด</label>
+                        <input type="text" class="form-control" id="subject" name="subject" ng-model="newAptitude.subject" placeholder="Subject" autocomplete="off" required> 
+                        <span> Lv. </span>  <span class="mini-gray">*ค่าตั้งแต่ 1-5</span><input type="number" min="1" max="5" class="form-control" id="level" name="level" ng-model="newAptitude.level" placeholder="Level" autocomplete="off" required>
+                        <div ng-messages="editForm.subject.$error" class="mini-red" role="alert">
+                            <div ng-message="required">กรุณากรอกความถนัด</div>
+                        </div>
+                        <div ng-messages="editForm.level.$error" class="mini-red" role="alert">
+                            <div ng-message="required">ระดับความชำนาญควรเป็นตัวเลข 1-5</div>
+                        </div>
+                        <button type="button" class="btn btn-defalut" ng-click="addAptitude(newAptitude)">เพิ่ม</button>
+                        
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <ul class="list-group">
+                        <li  ng-repeat="skill in formData.aptitudes" class="list-group-item">
+                            <span ng-bind="skill.subject|capitalize"></span> 
+                            <span ng-bind="skill.level">Lv.</span>
+                            <span ng-click="removeAptitude($index)" class="glyphicon glyphicon-trash right"></span>
+                        </li>
+                    </ul>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer inline-block">
+    <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
+    <button type="button" class="btn btn-warning" ng-click="getStudentData()">คืนค่า</button>
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
+</div>

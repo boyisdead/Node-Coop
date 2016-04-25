@@ -66,7 +66,13 @@
                     <span ng-hide="currentViewStudent.status" class="label label-danger">Inactive</span>
                 </div>
                 <div>
-                    <h4><span ng-bind="currentViewStudent.name.first || '-' |capitalize"></span> <span ng-bind="currentViewStudent.name.last || '-' |capitalize"></span></h4>
+                    <h4>
+                        <span ng-bind="currentViewStudent.name.first || '-' |capitalize"></span> 
+                        <span ng-bind="currentViewStudent.name.last || '-' |capitalize"></span>
+                        <a ng-click="openEditStudent(currentViewStudent._id)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                    </h4>
                     <ul class="contact">
                         <li>
                             <span class="glyphicon glyphicon-user"></span>
@@ -93,10 +99,10 @@
                     </div>
                 </div>
                 <div class="panel panel-default main-panel" style="display:inline-block;">
-                    <div class="panel-heading">Emergency contact</div>
+                    <div class="panel-heading">Emergency contact <a ng-click="openEditStudentEmc(currentViewStudent._id)"><span class="glyphicon glyphicon-pencil"></span></a> </div>
                     <div class="panel-body">
                         <ul class="contact">
-                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentViewStudent.emergency_contact.name || '-' |capitalize"></span></li>
+                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentViewCompany.emergency_contact.name.title + currentViewCompany.emergency_contact.name.first + ' ' +  currentViewCompany.emergency_contact.name.last || '-' "></span></li>
                             <li><span class="glyphicon glyphicon-glyphicon glyphicon-heart"></span> <span ng-bind="currentViewStudent.emergency_contact.relationship || '-' |capitalize"></span></li>
                             <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="currentViewStudent.emergency_contact.tel || '-' "></span></li>
                             <li><span class="glyphicon glyphicon-home"></span> <span ng-bind="currentViewStudent.emergency_contact.address || '-' "></span></li>
@@ -104,7 +110,7 @@
                     </div>
                 </div>
                 <div class="panel panel-default main-panel" style="display:inline-block;" ng-if="!!currentViewStudent.aptitudes">
-                    <div class="panel-heading">Aptitudes</div>
+                    <div class="panel-heading">Aptitudes  <a ng-click="openEditStudentAptitude(currentViewStudent._id)"><span class="glyphicon glyphicon-pencil"></span></a> </div>
                     <div class="panel-body">
                         <ul class="contact" ng-repeat="skill in currentViewStudent.aptitudes">
                             <li><span ng-bind="skill.subject|capitalize"></span> Lv.<span ng-bind="skill.level"></span></li>
@@ -115,7 +121,8 @@
                     <div class="panel-heading">Prefered Company 
                         <a ng-click="openEditStudentPrefer(currentViewStudent._id)">
                             <span class="glyphicon glyphicon-pencil"></span>
-                        </a></div>
+                        </a>
+                    </div>
                     <div class="panel-body">
                         <ol class="prefer">
                             <li><span ng-bind="currentViewStudent.prefered_company.first || '-' |capitalize"></span></li>

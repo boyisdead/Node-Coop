@@ -57,6 +57,33 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
         });
     };
 
+    $scope.validateEmcForm = function(msg) {
+        var errList = "";
+        if (typeof $scope.formData != 'undefined') {
+
+            if (msg.tname.$error.required) {
+                errList += "คำนำหน้าชื่อ ไม่ถูกกรอก\n";
+            }
+            if (msg.name_first.$error.required) {
+                errList += "ชื่อ ไม่ถูกกรอก\n";
+            }
+            if (msg.name_last.$error.required) {
+                errList += "นามสกุล ไม่ถูกกรอก\n";
+            }
+            if (msg.relationship.$error.required) {
+                errList += "ความเกี่ยวข้อง ไม่ถูกกรอก\n";
+            }
+            if (msg.telephone.$error.required) {
+                errList += "เบอร์โทรศัพท์ ไม่ถูกกรอก\n";
+            }
+            if (errList != "") {
+                sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
+            } else {
+                updateStudent();
+            }
+        }
+    }
+
     $scope.changPw = function(passwordData, id) {
         console.log("chng pw", passwordData, id);
         if (passwordData.newPassword == passwordData.password_confirm) {

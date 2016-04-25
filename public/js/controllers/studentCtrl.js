@@ -150,6 +150,52 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
         });
     };
 
+    $scope.openEditStudentAptitude = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {
+            studentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_student_aptitude_modal.html',
+            controller: 'editStudentAptitudeCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getStudent($scope.academicYear); 
+        });
+    };
+
+    $scope.openEditStudentEmc = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {
+            studentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_student_em_contact_modal.html',
+            controller: 'editStudentCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getStudent($scope.academicYear); 
+        });
+    };
+
     $scope.openEditAcademicYear = function() {
         console.log("open modal");
         var modalInstance = $uibModal.open({

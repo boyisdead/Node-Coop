@@ -12,6 +12,12 @@ companyModule.factory('CompaniesService', ['$http', function($http){
 		update : function(companyData) {
 			return $http.put('/coopsys/v1/company', companyData);
 		},
+		updateContact : function(companyData) {
+			return $http.put('/coopsys/v1/company/'+ companyData._id+ '/contact', companyData.contact);
+		},
+		updateCoordinator : function(companyData) {
+			return $http.put('/coopsys/v1/company/'+ companyData._id+ '/coordinator', companyData.coordinator);
+		},
 		find : function(id) {
 			return $http.get('/coopsys/v1/company/' + id);
 		}

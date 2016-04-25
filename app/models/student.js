@@ -29,7 +29,11 @@ var studentSchema = mongoose.Schema({
         "third": { type: String, default: '' }
     },
     "emergency_contact": {
-        "name": { type: String, default: '' },
+        "name": {
+            "first": { type: String, default: '' },
+            "last": { type: String, default: '' },
+            "title": { type: String, default: '' }
+        },
         "relationship": { type: String, default: '' },
         "tel": { type: String, default: '' },
         "address": { type: String, default: '' }

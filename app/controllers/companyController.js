@@ -22,7 +22,7 @@ var getCompany = function(res, criteria, project, option) {
         if (err)
             return res.status(500).send({success:false, error:err})
         return res.status(200).send({
-            succes: true,
+            success: true,
             result: companies,
             meta : {
                 limit : option.limit,
@@ -38,7 +38,7 @@ var companyTypehead = function(res){
     if (err)
         return res.status(500).send({success:false, error:err})
         return res.status(200).send({
-            succes: true,
+            success: true,
             result: companies
         }); 
     });
@@ -118,7 +118,7 @@ var updateCompany = function(res, item) {
 }
 
 var updateCompanyContact = function(res, owner, item){
-    console.log("Contact ", item);
+    console.log("Contact ", item, owner);
     Company.findOne({
         _id: owner
     }, function(err, doc) {
@@ -133,7 +133,7 @@ var updateCompanyContact = function(res, owner, item){
                 success: false,
                 message: "File not exist."
             })
-        if(!item || owner)
+        if(!item || !owner)
             return res.status(400).send({
                 success: false,
                 message: "No contact info provided."

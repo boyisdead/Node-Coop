@@ -290,9 +290,6 @@ var updateStudent = function(res, item) {
                 objectAssign(doc.contact, item.contact);
                 delete item.contact;
             }
-            if(item.aptitudes){
-                delete item.aptitudes;
-            }
             if(item.documuents){
                 delete item.documuents;
             }
@@ -319,6 +316,26 @@ var updateStudent = function(res, item) {
         }
     });
 };
+
+var updateStudentAptitudes = function (res, item){
+     Student.findOneAndUpdate({
+        _id: item._id
+    }, {
+        "aptitudes" : item.aptitudes
+    }, function(err){
+        if(err){
+            return res.status(500).send({
+                success: false, 
+                message: "Something went wrong while saving Student. try again.", 
+                error: err
+            });
+        }
+        return res.status(200).send({
+            success : true, 
+            message: "Student updated."
+        });
+    })
+}
 
 var activeStudent = function(res, student, key) {
     Student.findOne({_id:student},{secretKey:1},function(err, doc){
@@ -875,5 +892,6 @@ module.exports = {
     'changePreferedCompany':changePreferedCompany,
     'apprroveAttachment': apprroveAttachment,
     'declineAttachment': declineAttachment,
-    'activeStudent': activeStudent
+    'activeStudent': activeStudent,
+    'updateStudentAptitudes': updateStudentAptitudes
 }

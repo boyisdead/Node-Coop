@@ -654,6 +654,7 @@ module.exports = function(app) {
     // Update a contact of specific company
     app.put('/coopsys/v1/company/:company_id/contact/', function(req, res) {
         var comp_id = req.params.company_id;
+        console.log(req.body);
         CompanyController.updateCompanyContact(res, comp_id, req.body);
     });
 

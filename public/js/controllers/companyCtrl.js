@@ -1,4 +1,4 @@
-companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$log' ,'CompaniesService', function($scope, $rootScope, $uibModal, $log, CompaniesService){
+companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$log' , '$location', '$anchorScroll', 'CompaniesService', function($scope, $rootScope, $uibModal, $log, $location, $anchorScroll, CompaniesService){
     
     $scope.companies = []
         ,$scope.currentPage = 1
@@ -12,7 +12,20 @@ companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$l
             console.log("Companies data retrieving success.");
             console.log(data);
             $scope.companies = data.result;
+            $scope.currentViewCompany = false;
             $scope.loading = false;
+        });
+    }
+
+    $scope.viewCompany = function(id){
+        CompaniesService.find(id).success(function(data){
+            console.log("view: ",data, data.success)
+            if(data.success){
+                $scope.currentViewCompany = data.result[0] || data.result;
+                console.log("view: ",$scope.currentViewCompany )
+                $location.hash('detail');
+                $anchorScroll();
+            }
         });
     }
 
@@ -71,6 +84,42 @@ companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$l
             scope: scope,
             animation: true,
             templateUrl: 'view/modal/edit_company_modal.html',
+            controller: 'editCompanyCtrl'
+        });
+
+        modalInstance.result.then(function() {
+            $log.info('Modal dismissed at: ' + new Date());
+            getCompany();
+        });
+    }
+
+    $scope.openEditCompanyContact = function(id) {
+        var scope = $rootScope.$new();
+            scope.params = {
+            company_id: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_company_contact_modal.html',
+            controller: 'editCompanyCtrl'
+        });
+
+        modalInstance.result.then(function() {
+            $log.info('Modal dismissed at: ' + new Date());
+            getCompany();
+        });
+    }
+
+    $scope.openEditCompanyCoordinator = function(id) {
+        var scope = $rootScope.$new();
+            scope.params = {
+            company_id: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_company_coordinator_modal.html',
             controller: 'editCompanyCtrl'
         });
 
