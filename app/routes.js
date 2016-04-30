@@ -22,6 +22,16 @@ var checkPermission = function(allow_types,access_type){
         return true
 }
 
+var isEmpty = function (obj) {
+    if (obj == null) return true;
+    if (obj.length > 0)    return false;
+    if (obj.length === 0)  return true;
+    for (var key in obj) {
+        if (hasOwnProperty.call(obj, key)) return false;
+    }
+    return true;
+}
+
                                 //================================ Routes ====================================
                                 //       $$$$$$$\   $$$$$$\  $$\   $$\ $$$$$$$$\ $$$$$$$$\  $$$$$$\  
                                 //       $$  __$$\ $$  __$$\ $$ |  $$ |\__$$  __|$$  _____|$$  __$$\ 
@@ -445,26 +455,30 @@ module.exports = function(app) {
     });
 
     // get all students's job
-    app.get('/coopsys/v1/student/job', function(req, res) {
-        if(checkPermission(allow, req.decoded.access_type)) {
-            var sort = req.query.sort || "_id";
-            var limit = req.query.limit || {};
-            var skip = req.query.skip || req.query.offset || 0;
-            var option = { "sort": sort, "limit": limit, "skip": skip};
-            var query = req.query;
-            console.log({job:query});
-            delete req.query.sort;
-            delete req.query.limit;
-            delete req.query.skip; delete req.query.offset;
-            console.log(req.query, option);
-            StudentController.getStudents(res, {job:query} || {}, {job:1}, option);
-        } else {
-            res.status(403).send({
-                success: false,
-                error: "only Teachers allow in this section."
-            });
-        }
-    });
+    // app.get('/coopsys/v1/student/job', function(req, res) {
+    //     if(checkPermission(allow, req.decoded.access_type)) {
+    //         var sort = req.query.sort || "_id";
+    //         var limit = req.query.limit || {};
+    //         var skip = req.query.skip || req.query.offset || 0;
+    //         var option = { "sort": sort, "limit": limit, "skip": skip};
+    //         delete req.query.sort;
+    //         delete req.query.limit;
+    //         delete req.query.skip; 
+    //         delete req.query.offset;
+
+    //         if(isEmpty(req.query))
+    //             query = {job:{$exists:true}}
+    //         else
+    //             query = {job:req.query}
+    //         console.log(query, option);
+    //         StudentController.getStudents(res, query || {}, {job:1}, option);
+    //     } else {
+    //         res.status(403).send({
+    //             success: false,
+    //             error: "only Teachers allow in this section."
+    //         });
+    //     }
+    // });
 
     // Get student in specific academic year
     app.get('/coopsys/v1/student/academic_year/:acaYr', function(req, res) {
