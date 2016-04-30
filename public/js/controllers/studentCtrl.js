@@ -4,8 +4,10 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
         console.log("get academic year");
         OthersService.getAcaYrs().success(function(data){
             $scope.acaYrs = data.result;
-            $scope.acaYrs.sort(function(a,b){return b-a});
-            $scope.acaYrs.splice(0,0,"ทั้งหมด");
+            if($scope.acaYrs){
+                $scope.acaYrs.sort(function(a,b){return b-a});
+                $scope.acaYrs.splice(0,0,"ทั้งหมด");
+            }
             console.log($scope.acaYrs);
             if(typeof $scope.academicYear == 'undefined')
                 $scope.academicYear = $scope.acaYrs[1];

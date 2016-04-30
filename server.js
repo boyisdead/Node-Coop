@@ -36,7 +36,7 @@ mkdirp('./public/uploads/pictures/company', function(err) {
 });
 
 // configuration ===============================================================
-mongoose.connect(database.url); 	// connect to mongoDB 
+mongoose.connect(database.url+database.name); 	// connect to mongoDB 
 app.set('secretToken',authToken.secret);
 app.set('secretHash',hashKey.key);
 app.set('expireTime',authToken.exp_time);

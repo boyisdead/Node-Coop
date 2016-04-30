@@ -92,12 +92,6 @@ var getStudents = function(res, criteria, project, option) {
                 message: "Something went wrong while retrieving. try again.", 
                 error: err, 
             });
-        if(!students || typeof students[0] == "undefined") {
-            return res.status(404).send({
-                success : false, 
-                message : "No Student was found."
-            });
-        } 
         return res.status(200).send({
             result : students, 
             success : true, 
