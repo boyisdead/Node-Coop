@@ -10,7 +10,7 @@ authenticationModule.controller('teacherLoginCtrl', ['$scope', '$rootScope', '$m
 				.success(function(data){
 					console.log("Success!");
 					$scope.login = {};
-					$rootScope.currentUser = data;
+					$rootScope.currentUser = data.result;
 					$modalInstance.close();
 				});
 			}

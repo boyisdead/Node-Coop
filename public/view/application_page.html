@@ -1,0 +1,60 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="page-header">
+                <h1>
+                    การสมัคร
+                </h1>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6" style="position:relative;min-height:90px;">
+            <form class="form-inline" style="position:absolute;right:15px;bottom:5px;">
+                <button disabled class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-trash"></span></button>
+                <button class="btn btn-default btn-sm" type="button" ng-click="openAddApplication()">เพิ่มใบสมัคร <span class="glyphicon glyphicon-plus"></span></button>
+                <div class="form-group">
+                    <div class="input-group input-group-sm" style="max-width:200px;">
+                        <span class="input-group-addon" id="searchBox"><span class="glyphicon glyphicon-search"></span></span>
+                        <input type="text" class="form-control" placeholder="Keyword" aria-describedby="searchBox" ng-model="searchKey">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th ng-click="order('company.name')">สถานประกอบการ <span ng-if="sortField=='company.name'" class="glyphicon" ng-class="{'glyphicon glyphicon-triangle-bottom':reverse, 'glyphicon glyphicon-triangle-top':!reverse}"></span> </th>
+                        <th ng-click="order('student')">นักศึกษา <span ng-if="sortField=='student'" class="glyphicon" ng-class="{'glyphicon glyphicon-triangle-bottom':reverse, 'glyphicon glyphicon-triangle-top':!reverse}"></span> </th>
+                        <th ng-click="order('reply')">การตอบรับ <span ng-if="sortField=='reply'" class="glyphicon" ng-class="{'glyphicon glyphicon-triangle-bottom':reverse, 'glyphicon glyphicon-triangle-top':!reverse}"></span> </th>
+                        <th class="action"></th>
+                        <th class="action"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="application in applications |orderBy:sortField:reverse |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
+                        <td ng-bind="application.company.name || applicationcompany._id"></td>
+                        <td ng-bind="application.student"></td>
+                        <td class="student-status">
+                            <span ng-if="!application.reply && !application.reply" class="label label-warning">Not reply</span>
+                            <span ng-if="application.response && application.reply" class="label label-success">Accepted</span>
+                            <span ng-if="!application.response && application.reply" class="label label-danger">Declined</span>
+                        </td>
+                        <td>
+                            <a ng-click="deleteApplication(application._id)"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                        <td> 
+                            <a ng-click="openEditApplication(application._id)"><span class="glyphicon glyphicon-pencil"></span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-spin fa-3x"></span></p>
+            <uib-pagination ng-model="currentPage" total-items="applications.length" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
+        </div>
+    </div>
+</div>
+<script type="text/ng-template" id="descTemplate.html">
+    
+</script>

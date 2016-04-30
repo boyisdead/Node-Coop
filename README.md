@@ -17,5 +17,5 @@ Node provides the RESTful API. Angular provides the frontend and accesses the AP
 
 ##Documents
 
-- Manual [Here](https://drive.google.com/file/d/0BzSm9skBCYqRTFI4QTdiaUQxZzA/view?usp=sharing)
-- Design Diagram [Here](https://drive.google.com/folderview?id=0BzSm9skBCYqRTzRUWl90QlhOdmc&usp=sharing)
+- Manual [Here](https://drive.google.com/file/d/0BzSm9skBCYqRTFI4QTdiaUQxZzA/view?usp=sharing) `April,2 2016 07:00`
+- Design Diagram [Here](https://drive.google.com/folderview?id=0BzSm9skBCYqRTzRUWl90QlhOdmc&usp=sharing) 

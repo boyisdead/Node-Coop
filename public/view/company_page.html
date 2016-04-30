@@ -33,9 +33,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="company in companies |orderBy: company.name.full |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
+                    <tr ng-repeat="company in companies |orderBy: company.name.full |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage"  ng-click="viewCompany(company._id)">
                         <td ng-bind="company.name.full"></td>
-                        <th ng-bind="company.name.init + company.s_index"></th>
+                        <th ng-bind="company.name.initial || company._id"></th>
                         <th><a href="http://{{company.website}}/" target="_blank"><span ng-bind="company.website"></span></a></th>
                         <td>
                             <a ng-click="deleteCompany(company._id)"><span class="glyphicon glyphicon-trash"></span></a>
@@ -48,6 +48,73 @@
             </table>
             <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-spin fa-3x"></span></p>
             <uib-pagination ng-model="currentPage" total-items="companies.length" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
+        </div>
+    </div>
+    <div class="row" ng-show="currentViewCompany" id="detail">
+        <div class="col-xs-12 detail-panel">
+            <div class="col-xs-12 col-sm-3 side-bar">
+                <div style="display:inline-block;width:100%">
+                    <h4>
+                        <span ng-bind="currentViewCompany.name.full || '-' |capitalize"></span> 
+                        <a ng-click="openEditCompany(currentViewCompany._id)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                    </h4>
+                    <ul class="contact">
+                        <li>
+                            <strong>Status</strong> 
+                            <span ng-show="currentViewCompany.active" class="label label-success">Active</span>
+                        </li>
+                        <li>
+                            <span class="glyphicon glyphicon-user"></span>
+                            <strong>Initial name :</strong> <span ng-bind="currentViewCompany.name.initial || '-' |capitalize"></span> 
+                        </li>
+                        <li>
+                            <span ng-hide="currentViewCompany.active" class="label label-danger">Inactive</span>
+                            <strong>Participating since :</strong> <span ng-bind="currentViewCompany.part_year"></span> 
+                            <strong>Area :</strong> <span ng-bind="currentViewCompany.area || '-' "></span>
+                        </li>
+                        <li><span class="glyphicon glyphicon-envelope"></span> <span ng-bind="currentViewCompany.email || '-' "></span></li>
+                        <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="currentViewCompany.tel || '-' "></span></li>
+                        <li><span class="glyphicon glyphicon-print"></span> <span ng-bind="currentViewCompany.fax || '-' "></span></li>
+                        <li><span class="glyphicon glyphicon-home"></span> <span ng-bind="currentViewCompany.address || '-' "></span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-8 main-detail" style="display:inline-block;">
+                <div class="panel panel-default main-panel" style="display:inline-block;">
+                    <div class="panel-heading">
+                        Contact                         
+                        <a ng-click="openEditCompanyContact(currentViewCompany._id)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="contact">
+                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentViewCompany.contact.name.title + currentViewCompany.contact.name.first + ' ' +  currentViewCompany.contact.name.last || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-briefcase"></span> <span ng-bind="currentViewCompany.contact.position || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-envelope"></span> <span ng-bind="currentViewCompany.contact.email || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="currentViewCompany.contact.tel || '-' "></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel panel-default main-panel" style="display:inline-block;">
+                    <div class="panel-heading">
+                        Coordinator
+                        <a ng-click="openEditCompanyCoordinator(currentViewCompany._id)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <ul class="contact">
+                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentViewCompany.coordinator.name.title + currentViewCompany.contact.name.first + ' ' +  currentViewCompany.contact.name.last || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-briefcase"></span> <span ng-bind="currentViewCompany.coordinator.position || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-envelope"></span> <span ng-bind="currentViewCompany.coordinator.email || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="currentViewCompany.coordinator.tel || '-' "></span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>        
         </div>
     </div>
 </div>

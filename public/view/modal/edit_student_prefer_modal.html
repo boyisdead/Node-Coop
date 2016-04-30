@@ -1,0 +1,31 @@
+<div class="modal-header">
+    <h3 class="modal-title">แก้ไขข้อมูลนักศึกษา <small><span ng-bind="formData._id"></span></small></h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid" style="width:100%">
+        <div class="row" ng-hide="allowPwChange">
+            <form class="form-horizontal touched-validate" name="editForm" novalidate>
+                <div class="col-sm-12">
+                    <h2>สถานประกอบการ</h2>
+                    <div class="form-group">
+                        <label for="company">อันดับ 1<span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" id="company" name="company" ng-model="formData.first" uib-typeahead="company.name as company.name for company in companyList | filter:$viewValue | limitTo:5" placeholder="First prefered" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">อันดับ 2<span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" id="company" name="company" ng-model="formData.second" uib-typeahead="company.name as company.name for company in companyList | filter:$viewValue | limitTo:5" placeholder="Second prefered" autocomplete="off" >
+                    </div>
+                    <div class="form-group">
+                        <label for="company">อันดับ 3<span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" id="company" name="company" ng-model="formData.third" uib-typeahead="company.name as company.name for company in companyList | filter:$viewValue | limitTo:5" placeholder="Third prefered" autocomplete="off" >
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer inline-block">
+                    <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
+    <button type="button" class="btn btn-warning" ng-click="getStudentData()">คืนค่า</button>
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
+</div>

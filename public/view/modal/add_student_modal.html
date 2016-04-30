@@ -11,29 +11,24 @@
                             รูปนักศึกษา
                         </label>
                         <img class="profile-display" ngf-thumbnail=" profile_pic || './images/no-profile.png'" >
-                        <input type="file" class="form-control" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="profile_pic" placeholder="รหัสนักศึกษา" id="profile_pic" name="profile_pic" ngf-resize-if="$width > 300 || $height > 400" ngf-resize="{width: 300, height: 400,requality: 1, centerCrop: true}">
+                        <input type="file" class="form-control  text-med" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="profile_pic" placeholder="รหัสนักศึกษา" id="profile_pic" name="profile_pic" ngf-resize-if="$width > 300 || $height > 400" ngf-resize="{width: 300, height: 400,requality: 1, centerCrop: true}">
                     </div>
                     <div class="form-group">
                         <label for="scode">
                             รหัสนักศึกษา
                             <span class="mini-red">*อย่างน้อย 9 ตัวออักษร</span>
                         </label>
-                        <input type="text" class="form-control  text-short" ng-model="formData.stu_code" placeholder="รหัสนักศึกษา" id="scode" name="scode" autocomplete="off" ng-minlength="9"  autofocus required>
+                        <input type="text" class="form-control  text-short" ng-model="formData._id" placeholder="รหัสนักศึกษา" id="scode" name="scode" autocomplete="off" ng-minlength="9"  autofocus required>
                     </div>
                     <div class="form-group">
                         <label for="tname">คำนำหน้าชื่อ <span class="mini-red">*</span></label>
-                        <select class="form-control title-name" id="tname" name="tname" ng-model="formData.title" ng-options="titleName as titleName.t_th for titleName in titleNameList" ng-change="sexChange()" required>
+                        <select class="form-control title-name" id="tname" name="tname" ng-model="formData.name.title" ng-options="titleName.th as titleName.th for titleName in titleNameList" ng-change="sexChange()" required>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="th_name_first">ชื่อภาษาไทย <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.f_th" placeholder="ชื่อ" id="th_name_first" name="th_name_first" autocomplete="off" required>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.l_th" placeholder="นามสกุล" id="th_name_last" name="th_name_last" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="en_name_first">ชื่อภาษาอังกฤษ <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.f_en" placeholder="First name" id="en_name_first" name="en_name_first" autocomplete="off" required>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.l_en" placeholder="Last name" id="en_name_last" name="en_name_last" autocomplete="off" required>
+                        <label for="th_name_first">ชื่อ<span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.first" placeholder="ชื่อ" id="th_name_first" name="first_name" autocomplete="off" required>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.last" placeholder="นามสกุล" id="th_name_last" name="last_name" autocomplete="off" required>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -43,11 +38,11 @@
                     </div>
                     <div class="form-group">
                         <label for="conMail">อีเมล์ <span class="mini-red">*</span></label>
-                        <input type="email" class="form-control text-med" ng-model="formData.contact_email" placeholder="อีเมล์" id="email" name="conMail" style="max-width:250px;" autocomplete="off" required>
+                        <input type="email" class="form-control text-med" ng-model="formData.contact.email" placeholder="อีเมล์" id="email" name="conMail" style="max-width:250px;" autocomplete="off" required>
                     </div>
                     <div class="form-group">
                         <label for="tel">เบอร์โทรศัพท์</label>
-                        <input type="text" class="form-control text-med" ng-model="formData.tel" placeholder="เบอร์โทรศัพท์" id="tel" name="tel" style="max-width:250px;" autocomplete="off">
+                        <input type="text" class="form-control text-med" ng-model="formData.contact.tel" placeholder="เบอร์โทรศัพท์" id="tel" name="tel" style="max-width:250px;" autocomplete="off">
                     </div>
                     <!-- Advisor Remove -->
                     <!-- <div class="form-group">
@@ -66,14 +61,12 @@
                         <span class="mini-red" ng-hide="formData.password==formData.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
                     </div>
                 </div>
-                <div class="col-md-6 col-md-offset-6" ng-show="addForm.$valid && formData.password==formData.password_confirm ">
-                    <button type="submit" class="btn btn-success" ng-click="validateForm(addForm)">บันทึก</button>
-                    <button type="reset" class="btn btn-warning">ล้างค่า</button>
-                </div>
             </form>
         </div>
     </div>
 </div>
 <div class="modal-footer">
+    <button type="submit" class="btn btn-success" ng-show="addForm.$valid && formData.password==formData.password_confirm" ng-click="validateForm(addForm)">บันทึก</button>
+    <button type="reset" class="btn btn-warning" ng-click="formData={}">ล้างค่า</button>
     <button class="btn btn-default" ng-click="ok()">ปิด</button>
 </div>

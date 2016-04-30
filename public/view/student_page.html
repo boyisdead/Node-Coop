@@ -30,36 +30,25 @@
                 <thead>
                     <tr>
                         <th class="scode">รหัสนักศึกษา</th>
-                        <th>ชื่อ</th>
+                        <th class="hidden-xs">ชื่อ</th>
                         <th class="student-status">สถานะ<span class="glyphicon glyphicon-question-sign" tooltip-popup-close-delay='500' tooltip-placement="bottom" uib-tooltip-template="'descTemplate.html'" tooltip-class="tooltip-status"></span></th>
                         <th class="action"></th>
                         <th class="action"></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="student in students |orderBy: student.stu_code |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
-                        <th ng-bind="student.stu_code"></th>
-                        <td ng-bind="student.name.t_th + ' ' + student.name.f_th + ' ' + student.name.l_th"></td>
+                    <tr ng-repeat="student in students |orderBy: student.stu_code |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage" ng-click="viewStudent(student._id)">
+                        <th ng-bind="student._id"></th>
+                        <td class="hidden-xs" ng-bind="student.name.title + ' ' + student.name.first + ' ' + student.name.last"></td>
                         <td class="student-status">
-                            <span ng-class="{'label label-success':student.status.profile,'label label-danger':!student.status.profile}">
-                                P
-                            </span>
-                            <span ng-class="{'label label-success':student.status.document,'label label-danger':!student.status.document}">
-                                D
-                            </span>
-                            <span ng-class="{'label label-success':student.status.apply,'label label-danger':!student.status.apply}">
-                                Ap
-                            </span>
-                            <span ng-class="{'label label-success':student.status.accept,'label label-danger':!student.status.accept}">
-                                Ac
-                            </span>
+                            <span ng-show="student.status" class="label label-success">Active</span>
+                            <span ng-hide="student.status" class="label label-danger">Inactive</span>
                         </td>
                         <td>
                             <a ng-click="deleteStudent(student._id)"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
-                        <td> 
+                        <td>
                             <a ng-hide="student.profileLock" ng-click="openEditStudent(student._id)"><span class="glyphicon glyphicon-pencil"></span></a>
-                            <a ng-show="student.profileLock" ng-click="unlockProfile(student._id)"><span class="glyphicon glyphicon-lock"></span></a>
                         </td>
                     </tr>
                 </tbody>
@@ -68,13 +57,151 @@
             <uib-pagination ng-model="currentPage" total-items="students.length" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
         </div>
     </div>
+    <div class="row" ng-show="currentViewStudent" id="detail">
+        <div class="col-xs-12 detail-panel">
+            <div class="col-xs-12 col-sm-3 side-bar">
+                <div style="display:inline-block;width:100%">
+                    <img class="profile-display" ngf-thumbnail="currentViewStudent.profile_picture || './images/no-profile.png'" alt="Profile image">
+                    <strong>Status</strong> <span ng-show="currentViewStudent.status" class="label label-success">Active</span>
+                    <span ng-hide="currentViewStudent.status" class="label label-danger">Inactive</span>
+                </div>
+                <div>
+                    <h4>
+                        <span ng-bind="currentViewStudent.name.first || '-' |capitalize"></span> 
+                        <span ng-bind="currentViewStudent.name.last || '-' |capitalize"></span>
+                        <a ng-click="openEditStudent(currentViewStudent._id)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                    </h4>
+                    <ul class="contact">
+                        <li>
+                            <span class="glyphicon glyphicon-user"></span>
+                            ID <span ng-bind="currentViewStudent._id"></span> 
+                            Sex <span ng-bind="currentViewStudent.sex || '-' "></span>
+                        </li>
+                        <li>
+                            <span class="glyphicon glyphicon-education"></span> 
+                            Academic Year : <span class="label label-default" ng-bind="currentViewStudent.academic_year || '-' "> </span>
+                            GPA : <span ng-class="{'label label-success': currentViewStudent.gpa >= '1.75','label label-danger': currentViewStudent.gpa < '1.75'}"ng-bind="currentViewStudent.gpa || '-' "></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-8 main-detail" style="display:inline-block;">
+                <div class="panel panel-default main-panel" style="display:inline-block;">
+                    <div class="panel-heading">Contact</div>
+                    <div class="panel-body">
+                        <ul class="contact">
+                            <li><span class="glyphicon glyphicon-envelope"></span> <span ng-bind="currentViewStudent.contact.email || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="currentViewStudent.contact.tel || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-home"></span> <span ng-bind="currentViewStudent.contact.address || '-' "></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel panel-default main-panel" style="display:inline-block;">
+                    <div class="panel-heading">Emergency contact <a ng-click="openEditStudentEmc(currentViewStudent._id)"><span class="glyphicon glyphicon-pencil"></span></a> </div>
+                    <div class="panel-body">
+                        <ul class="contact">
+                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentViewCompany.emergency_contact.name.title + currentViewCompany.emergency_contact.name.first + ' ' +  currentViewCompany.emergency_contact.name.last || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-glyphicon glyphicon-heart"></span> <span ng-bind="currentViewStudent.emergency_contact.relationship || '-' |capitalize"></span></li>
+                            <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="currentViewStudent.emergency_contact.tel || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-home"></span> <span ng-bind="currentViewStudent.emergency_contact.address || '-' "></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel panel-default main-panel" style="display:inline-block;" ng-if="!!currentViewStudent.aptitudes">
+                    <div class="panel-heading">Aptitudes  <a ng-click="openEditStudentAptitude(currentViewStudent._id)"><span class="glyphicon glyphicon-pencil"></span></a> </div>
+                    <div class="panel-body">
+                        <ul class="contact" ng-repeat="skill in currentViewStudent.aptitudes">
+                            <li><span ng-bind="skill.subject|capitalize"></span> Lv.<span ng-bind="skill.level"></span></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel panel-default main-panel" style="display:inline-block;">
+                    <div class="panel-heading">Prefered Company 
+                        <a ng-click="openEditStudentPrefer(currentViewStudent._id)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <ol class="prefer">
+                            <li><span ng-bind="currentViewStudent.prefered_company.first || '-' |capitalize"></span></li>
+                            <li><span ng-bind="currentViewStudent.prefered_company.second || '-' "></span></li>
+                            <li><span ng-bind="currentViewStudent.prefered_company.third || '-' |capitalize"></span></li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="panel panel-default main-panel" style="width:100% !important" ng-if="!!currentViewStudent.job">
+                    <div class="panel-heading">Job Detail 
+                        <span ng-show="currentViewStudent.job.status=='inactive'" class="label label-default right" ng-bind="currentViewStudent.job.status || '-' | capitalize"></span>
+                        <span ng-show="currentViewStudent.job.status=='active'" class="label label-success right" ng-bind="currentViewStudent.job.status || '-' | capitalize"></span>
+                        <span ng-show="currentViewStudent.job.status=='suspend'" class="label label-danger right" ng-bind="currentViewStudent.job.status || '-' | capitalize"></span>
+                        <span ng-show="currentViewStudent.job.status=='finished'" class="label label-info right" ng-bind="currentViewStudent.job.status || '-' | capitalize"></span>
+                        <a ng-click="openEditStudentJob(currentViewStudent._id)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <table>
+                            <tr>
+                                <th style="width:20%"><span >Company</span></th>
+                                <td style="width:30%"><span ng-bind="currentViewStudent.job.company || '-' |capitalize"></span> </td>
+
+                                <th style="width:20%"><span >Welfares</span> </th>
+                                <td style="width:30%">
+                                    <span ng-if="!!currentViewStudent.job.welfares" ng-bind="currentViewStudent.job.welfares |arrayToText"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span >Work Site</span></th>
+                                <td><span ng-bind="currentViewStudent.job.work_site || '-' |capitalize"></span> </td>
+                                <th><span >Payment</span></th>
+                            </tr>
+                            <tr>
+                                <th><span >Job Position</span></th>
+                                <td><span ng-bind="currentViewStudent.job.position || '-' |capitalize"></span> </td>
+                                <td>Method</td>
+                                <td>
+                                    <span ng-bind="currentViewStudent.job.payment.method || '-' |capitalize"></span>
+                                </td>
+                            </tr>
+                             <tr>
+                                <th><span >Report Date</span> </th>
+                                <td><span ng-bind="currentViewStudent.job.report_date || '-' | date:'fullDate'"></span> </td>
+                                <td>Period</td>
+                                <td>
+                                    <span ng-bind="currentViewStudent.job.payment.period || '-' |capitalize"></span>
+                                </td>
+                            </tr>
+                             <tr>
+                                <th><span >Finish Date</span> </th>
+                                <td><span ng-bind="currentViewStudent.job.finish_date || '-' | date:'fullDate'"></span> </td>
+                                <td>Amount per period</td>
+                                <td>
+                                    <span ng-bind="currentViewStudent.job.payment.amount_per_period || '-' |capitalize"></span>
+                                </td>
+                             </tr>
+                             <tr>
+                                <th><span >Launch Date</span> </th>
+                                <td><span ng-bind="currentViewStudent.job.launch_date || '-' | date:'fullDate'"></span> </td>
+                                <th><span >Note</span> </th>
+                                <td><span ng-bind="currentViewStudent.job.note || '-' |capitalize"></span> </td>
+                             </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>        
+        </div>
+    </div>
 </div>
 <script type="text/ng-template" id="descTemplate.html">
     <span>
-        <span class="red">สีแดง</span> - ยังไม่สมบูรณ์<br>
-        <span class="orange">สีส้ม</span> - อยู่ขณะดำเนินการ<br>
-        <span class="green">สีเขียว</span> - สมบูรณ์<br>
-        P - ข้อมูลส่วนตัว, D - เอกสาร<br>
-        AP - การส่งสมัคร, AC - การคัดเลือก
+        <span class="red">สีแดง</span> - ยังไม่สมบูรณ์
+    <br>
+    <span class="orange">สีส้ม</span> - อยู่ขณะดำเนินการ
+    <br>
+    <span class="green">สีเขียว</span> - สมบูรณ์
+    <br> P - ข้อมูลส่วนตัว, D - เอกสาร
+    <br> AP - การส่งสมัคร, AC - การคัดเลือก
     </span>
 </script>

@@ -1,0 +1,64 @@
+<div class="modal-header">
+    <h3 class="modal-title">สมัครใช้ระบบ</h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid">
+        <div class="row">
+            <form class="form-horizontal touched-validate" name="addForm" style="margin-bottom:25px" ng-hide="allowPwChange" novalidate>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="scode">
+                            รหัสนักศึกษา
+                            <span class="mini-red">*อย่างน้อย 9 ตัวออักษร</span>
+                        </label>
+                        <input type="text" class="form-control  text-short" ng-model="formData._id" placeholder="รหัสนักศึกษา" id="scode" name="scode" autocomplete="off" ng-minlength="9"  autofocus required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tname">คำนำหน้าชื่อ <span class="mini-red">*</span></label>
+                        <select class="form-control title-name" id="tname" name="tname" ng-model="formData.name.title" ng-options="titleName.th as titleName.th for titleName in titleNameList" ng-change="sexChange()" required>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="th_name_first">ชื่อ<span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.first" placeholder="ชื่อ" id="first_name" name="first_name" autocomplete="off" required>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.last" placeholder="นามสกุล" id="last_name" name="last_name" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="acaYr">ปีที่สมัคร <span class="mini-red">*</span></label>
+                        <input type="text" class="form-control  text-short" ng-model="formData.academic_year" placeholder="25xx" id="acaYr" name="acaYr" autofocus="on" autocomplete="off" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gpa">เกรดเฉลี่ย<span class="mini-red">*</span></label>
+                        <input type="text" class="form-control  text-short" ng-model="formData.gpa" placeholder="GPA" id="gpa" name="gpa" autofocus="on" autocomplete="off" required>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="conMail">อีเมล์ <span class="mini-red">*</span></label>
+                        <input type="email" class="form-control text-med" ng-model="formData.contact.email" placeholder="อีเมล์" id="conMail" name="conMail" style="max-width:250px;" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tel">เบอร์โทรศัพท์</label>
+                        <input type="text" class="form-control text-med" ng-model="formData.contact.tel" placeholder="เบอร์โทรศัพท์" id="tel" name="tel" style="max-width:250px;" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPw">รหัสผ่าน <span class="mini-red">*ไม่น้อยกว่า 4 ตัวอักษร</span></label>
+                        <input type="password" class="form-control text-med" ng-model="formData.password" placeholder="รหัสผ่าน" id="newPw" name="password" style="max-width:250px;margin-bottom:5px" ng-minlength="4" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="conPw">ยืนยันรหัสผ่าน <span class="mini-red">*</span></label>
+                        <input type="password" class="form-control text-med" ng-model="formData.password_confirm" placeholder="รหัสผ่าน" id="conPw" style="max-width:250px;margin-bottom:5px" ng-minlength="4" required>
+                        <br>
+                        <span class="mini-red" ng-hide="formData.password==formData.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" class="btn btn-success" ng-click="validateForm(addForm)">บันทึก</button>
+    <button type="reset" class="btn btn-warning">ล้างค่า</button>
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
+</div>

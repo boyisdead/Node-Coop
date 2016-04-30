@@ -4,60 +4,45 @@
 	    return {
 	        get: function(acaYr) {
 	            if (typeof acaYr === "undefined" || acaYr == "ทั้งหมด") {
-	                return $http.get('/admin/student');
+	            	console.log("getAllStu");
+	                return $http.get('/coopsys/v1/student');
 	            } else {
-	                return $http.get('/admin/student/acaYr/' + acaYr);
+	            	console.log("getStu",acaYr);
+	                return $http.get('/coopsys/v1/student/academic_year/' + acaYr);
 	            }
 
 	        },
+	        getStudentAttachment: function(id) {
+	            return $http.get('/coopsys/v1/student/'+ id +'/attachment');
+	        },
 	        create: function(studentData) {
-	            if (studentData.name) {
-	                studentData.name.t_th = studentData.title.t_th;
-	                studentData.name.t_en = studentData.title.t_en;
-	            }
-	            return $http.post('/admin/student', studentData);
+	            return $http.post('/coopsys/v1/student', studentData);
 	        },
 	        uploadPicture: function(file,id) {
 	        	console.log("upload picture...");
 	            return Upload.upload({
-	                url: '/admin/student/uploadPicture',
+	                url: '/coopsys/v1/student/'+ id +'/upload_profile_picture',
 	                method: 'POST',
-	                fields: {
-	                    'student_id': id
-	                },
 	                file: file
 	            });
 
 	        },
 	        delete: function(id) {
-	            return $http.delete('/admin/student/' + id);
+	            return $http.delete('/coopsys/v1/student/' + id);
 	        },
 	        update: function(studentData) {
-	            return $http.put('/admin/student', studentData);
+	            return $http.put('/coopsys/v1/student', studentData);
 	        },
-	        find: function(id, mode) {
-	            criteria = {
-	                id: id,
-	                mode: mode
-	            }
-	            console.log(criteria);
-	            return $http.post('/admin/student/find', criteria);
+	        find: function(id) {
+	            console.log("get" + id);
+	            return $http.get('/coopsys/v1/student/' + id);
 	        },
 	        pwChange: function(pwData, id) {
 	            pwData._id = id;
-	            return $http.put('/admin/student/pw_change', pwData);
+	            return $http.put('/coopsys/v1/change_password', pwData);
 	        },
-	        unlockProfile: function(id) {
-	            var student = {
-	                id: id
-	            }
-	            return $http.put('/admin/student/unlock_profile', student);
-	        },
-	        lockProfile: function(id) {
-	            var student = {
-	                id: id
-	            }
-	            return $http.put('/admin/student/lock_profile', student);
+	        regisStudent : function(studentData) {
+	        	return $http.post('/coopsys/v1/register',studentData);
 	        }
 	    }
 	}]);

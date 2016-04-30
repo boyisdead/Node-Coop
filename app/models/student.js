@@ -1,31 +1,52 @@
 var mongoose = require('mongoose');
 var default_profile_picture = require('../../config/setting').default_profile_picture;
 var this_year  = new Date().getFullYear() + 543;
+var newId = mongoose.Types.ObjectId();
 
 var studentSchema = mongoose.Schema({
-    "_id": { type: String, default: '' },
+    "_id": { type: String, 
+        validate: {
+          validator: function(v) {
+            return /\b[5-9]{1}\d{1}[0-2]{1}\d{1}[0-1]{1}\d{4}\b/.test(v);
+          },
+          msg: '{VALUE} is not a student ID!'
+        },
+    },
     "name": {
-        "first": { type: String, default: '' },
-        "last": { type: String, default: '' },
+        "first": { type: String, required : true  },
+        "last": { type: String, required : true  },
         "title": { type: String, default: '' }
     },
+    "secretKey":{ type: mongoose.Schema.ObjectId },
+    "gpa" : { type : Number },
+    "date_of_birth" : { type : Date },
     "adviser_id": { type: String, default: '' },
-    "sex": { type: String, default: '', enum : ['M','F'] },
-    "password": { type: String, default: '' },
-    "academic_year": { type: String, default: this_year },
+    "sex": { type: String, default: '', enum : ['M','F','male','female','ชาย','หญิง'] },
+    "password": { type: String, default: '', required : true  },
+    "academic_year": { type: String, default: this_year, required : true  },
     "status": {type: Boolean, default: false},
     "contact": {
         "tel": { type: String, default: '' },
-        "email": { type: String, default: '' },
+        "email": { type: String, default: '' , required : true, validate: {
+            validator: function(v) {
+                return /([\d\w]+[\.\w\d]*)\+?([\.\w\d]*)?@([\w\d]+[\.\w\d]*)/.test(v);
+            },
+            msg: '{VALUE} is not an valid email!'
+        },
+    },
         "address": { type: String, default: '' }
     },
-    "preferred_company" : {
+    "prefered_company" : {
         "first": { type: String, default: '' },
         "second": { type: String, default: '' },
         "third": { type: String, default: '' }
     },
     "emergency_contact": {
-        "name": { type: String, default: '' },
+        "name": {
+            "first": { type: String, default: '' },
+            "last": { type: String, default: '' },
+            "title": { type: String, default: '' }
+        },
         "relationship": { type: String, default: '' },
         "tel": { type: String, default: '' },
         "address": { type: String, default: '' }
@@ -43,8 +64,8 @@ var studentSchema = mongoose.Schema({
         "file_path": { type: String, default: "Missing" },
         "file_type": { type: String, default: "Other"},
         "comment": { type: String, default: '' },
-        "status": { type: Boolean, default: false },
-        "reviewed": { type: Boolean, default: false },
+        "status": { type: Boolean, default: false }, // is approved or not 
+        "reviewed": { type: Boolean, default: false }, // has approved or not
         "description": { type: String, default: '' }
     }],
     "job" : {
@@ -63,6 +84,14 @@ var studentSchema = mongoose.Schema({
         },
         "note" : {type : String, default: '' }
     }
+});
+
+studentSchema.pre('save', function(next) {
+    if(this.sex=='M' || this.sex.toLowerCase() == 'male')
+        this.sex = "ชาย";
+    else if(this.sex=='F' || this.sex.toLowerCase() == 'female')
+        this.sex = "หญิง";
+    next();
 });
 
 module.exports = mongoose.model('Student', studentSchema);

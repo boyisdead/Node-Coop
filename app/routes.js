@@ -1,6 +1,6 @@
 var fs = require("fs");
-var multipart = require('connect-multiparty');
-var multipartMiddleware = multipart();
+// var multipart = require('connect-multiparty');
+// var multipartMiddleware = multipart();
 var multer = require('multer');
 var upload = multer({
     dest: './public/uploads/'
@@ -9,8 +9,6 @@ var jwt = require('jsonwebtoken');
 var allow;
 
 
-
-var DocumentController = require('./controllers/documentController');
 var OtherController = require('./controllers/otherController');
 var TeacherController = require('./controllers/teacherController');
 var StudentController = require('./controllers/studentController');
@@ -61,15 +59,24 @@ module.exports = function(app) {
     //=============================================================================
     
     app.get('/coopsys/v1/typehead/title_name', function(req, res) {
-        OtherController.titleNameTypeAhead(res);
+        OtherController.titleNameTypehead(res);
     });
 
     app.get('/coopsys/v1/typehead/academic_position', function(req, res) {
-        OtherController.acadePosTypeAhead(res);
+        OtherController.acadePosTypehead(res);
     });
 
     app.get('/coopsys/v1/typehead/adviser', function(req, res) {
-        TeacherController.TeacherTypeAhead(res);
+        TeacherController.teacherTypehead(res);
+    });
+
+    app.get('/coopsys/v1/typehead/company', function(req, res) {
+        CompanyController.companyTypehead(res);
+    });
+
+    // Get academic year available
+    app.get('/coopsys/v1/typehead/academic-years', function(req, res) {
+        StudentController.getAcaYrs(res);
     });
 
     app.post('/coopsys/v1/register',function(req, res){
@@ -77,16 +84,34 @@ module.exports = function(app) {
     });
 
     app.get('/coopsys/v1/teacher', function(req, res) {
-        TeacherController.getTeacher(res);
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || req.query.offset || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip; delete req.query.offset;
+        TeacherController.getTeacher(res, req.query || {}, undefined, option);
     });
 
     app.get('/coopsys/v1/teacher/:id', function(req, res) {
         TeacherController.findTeacherById(res, req.params.id);
     });
 
+    app.get('/coopsys/v1/student/:stu_id/activate/:key', function(req, res){
+        StudentController.activeStudent(res, req.params.stu_id, req.params.key)
+    })
+
     app.get('/coopsys/v1/company', function(req, res) {
         console.log("Get all company");
-        CompanyController.getCompany(res);
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || req.query.offset || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip; delete req.query.offset;
+        CompanyController.getCompany(res, req.query || {}, undefined, option);
     });
 
     app.get('/coopsys/v1/company/participating', function(req, res) {
@@ -106,7 +131,14 @@ module.exports = function(app) {
 
     app.get('/coopsys/v1/announce', function(req, res) {
         console.log("Get all announce");
-        AnnounceController.getAnnounce(res);
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || req.query.offset || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip; delete req.query.offset;
+        AnnounceController.getAnnounce(res, req.query || {}, undefined, option);
     });
 
     app.get('/coopsys/v1/announce/:item', function(req, res) {
@@ -115,8 +147,15 @@ module.exports = function(app) {
     });
 
     app.get('/coopsys/v1/dlc', function(req, res) {
-        console.log("Get all DLC");
-        DlcController.getDlc(res);
+        console.log("Get all DLC");        
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || req.query.offset || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip; delete req.query.offset;
+        DlcController.getDlc(res, req.query || {}, undefined, option);
     });
 
     app.get('/coopsys/v1/dlc/:id', function(req, res) {
@@ -128,8 +167,8 @@ module.exports = function(app) {
     //suspended due to working
     // verify token for every request
     app.use(function(req, res, next) {
-        if(req.headers.cookie)
-            var cookieToken = req.headers.cookie.substr(9) || {};
+        if(req.cookies)
+            var cookieToken = req.cookies.tokenJWT;
         // check header or url parameters or post parameters for token
         var token = req.body.token || req.query.token || req.headers['x-access-token'] || cookieToken;
         // decode token
@@ -154,7 +193,7 @@ module.exports = function(app) {
             // return an error
             return res.status(403).send({
                 success: false,
-                message: 'No token provided.'
+                error: 'No token provided.'
             });
 
         }
@@ -175,7 +214,7 @@ module.exports = function(app) {
         allow = ["teacher","student"];
         if(checkPermission(allow, req.decoded.access_type)){
             next();
-        } else  res.status(403).send({success:false, message:"Unauthurized"});
+        } else  res.status(403).send({success:false, error:"Unauthurized"});
     });
 
     app.put('/coopsys/v1/change_password', function(req, res) {
@@ -187,7 +226,7 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only " + allow + " allow in this section."
+                error: "only " + allow + " allow in this section."
             });
         }
     })
@@ -203,7 +242,7 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only " + allow + " allow in this section."
+                error: "only " + allow + " allow in this section."
             });
         }
     });
@@ -221,13 +260,13 @@ module.exports = function(app) {
             } else {
                 res.status(403).send({
                     success: false,
-                    message: "only " + allow + " allow in this section."
+                    error: "only " + allow + " allow in this section."
                 });
             }
         } else {
             res.status(400).send({
                     success: false,
-                    message: "File not provided"
+                    error: "File not provided"
                 });
         }
     });
@@ -235,15 +274,30 @@ module.exports = function(app) {
     // Edit Self profile
     app.put('/coopsys/v1/myprofile', function(req, res) {
         var allow = ["teacher","student"];
-        var item = req.decoded.access_id;
+        req.body._id = req.decoded.access_id;
         if(req.decoded.access_type == allow[0]){ 
-            TeacherController.updateTeacher(res, item);
+            TeacherController.updateTeacher(res, req.body);
         } else if (req.decoded.access_type==allow[1]) {
-            StudentController.updateStudent(res, item);
+            console.log("student", req.body);
+            StudentController.updateStudent(res, req.body);
         } else {
             res.status(403).send({
                 success: false,
-                message: "only " + allow + " allow in this section."
+                error: "only " + allow + " allow in this section."
+            });
+        }
+    });
+    app.post('/coopsys/v1/myprofile/picture', upload.single('file'), function(req, res) {
+        var allow = ["teacher","student"];
+        var id = req.decoded.access_id;
+        if(req.decoded.access_type == allow[0]){ 
+            TeacherController.uploadPicture(res, id, req.file);
+        } else if (req.decoded.access_type==allow[1]) {
+            StudentController.uploadPicture(res, id, req.file);
+        } else {
+            res.status(403).send({
+                success: false,
+                error: "only " + allow + " allow in this section."
             });
         }
     });
@@ -259,7 +313,7 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only " + allow + " allow in this section."
+                error: "only " + allow + " allow in this section."
             });
         }
     });
@@ -291,6 +345,11 @@ module.exports = function(app) {
     });
 
     // Get the token owner's apply status
+    app.get('/coopsys/v1/myapply', function (req, res) {
+        ApplicationController.getApplicationByStudent(res, req.decoded.access_id);
+    });
+
+    // Get the token owner's application
     app.get('/coopsys/v1/mystatus/apply', function (req, res) {
         ApplicationController.getStudentApplyStatus(res, req.decoded.access_id);
     });
@@ -310,6 +369,9 @@ module.exports = function(app) {
         StudentController.findAttachmentById(res, req.params.id);
     });
 
+    // app.put('/coopsys/v1/myprofile', function (req, res){
+    //     StudentController.updateStudent(res, req.body);
+    // })
     // Creat the token owner's a attachment
     app.post('/coopsys/v1/myattach', upload.single('file'), function (req, res) {
         console.log("create my attach");
@@ -323,12 +385,16 @@ module.exports = function(app) {
 
     // Delete the token owner's a specific attachment
     app.delete('/coopsys/v1/myattach/:id', function (req, res) {
-        StudentController.delAttachment(res, req.params.id, req.decoded.access_id);
+        StudentController.delMyAttachment(res, req.params.id, req.decoded.access_id);
+    });
+
+    app.get('/coopsys/v1/myprefer', function (req, res) {
+        StudentController.getStudents(res, {_id: req.decoded.access_id}, { prefered_company:1 });
     });
 
     // Set the token owner's company preferrence
     app.put('/coopsys/v1/myprefer', function (req, res) {
-        res.status(200).send({success:true});
+        StudentController.changePreferedCompany(res, req.decoded.access_id, req.body);
     });
 
     //================================================================================
@@ -346,7 +412,7 @@ module.exports = function(app) {
         allow = "teacher";
         if(checkPermission(allow,req.decoded.access_type)){
             next();
-        } else  res.status(403).send({success:false,message:"Unauthurized"});
+        } else  res.status(403).send({success:false, error:"Unauthurized"});
     });
 
     // ================================= Self ========================================
@@ -361,11 +427,41 @@ module.exports = function(app) {
     // get all students
     app.get('/coopsys/v1/student', function(req, res) {
         if(checkPermission(allow, req.decoded.access_type)) {
-            StudentController.getStudents(res);
+            var sort = req.query.sort || "_id";
+            var limit = req.query.limit || {};
+            var skip = req.query.skip || req.query.offset || 0;
+            var option = { "sort": sort, "limit": limit, "skip": skip};
+            delete req.query.sort;
+            delete req.query.limit;
+            delete req.query.skip; delete req.query.offset;
+            console.log(req.query, option);
+            StudentController.getStudents(res, req.query || {}, undefined, option);
         } else {
             res.status(403).send({
                 success: false,
-                message: "only Teachers allow in this section."
+                error: "only Teachers allow in this section."
+            });
+        }
+    });
+
+    // get all students's job
+    app.get('/coopsys/v1/student/job', function(req, res) {
+        if(checkPermission(allow, req.decoded.access_type)) {
+            var sort = req.query.sort || "_id";
+            var limit = req.query.limit || {};
+            var skip = req.query.skip || req.query.offset || 0;
+            var option = { "sort": sort, "limit": limit, "skip": skip};
+            var query = req.query;
+            console.log({job:query});
+            delete req.query.sort;
+            delete req.query.limit;
+            delete req.query.skip; delete req.query.offset;
+            console.log(req.query, option);
+            StudentController.getStudents(res, {job:query} || {}, {job:1}, option);
+        } else {
+            res.status(403).send({
+                success: false,
+                error: "only Teachers allow in this section."
             });
         }
     });
@@ -378,7 +474,7 @@ module.exports = function(app) {
         } else {
             res.status(403).send({
                 success: false,
-                message: "only Teachers allow in this section."
+                error: "only Teachers allow in this section."
             });
         }
     });
@@ -395,9 +491,9 @@ module.exports = function(app) {
     });
 
     // 
-    app.post('/coopsys/v1/student/upload_myprofile_picture', upload.single('file'), function(req, res, next) {
+    app.post('/coopsys/v1/student/:student_id/upload_profile_picture', upload.single('file'), function(req, res, next) {
         console.log(req.file);
-        StudentController.uploadPicture(res, req, next);
+        StudentController.uploadPicture(res, req.params.student_id, req.file);
     });
 
     // update a student
@@ -411,20 +507,25 @@ module.exports = function(app) {
         StudentController.delStudent(res, req.params.student_id);
     });
 
-    // Get academic year available
-    app.get('/coopsys/v1/student/acaYrs', function(res, req) {
-        StudentController.getAcaYrs(res);
-    });
-
     // Get all attachment of owners who are in specific academic year
     app.get('/coopsys/v1/attachment/', function(req, res) {
         console.log("get all Attachment");
-        StudentController.getAttachments(res);
+        var sort = req.query.sort;
+        var limit = req.query.limit;
+        var skip = req.query.skip || req.query.offset || 0;
+        var option = { "sort": sort, "skip": skip};
+        if (typeof limit != "undefined")
+            option.limit = limit;
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip; delete req.query.offset;
+        console.log(req.query, option);
+        StudentController.getAttachments(res, req.query || {}, undefined, option);
     });
     // Get all attachment of owners who are in specific academic year
     app.get('/coopsys/v1/attachment/acaYrs/:acaYrs', function(req, res) {
         console.log("get Docs of " + req.params.acaYrs);
-        StudentController.getAttachments(res, req.params.acaYrs);
+        StudentController.getAttachments(res, {academic_year : req.params.acaYrs});
     });
 
     // Get all attachments of all students in specific academic year
@@ -451,9 +552,20 @@ module.exports = function(app) {
         StudentController.updateAttachment(res, req.body);
     });
 
+    app.put('/coopsys/v1/attachment/:attach_id/approve', function (req, res) {
+        console.log("approve an attach");
+        StudentController.apprroveAttachment(res, req.params.attach_id);
+    });
+
+    app.put('/coopsys/v1/attachment/:attach_id/decline', function (req, res) {
+        console.log("approve an attach");
+        StudentController.declineAttachment(res, req.params.attach_id);
+    });
+
     // Delete the token owner's a specific attachment
-    app.delete('/coopsys/v1/attachment/:id', function (req, res) {
-        StudentController.delAttachment(res, req.params.id);
+    app.delete('/coopsys/v1/attachment/:attach_id', function (req, res) {
+        
+        StudentController.delAttachment(res, req.params.attach_id);
     });
 
     // app.put('/coopsys/v1/student/unlock_profile', function(req, res) {
@@ -518,8 +630,6 @@ module.exports = function(app) {
 
     // Edit a company
     app.put('/coopsys/v1/company', function(req, res) {
-        var compName = req.body.name.full || "noname";
-        console.log("Update " + compName + " company");
         CompanyController.updateCompany(res, req.body);
     });
 
@@ -544,6 +654,7 @@ module.exports = function(app) {
     // Update a contact of specific company
     app.put('/coopsys/v1/company/:company_id/contact/', function(req, res) {
         var comp_id = req.params.company_id;
+        console.log(req.body);
         CompanyController.updateCompanyContact(res, comp_id, req.body);
     });
 
@@ -569,8 +680,15 @@ module.exports = function(app) {
     
     // Get all application
     app.get('/coopsys/v1/application', function(req, res) {
-        console.log("Get all applications");
-        ApplicationController.getApplication(res);
+        console.log("Get all applications");  
+        var sort = req.query.sort || "_id";
+        var limit = req.query.limit || {};
+        var skip = req.query.skip || req.query.offset || 0;
+        var option = { "sort": sort, "limit": limit, "skip": skip};
+        delete req.query.sort;
+        delete req.query.limit;
+        delete req.query.skip; delete req.query.offset;
+        ApplicationController.getApplication(res, req.query || {}, undefined, option);
     });
         // Get all application of specific student
     app.get('/coopsys/v1/application/student/:student_id', function(req, res) {

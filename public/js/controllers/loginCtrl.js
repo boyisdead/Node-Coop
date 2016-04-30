@@ -1,21 +1,16 @@
-authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies', 'jwtHelper', 'UsersService', function($scope, $rootScope, $cookies, jwtHelper, UsersService) {
+authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies', 'jwtHelper', '$uibModal','$log', 'UsersService', function($scope, $rootScope, $cookies, jwtHelper, $uibModal,$log, UsersService) {
 
+    $scope.openRegis = function (){
+    	var modalInstance = $uibModal.open({
+    		animation: true,
+    		templateUrl: 'view/modal/register_modal.html',
+    		controller: 'regisStudentCtrl',
+    		size: 'md'
+    	});
+        modalInstance.result.then(function() {
+            $log.info('Modal dismissed at: ' + new Date());        });
+    };
 
-    // $scope.openTeacherLogin = function (){
-    // 	console.log("teacher");
-    // 	var modalInstance = $uibModal.open({
-    // 		animation: true,
-    // 		templateUrl: 'view/modal/teacher_login_modal.html',
-    // 		controller: 'teacherLoginCtrl',
-    // 		size: 'md'
-    // 	});
-
-    // 	modalInstance.result.then(function(){
-
-    // 	}, function(){
-    // 		$log.info('Modal dismissesd at: ' + new Date());
-    // 	});
-    // };
     var alreadyLogin;
     if (typeof $rootScope.currentUser != 'undefined')
         alreadyLogin = true;
@@ -41,12 +36,18 @@ authenticationModule.controller('loginCtrl', ['$scope', '$rootScope', '$cookies'
 
         if (!alreadyLogin) {
             if (item&&$scope.loginType) {
-                UsersService.get(item,$scope.loginType)
+                UsersService.get(item, $scope.loginType)
                     .success(function(data) {
-                        if(data.success != false){
-                            $cookies.put('tokenJWT', data.token);
-                            var tokenPayload = jwtHelper.decodeToken(data.token);
+                        console.log(data);
+                        if(data.success){
+                            $cookies.put('tokenJWT', data.result.token);
+                            var tokenPayload = jwtHelper.decodeToken(data.result.token);
                             $rootScope.currentUser = tokenPayload;
+                            swal({
+                                title: "สวัสดี"+$rootScope.currentUser.display_name,
+                                type: "success",
+                                confirmButtonText: "ปิด"
+                            });
                         } else {
                             swal({
                                 title: "ล้มเหลว!",

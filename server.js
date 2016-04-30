@@ -3,6 +3,7 @@ var express  = require('express');
 var app      = express();  // create our app w/ express
 
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var morgan   = require('morgan');
 var mongoose = require('mongoose'); 					// mongoose for mongodb
 
@@ -10,9 +11,10 @@ var database = require('./config/database'); 			// load the database config
 var authToken = require('./config/authenticate');
 var hashKey = require('./config/security');
 //var uuid = require('uuid');
-var multiparty = require('multiparty');
+//var multiparty = require('multiparty');
 
-var port  	 = process.env.PORT || 8080; 				// set the port
+var server_ip_address = process.env.IP || '127.0.0.1'	
+var server_port  	 = process.env.PORT || 8080; 				// set the port
 var methodOverride = require('method-override');
 
 var mkdirp = require('mkdirp');
@@ -47,10 +49,11 @@ app.use(bodyParser.urlencoded({'extended':'true'})); // parse application/x-www-
 app.use(bodyParser.json()); // parse application/json
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-Method-Override header in the request
+app.use(cookieParser());
 
 // routes ======================================================================
 require('./app/routes.js')(app);
 
 // listen (start app with node server.js) ======================================
-app.listen(port);
-console.log("App listening on port " + port);
+app.listen(server_port, server_ip_address);
+console.log("App listening on port " + server_port);

@@ -27,13 +27,13 @@
                         <label for="desc">คำอธิบาย <span class="glyphicon glyphicon-question-sign" tooltip-popup-close-delay='1000' tooltip-placement="right" uib-tooltip-template="'descTemplate.html'"></span> <span class="mini-red" ng-show="formData.file_type=='Certificate'">*เอกสารประเภทใบรับรองต้องกรอกหัวข้อด้วย</span><span class="mini-gray" ng-hide="formData.file_type=='Certificate'">(ไม่จำเป็น)</span></label>
                         <input type="text" ng-class="{'ex-touched':formData.file_type!='Certificate'}" class="form-control" id="desc" name="desc" ng-model="formData.description" placeholder="คำอธิบาย" for="fileUpload"  style="max-width:250px;" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" ng-click="validateForm(addForm)">เพิ่ม</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 <div class="modal-footer">
+    <button type="submit" class="btn btn-primary" ng-click="validateForm(addForm)">เพิ่ม</button>
     <button class="btn btn-default" ng-click="ok()">ปิด</button>
 </div>
 <script type="text/ng-template" id="descTemplate.html">

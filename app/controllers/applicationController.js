@@ -1,14 +1,32 @@
 var Application = require('./../models/application');
+var Student = require('./../models/student');
+var Company = require('./../models/company');
+
+var MailController = require('./mailController');
+var nodemailer = require("nodemailer");
 var objectAssign = require('object-assign');
 
 // Get
 
-var getApplication = function(res, criteria){
+var getApplication = function(res, criteria, project, option) {
     criteria = criteria || {};
-    Application.find(criteria,function(err, applications) {
+    project = project || {};
+    option = option || {};
+    Application.find(criteria, project, option, function(err, applications) {
         if (err)
-            res.send(err)
-        res.json(applications); 
+            return res.status(500).send({
+                success: false,
+                error:err
+            }); 
+        res.status(200).send({
+            success: true,
+            result: applications,
+            meta : {
+                limit : option.limit,
+                skip : option.skip,
+                total : applications.length
+            }
+        }); 
     });
 };
 
@@ -17,7 +35,7 @@ var getApplicationByStudent = function(res, item){
 };
 
 var getApplicationByCompany = function(res, item){
-	getApplication(res, {"company":item});
+	getApplication(res, {"company._id":item});
 };
 
 var getApplicationUnreply = function(res, item){
@@ -29,41 +47,166 @@ var findApplicationById = function(res, item) {
 };
 
 var getStudentApplyStatus = function(res, item){
-    Application.find({student:item,apply_date:{$exists:true}},function(err, application) {
+    Application.find({student:item, apply_date:{$exists:true}},function(err, application) {
         if (err)
-            res.send(err)
-        if(application)
-            res.status(200).send({success:true,data:{status:true,_id:item}}); 
-        else
-            res.status(200).send({success:true,data:{status:false,_id:item}}); 
+            return res.status(500).send({
+                success: false,
+                error:err
+            }); 
+        if(!application)
+            return res.status(200).send({
+                success: true,
+                result: {status : false}
+            }); 
+        return res.status(200).send({
+                success:true,
+                result: {
+                    status : true,
+                    applications: application
+                }
+            }); 
     });
 }
 
 var getStudentAcceptStatus = function(res, item){
     Application.find({student:item,response:true,reply:{$exists:true}},function(err, application) {
         if (err)
-            res.send(err)
+            return res.status(500).send({success: false,error: err}); 
         if(application)
-            res.status(200).send({success:true,data:{status:true,_id:item}}); 
-        else
-            res.status(200).send({success:true,data:{status:false,_id:item}}); 
+            return res.status(200).send({
+                success: true,
+                result: {
+                    status:true,
+                    _id:item
+                }
+            }); 
+        return res.status(200).send({
+            success:true,
+            result:{
+                status:false,
+                _id:item
+            }
+        }); 
     });
 }
 
 // Create
 
 var createApplication = function(res, item) {
-    var msg;
     var newApplication = new Application();
+    console.log("create ite : ", item);
     objectAssign(newApplication, item);
     newApplication.save(function(err) {
         if (err)
-            msg = {success:false,err:err};
-        else
-            msg = {success:true};
-        res.json(msg);
+            return res.status(500).send({
+                success:false, 
+                error:err
+            });
+        mailingStudentApplicant(item.student, item.company, item.attachments);
+        res.status(201).send({success: true});
     });
 };
+
+
+var mailingStudentApplicant = function(student_id, company_id, attachmentList){
+    var attachmentList = attachmentList
+
+    Student.findOne({ 
+        _id : student_id 
+    },{
+        attachments: 1,
+        contact: 1,
+        name: 1,
+        gpa: 1,
+        sex: 1
+    }, function(err, studentInfo){
+        if(err)
+            return res.status(500).send({
+                success:false,
+                error: err
+            })
+        if(!studentInfo)
+            return res.status(400).send({
+                success: false,
+                error: {
+                    message: "Student doesn't exist."
+                }
+            })
+        var attach =[];
+        console.log("attachs: ", studentInfo.attachments, studentInfo.attachments.length>0, studentInfo.attachments.length, typeof attach);
+        if(studentInfo.attachments && studentInfo.attachments.length>0)
+            attach = initialAttachment(studentInfo.attachments, attachmentList);
+        Company.findOne({
+            _id: company_id
+        },{
+            contact: 1,
+            coordinator: 1,
+            name: 1
+        }, function(err, companyInfo){
+            if(err)
+                return res.status(500).send({
+                    success:false,
+                    error: err
+                })
+            if(!companyInfo)
+                return res.status(400).send({
+                    success: false,
+                    error: {
+                        message: "Company doesn't exist."
+                    }
+                })
+            var studentEmail = studentInfo.contact.email;
+            var mailContent = "Student name : " + studentInfo.name.title + studentInfo.name.first + " " + studentInfo.name.last + "\n";
+            mailContent = mailContent + "ID : " + student_id + "\n";
+            mailContent = mailContent + "Email : " + studentEmail + " Tel : " + studentInfo.contact.tel + "\n";
+            mailContent = mailContent + "GPA : " + studentInfo.gpa + "\n";
+            mailContent = mailContent + "Sex : " + studentInfo.sex + "\n";
+            mailContent = mailContent + "Company : " + companyInfo.name.full + "\n";
+
+            var mailCompanyOption = { 
+                from : {
+                    name: 'CoopSys Admin',
+                    address: 'nattawut_k@cmu.ac.th'
+                },
+                to : companyInfo.contact.email || companyInfo.coordinator.email || companyInfo.email + ', "' + companyInfo.contact.name.first  || companyInfo.coordinator.name.first + " " + companyInfo.contact.name.last  || companyInfo.coordinator.name.last+'"',
+                subject : "CS CMU Cooperative plan's student application",
+                text : mailContent,
+                attachments : attach
+            }
+            var mailStudentOption = { 
+                from : {
+                    name: 'CoopSys Admin',
+                    address: 'nattawut_k@cmu.ac.th'
+                },
+                to : studentEmail,
+                subject : "You have been apply to " + companyInfo.name.full,
+                text : mailContent
+            }
+            MailController.sendMail(mailCompanyOption);
+            MailController.sendMail(mailStudentOption);
+        })
+    });
+}
+
+var initialAttachment = function(attachments, needAttachments){
+    attachments = attachments || [];
+    console.log("init : ",needAttachments);
+    var result = [];
+    var i = 0; 
+    for(var i=0; i<attachments.length; i++){
+        console.log("doc"+i+" : " + attachments[i]._id, needAttachments.lastIndexOf(attachments[i]._id));
+        if(needAttachments.lastIndexOf(attachments[i]._id.toString())>=0){
+            var newItem= {};
+            newItem.filename = attachments[i].file_name,
+            newItem.path = "./public/" + attachments[i].file_path.substr(2);
+            newItem.contentType = "application/pdf"
+            result.push(newItem);
+            console.log(newItem)
+        }
+    }
+    console.log("att : ", result);
+    return result;
+}
 
 // Update
 
@@ -71,19 +214,31 @@ var updateApplication = function(res, item) {
     Application.findOne({
         _id: item._id
     }, function(err, doc) {
-        if (doc != null) {
-        	if(item.attachments)
-        		delete item.attachments;
-            objectAssign(doc, item);
-            doc.reply_date = new Date;
-            console.log(doc.reply_date);
-            doc.reply = true;
-            doc.save();
-        } else console.log("Not found - not update");
-
         if (err)
-            res.send(err);
-        res.json({success:true});
+            return res.status(500).send({
+                success:false, 
+                error:err
+            });
+        if (!doc) {
+            console.log("Not found - not update");
+            return res.status(404).send({
+                success:false, 
+                result:err
+            });
+        }
+        // if(item.attachments)
+        //     delete item.attachments;
+        objectAssign(doc, item);
+        doc.save(function(err){
+            if (err)
+                return res.status(500).send({
+                    success:false, 
+                    error:err
+                });
+            return res.status(200).send({
+                success:true
+            });
+        });
     });
 };
 
@@ -94,9 +249,13 @@ var delApplication = function(res, item) {
         _id: item
     }, function(err) {
         if (err)
-            res.send(err);
-        else
-            res.json({success:true});
+            return res.status(500).send({
+                success:false, 
+                error:err
+            });
+        return res.status(200).send({
+            success:true
+        });
     })
 };
 

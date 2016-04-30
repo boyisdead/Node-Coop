@@ -1,8 +1,9 @@
-studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibModal', '$log', 'StudentsService', 'OthersService', function($scope, $rootScope, $http, $uibModal, $log, StudentsService, OthersService) {
+studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibModal', '$log', '$location', '$anchorScroll', 'StudentsService', 'OthersService', function($scope, $rootScope, $http, $uibModal, $log, $location, $anchorScroll, StudentsService, OthersService) {
 
     var getAcaYrs = function () {
+        console.log("get academic year");
         OthersService.getAcaYrs().success(function(data){
-            $scope.acaYrs = data;
+            $scope.acaYrs = data.result;
             $scope.acaYrs.sort(function(a,b){return b-a});
             $scope.acaYrs.splice(0,0,"ทั้งหมด");
             console.log($scope.acaYrs);
@@ -19,15 +20,17 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
     // use the service to get all the students
     var getStudent = function(acaYr) {
         $scope.loading = true;
+        $scope.currentViewStudent = false;
         StudentsService.get(acaYr)
             .success(function(data) {
-                $scope.students = data;
-                $scope.loading = false;
-        });
+                $scope.students = data.result;
+                $scope.loading = false;  
+            }).error(function(err){
+                console.log("no success", err);
+            });
     }
-
     getAcaYrs();
-
+    getStudent();
     // DELETE ==================================================================
     // delete a student after click it
     $scope.deleteStudent = function(id) {
@@ -48,9 +51,8 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
                 $scope.loading = true;
                 StudentsService.delete(id)
                     // if successful creation, call our get function to get all the new students
-                    .success(function(data) {
-                        $scope.loading = false;
-                        $scope.students = data; // assign our new list of students
+                    .success(function() {
+                        getStudent($scope.academicYear);
                     });
                 swal("ลบ!", "ข้อมูลนักศึกษานี้ถูกลบออกแล้ว", "success");
             } else {
@@ -66,10 +68,11 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             controller: 'addStudentCtrl'
         });
 
-        modalInstance.result.then(function(newCreateYr) {
+        modalInstance.result.then(function(res) {
             $log.info('Modal dismissed at: ' + new Date());
-            console.log(newCreateYr);
-            $scope.academicYear = newCreateYr;
+            if(res.success){
+                swal("สำเร็จ!", "สร้างนักศึกษาแล้ว", "success");
+            }
             getAcaYrs();
         });
     };
@@ -81,6 +84,7 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
         };
         var modalInstance = $uibModal.open({
             scope: scope,
+            size: 'lg',
             animation: true,
             templateUrl: 'view/modal/edit_student_modal.html',
             controller: 'editStudentCtrl'
@@ -94,6 +98,101 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
                 console.log("call swal");
             }
             getStudent($scope.academicYear);
+        });
+    };
+
+    $scope.openEditStudentJob = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {
+            studentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            size: 'lg',
+            animation: true,
+            templateUrl: 'view/modal/edit_student_job_modal.html',
+            controller: 'editStudentJobCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getStudent($scope.academicYear);
+            $scope.currentViewStudent = false;
+        });
+    };
+
+    $scope.openEditStudentPrefer = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {
+            studentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            size: 'lg',
+            animation: true,
+            templateUrl: 'view/modal/edit_student_prefer_modal.html',
+            controller: 'editStudentPreferCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getStudent($scope.academicYear);
+        });
+    };
+
+    $scope.openEditStudentAptitude = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {
+            studentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_student_aptitude_modal.html',
+            controller: 'editStudentAptitudeCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getStudent($scope.academicYear); 
+        });
+    };
+
+    $scope.openEditStudentEmc = function(id) {
+        var scope = $rootScope.$new();
+        scope.params = {
+            studentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_student_em_contact_modal.html',
+            controller: 'editStudentCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getStudent($scope.academicYear); 
         });
     };
 
@@ -132,4 +231,18 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
             getStudent($scope.academicYear);
         });
     }
-}]);
+
+    $scope.viewStudent = function(id){
+        StudentsService.find(id).success(function(data){
+            if(data.success){
+                $scope.currentViewStudent = data.result[0] || data.result;
+
+                $location.hash('detail');
+
+                // call $anchorScroll()
+                $anchorScroll();
+            }
+        });
+    }
+}]
+);

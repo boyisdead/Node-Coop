@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <h3 class="modal-title">แก้ไขผู้ติดต่อสถานประกอบการ <small ng-bind="formData.s_index"></small></h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid">
+        <div class="row">
+            <form class="form-horizontal touched-validate" name="editForm" novalidate>
+                <div class="col-sm-6 form-column">
+                    <div class="form-group">
+                        <label for="name_first">ชื่อ <span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" ng-model="formData.contact.name.first" placeholder="Name" id="name_first" name="name_first" autocomplete="off" required>
+                        <input type="text" class="form-control text-med" ng-model="formData.contact.name.last" placeholder="Lastname" id="name_last" name="name_last" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telephone">เบอร์โทรศัพท์ <span class="mini-red"> *</span></label><span class="mini-gray"> *ตัวเลขไม่มี '-' </span>
+                        <div class="form-inline">
+                            <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.contact.tel" placeholder="Telephone" id="telephone" name="telephone" autocomplete="off" required/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6 form-column">
+                    <div class="form-group">
+                        <label for="email">อีเมล์ <span class="mini-red"> *</span></label>
+                        <input type="email" class="form-control text-med" ng-model="formData.contact.email" placeholder="Email" id="email" name="email" autocomplete="off" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="position">ตำแหน่ง</label>
+                        <input class="form-control text-med" ng-model="formData.contact.position" placeholder="Position" id="position" name="position" autocomplete="off"> </textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" ng-show="editForm.$valid" class="btn btn-success" ng-click="validateContactForm(editForm)">บันทึก</button>
+    <button type="reset" class="btn btn-warning" ng-click="getCompanyData()">ล้างค่า</button>
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
+</div>

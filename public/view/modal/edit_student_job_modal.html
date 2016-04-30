@@ -1,0 +1,104 @@
+<div class="modal-header">
+    <h3 class="modal-title">แก้ไขข้อมูลนักศึกษา <small><span ng-bind="formData._id"></span></small></h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid" style="width:100%">
+        <div class="row" ng-hide="allowPwChange">
+            <form class="form-horizontal touched-validate" name="editForm" novalidate>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="fname">สถานะ <span class="mini-red">*</span></label>
+                        <div class="btn-group">
+                            <label class="btn btn-default btn-sm" ng-model="formData.job.status" uib-btn-radio="'inactive'" uncheckable>Inactive</label>
+                            <label class="btn btn-success btn-sm" ng-model="formData.job.status" uib-btn-radio="'active'" uncheckable>Active</label>
+                            <label class="btn btn-danger btn-sm" ng-model="formData.job.status" uib-btn-radio="'suspend'" uncheckable>Suspend</label>
+                            <label class="btn btn-info btn-sm" ng-model="formData.job.status" uib-btn-radio="'finished'" uncheckable>Finished</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="company">สถานประกอบการ <span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" id="company" name="company" ng-model="formData.job.company" uib-typeahead="company.name as company.name for company in companyList | filter:$viewValue | limitTo:5" placeholder="สถานประกอบการ" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="worksite">ที่ทำงาน</label>
+                        <input type="text" class="form-control text-med" ng-model="formData.job.work_site" placeholder="Worksite" id="worksite" name="worksite" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="position">ตำแหน่ง<span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" ng-model="formData.job.position" placeholder="Position" id="position" name="position" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="tel">วันรายงานตัว</label>
+                        <p class="input-group  text-med">
+                            <input type="text" class="form-control" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.job.report_date" is-open="report_date_popup" datepicker-options="dateOption" close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openReportDate()">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="tel">วันเริ่มฝึกงาน</label>
+                        <p class="input-group text-med">
+                            <input type="text" class="form-control" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.job.launch_date" is-open="launch_date_popup" popup-placement="top-right" close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openLaunchDate()">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="tel">วันสิ้นสุดการทำงาน</label>
+                        <p class="input-group text-med">
+                            <input type="text" class="form-control" uib-datepicker-popup="yyyy/MM/dd" ng-model="formData.job.finish_date" is-open="finish_date_popup" popup-placement="top-right" close-text="Close" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="openFinishDate()">
+                                    <i class="glyphicon glyphicon-calendar"></i>
+                                </button>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="worksite">ค่าตอบแทน</label>
+                        <ul>
+                            <li>
+                                <label for="method">การจ่าย</label>
+                                <input type="text" class="form-control text-med" ng-model="formData.job.payment.method" placeholder="Method" id="method" name="method" autocomplete="off">
+                            </li>
+                            <li>
+                                <label for="period">ระยะเวลา</label>
+                                <input type="text" class="form-control text-med" ng-model="formData.job.payment.period" placeholder="Period" id="period" name="period" autocomplete="off">
+                            </li>
+                            <li>
+                                <label for="amt_per_period">จำนวนต่อหน่วยเวลา</label>
+                                <input type="text" class="form-control text-med" ng-model="formData.job.payment.amount_per_period" placeholder="Amount/Period" id="amt_per_period" name="amt_per_period" autocomplete="off">
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label for="welfares">สวัสดิการ<span class="mini-gray">*คั่นแต่ละรายการด้วยเครื่องหมายจุลภาค (',': comma)</span></label>
+                        <textarea  type="text" class="form-control text-med" cols="40" rows="2" ng-model="welfares" placeholder="Welfares" id="welfares" name="welfares" autocomplete="off"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="note">หมายเหตุ</label>
+                        <textarea  type="text" class="form-control text-med" cols="40" rows="2" ng-model="formData.job.note" placeholder="Note" id="note" name="note" autocomplete="off"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="advisor">รหัสอาจารย์ที่ปรึกษา <span class="mini-gray">*พิมพ์ชื่ออาจารย์เพื่อค้นหาได้</span></label>
+                        <input type="text" class="form-control text-med" id="advisor" name="advisor" ng-model="formData.advisor_id" uib-typeahead="advisor._id as advisor.academic_pos + advisor.name.first + ' ' + advisor.name.last for advisor in advisorList | filter:$viewValue | limitTo:8" autocomplete="off" placeholder="อาจารย์ที่ปรึกษา" required>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer inline-block">
+                    <button type="submit" class="btn btn-success" ng-click="validateJobForm(editForm)">บันทึก</button>
+    <button type="button" class="btn btn-warning" ng-click="getStudentData()">คืนค่า</button>
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
+</div>

@@ -29,6 +29,10 @@ th>a:hover{
     color: #888888;
 }
 
+span.title {
+    font-size: 1.2em;
+
+}
 
 .little-frame {
     background-color: #fff;
@@ -93,7 +97,10 @@ th>a:hover{
     max-width:250px;
     margin-bottom: 5px;
 }
-
+td,th {
+    margin-right: 10px;
+    padding-left: 10px;
+}
 th.scode {
     width:110px;
 }
@@ -110,6 +117,9 @@ th.action {
     width:32px;
 }
 
+th.filetype{
+    width: 150px;
+}
 select.title-name {
     margin-left: 5px;
     max-width:120px;
@@ -136,11 +146,75 @@ select.title-name {
     width:250px;
 }
 
+.detail-panel {
+    border-radius: 10px;
+    background-color: #f2f2f2;
+    padding: 10px 10px 10px 10px;
+}
 .profile-display{
-    border: 2px dashed #cccccc;
-    border-radius: 5px;
-    width: 124px;
-    height: 165px;
+    outline: 1px solid #ffffff;
+    border-radius: 50%;
+    vertical-align: middle;
+    width: 150px;
+    height: 150px;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 5px 5px 5px 5px;
+    margin-bottom: 10px; 
+    display: block;
+}
+.main-panel {
+    width: auto !important;
+    margin-right: auto;
+    display:inline-block;
+}
+
+div.column-2 {
+    -webkit-column-count: 3; /* Chrome, Safari, Opera */
+    -webkit-column-gap: 40px; /* Chrome, Safari, Opera */
+    -moz-column-count: 3; /* Firefox */
+    -moz-column-gap: 40px; /* Firefox */
+    column-count: 3;
+    column-gap: 40px;
+}
+
+.right{
+    float: right;
+}
+
+.side-bar {
+    border-radius: 10px;
+    padding: 15px 10px 8px 15px;
+    background-color: #ffffff;
+    margin-right: 20px;
+}
+
+.apply-panel{
+    width: 50%;
+    margin-left: auto;
+    padding: 15px 10px 8px 15px;
+}
+
+.attach-panel{
+    width: 50%;
+    margin-right: auto;
+    padding: 15px 10px 8px 15px;
+}
+
+ul.contact{
+    list-style: none;
+    padding-left: 0px;
+}
+
+ol.prefer{
+    list-style: decimal;
+    padding-left: 15px;
+}
+
+.main-detail {
+    border-radius: 10px;
+    background-color: #ffffff;
+    padding: 15px 10px 8px 15px;
 }
 
 /*

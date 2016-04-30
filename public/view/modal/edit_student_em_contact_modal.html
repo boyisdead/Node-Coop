@@ -1,0 +1,45 @@
+<div class="modal-header">
+    <h3 class="modal-title">แก้ไขผู้ติดต่อฉุกเฉิน <small ng-bind="formData.s_index"></small></h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid">
+        <div class="row">
+            <form class="form-horizontal touched-validate" name="editForm" novalidate>
+                <div class="col-sm-6 form-column">
+                    <div class="form-group">
+                        <label for="tname">คำนำหน้าชื่อ <span class="mini-red">*</span></label>
+                        <select class="form-control title-name" id="tname" name="tname" ng-model="formData.emergency_contact.name.title" ng-options="titleName.th as titleName.th for titleName in titleNameList" required>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name_first">ชื่อ <span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" ng-model="formData.emergency_contact.name.first" placeholder="Name" id="name_first" name="name_first" autocomplete="off" required>
+                        <input type="text" class="form-control text-med" ng-model="formData.emergency_contact.name.last" placeholder="Lastname" id="name_last" name="name_last" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="relationship">ความเกี่ยวข้อง <span class="mini-red">*</span></label>
+                        <input class="form-control text-med" ng-model="formData.emergency_contact.relationship" placeholder="Relationship" id="relationship" name="relationship" autocomplete="off" required> </textarea>
+                    </div>
+                </div>
+                <div class="col-sm-6 form-column">
+                    
+                    <div class="form-group">
+                        <label for="telephone">เบอร์โทรศัพท์ <span class="mini-red"> *</span></label><span class="mini-gray"> *ตัวเลขไม่มี '-' </span>
+                        <div class="form-inline">
+                            <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.emergency_contact.tel" placeholder="Telephone" id="telephone" name="telephone" autocomplete="off" required/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">ที่อยู่</label>
+                        <textarea class="form-control text-med" rows="4" ng-model="formData.emergency_contact.address" placeholder="Address" id="address" name="address" style="margin-left:5px" autocomplete="off" ng-minlength="10" > </textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" ng-show="editForm.$valid" class="btn btn-success" ng-click="validateEmcForm(editForm)">บันทึก</button>
+    <button type="reset" class="btn btn-warning" ng-click="getStudentData()">ล้างค่า</button>
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
+</div>

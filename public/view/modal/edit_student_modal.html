@@ -5,43 +5,38 @@
     <div class="container-fluid">
         <div class="row" ng-hide="allowPwChange">
             <form class="form-horizontal touched-validate" name="editForm" novalidate>
-                <div class="col-sm-6">
+                <div class="col-sm-6" style="padding:10px">
                     <div class="form-group">
                         <label for="profile_pic">
                             รูปนักศึกษา
                         </label>
-                        <img class="profile-display" ngf-thumbnail=" formData.profile_picture || './images/no-profile.png'" >
-                        <input type="file" class="form-control" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="profile_pic" placeholder="รหัสนักศึกษา" id="profile_pic" name="profile_pic" ngf-resize-if="$width > 150 || $height > 200" ngf-resize="{width: 150, height: 200,requality: .8, centerCrop: true}">
+                        <img class="profile-display" ngf-thumbnail="formData.profile_picture || './images/no-profile.png'" >
+                        <input type="file" class="form-control text-med" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="profile_pic" placeholder="รหัสนักศึกษา" id="profile_pic" name="profile_pic" ngf-resize-if="$width > 150 || $height > 180" ngf-resize="{width: 150, height: 180,requality: .8, centerCrop: true}">
                     </div>
                     <div class="form-group">
-                        <label for="fnameTh">ชื่อภาษาไทย <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.f_th" placeholder="ชื่อ" for="fnameTh" name="th_name_first" autocomplete="off" autofocus required>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.l_th" placeholder="นามสกุล" name="th_name_last" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="fnameEn">ชื่อภาษาอังกฤษ <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.f_en" placeholder="First name" id="fnameEn" name="en_name_first" autocomplete="off" required>
-                        <input type="text" class="form-control text-med" ng-model="formData.name.l_en" placeholder="Last name" id="lnameEn" name="en_name_last" autocomplete="off" required>
+                        <label for="fname">ชื่อ<span class="mini-red">*</span></label>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.first" placeholder="ชื่อ" for="fname" name="first_name" autocomplete="off" autofocus required>
+                        <input type="text" class="form-control text-med" ng-model="formData.name.last" placeholder="นามสกุล" name="last_name" autocomplete="off" required>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
+                        <label for="acaYr">ปีที่สมัคร <span class="mini-red">*</span></label>
+                        <input type="text" class="form-control  text-short" ng-model="formData.academic_year" placeholder="25xx" id="acaYr" name="acaYr" autofocus="on" autocomplete="off" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gpa">เกรดเฉลี่ย<span class="mini-red">*</span></label>
+                        <input type="text" class="form-control  text-short" ng-model="formData.gpa" placeholder="GPA" id="gpa" name="gpa" autofocus="on" autocomplete="off" required>
+                    </div>
+                    <div class="form-group">
                         <label for="email">อีเมล์ <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.contact_email" placeholder="Email" id="email" name="email" autocomplete="off" required>
+                        <input type="text" class="form-control text-med" ng-model="formData.contact.email" placeholder="Email" id="email" name="email" autocomplete="off" required>
                     </div>
                     <div class="form-group">
                         <label for="tel">เบอร์โทรศัพท์</label>
-                        <input type="text" class="form-control text-med" ng-model="formData.tel" placeholder="Telephone" id="tel" name="tel" autocomplete="off">
+                        <input type="text" class="form-control text-med" ng-model="formData.contact.tel" placeholder="Telephone" id="tel" name="tel" autocomplete="off">
                     </div>
-                    <!-- advisor remove
-                    <div class="form-group">
-                        <label for="advisor">รหัสอาจารย์ที่ปรึกษา <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" id="advisor" name="advisor" ng-model="formData.advisor_id" uib-typeahead="advisor.staff_code as advisor.staff_code + ' ('+ advisor.name.f_th + ' ' + advisor.name.l_th +')' for advisor in advisorList | filter:$viewValue | limitTo:8" autocomplete="off" placeholder="อาจารย์ที่ปรึกษา" required>
-                    </div>
-                    -->
-                </div>
-                <div class="col-md-6 col-md-offset-6">
-                    <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
                 </div>
             </form>
         </div>
@@ -64,7 +59,6 @@
                             <br>
                             <span class="mini-red" ng-hide="formData.pw.newPassword==formData.pw.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
                         </div>
-                        <button type="submit" class="btn btn-success" ng-click="changPw(formData.pw,formData._id)">บันทึก</button>
                     </div>
                 </form>
             </div>
@@ -72,8 +66,9 @@
     </div>
 </div>
 <div class="modal-footer inline-block">
-    <button type="button" class="btn btn-info" ng-hide="allowPwChange" ng-click="lockStudent(formData._id)" tooltip-placement="top" uib-tooltip="เพื่อยืนยันว่าสถานะนักศึกษาถูกต้องครบถ้วน">ล็อคข้อมูลนี้</button>
-    <button type="reset" class="btn btn-danger" ng-click="allowPwChange = !allowPwChange" id="changePass"><span ng-hide="allowPwChange">เปลี่ยนรหัสผ่าน</span><span ng-show="allowPwChange">ยกเลิก และ กลับไปแก้ไขข้อมูล</span></button>
+    <!-- <button type="reset" class="btn btn-danger" ng-click="allowPwChange = !allowPwChange" id="changePass"><span ng-hide="allowPwChange">เปลี่ยนรหัสผ่าน</span><span ng-show="allowPwChange">ยกเลิก และ กลับไปแก้ไขข้อมูล</span></button> -->
+    <button ng-show="allowPwChange" type="submit" class="btn btn-success" ng-click="changPw(formData.pw,formData._id)">บันทึก</button>
+    <button ng-hide="allowPwChange" type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
     <button type="button" class="btn btn-warning" ng-click="getStudentData()">คืนค่า</button>
     <button class="btn btn-default" ng-click="ok()">ปิด</button>
 </div>

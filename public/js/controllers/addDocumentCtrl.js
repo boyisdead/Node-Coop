@@ -6,26 +6,26 @@ documentModule.controller('addDocumentCtrl', ['$scope','Upload', '$modalInstance
     console.log("In modal");
     $scope.formData = {};
 
-    $scope.createDocument = function (e,formData) {
-        console.log("Document creating... ");
-         console.log($scope.formData.owner);
-         console.log(formData.owner);
-        // validate the formData to make sure that something is there
-        // if form is empty, nothing will happen
-        if ($scope.formData.owner != undefined) {
+    // $scope.createDocument = function (e, formData) {
+    //     console.log("Document creating... ");
+    //      console.log($scope.formData.owner);
+    //      console.log(formData.owner);
+    //     // validate the formData to make sure that something is there
+    //     // if form is empty, nothing will happen
+    //     if ($scope.formData.owner != undefined) {
 
-            e.upload();
-            // call the create function from our service (returns a promise object)
-            // DocumentsService.create_2(formData).success(function(data) {
-            //     $scope.loading = false;
-            //     $scope.formData = {}; // clear the form so our teacher is ready to enter another
-            //     $scope.documents = data; // assign our new list of documents
-            //     $modalInstance.close();
-            // });
-        } else {
-           console.log("no owner! ");
-        }
-    };
+    //         e.upload();
+    //         // call the create function from our service (returns a promise object)
+    //         // DocumentsService.create_2(formData).success(function(data) {
+    //         //     $scope.loading = false;
+    //         //     $scope.formData = {}; // clear the form so our teacher is ready to enter another
+    //         //     $scope.documents = data; // assign our new list of documents
+    //         //     $modalInstance.close();
+    //         // });
+    //     } else {
+    //        console.log("no owner! ");
+    //     }
+    // };
 
     $scope.validateForm = function (msg){
         var errList = "";
@@ -57,7 +57,7 @@ documentModule.controller('addDocumentCtrl', ['$scope','Upload', '$modalInstance
                 sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
             } else {
                 console.log("aaa");
-                upload($scope.formData.attachFile);
+                upload($scope.formData.attachFile, $scope.formData.owner);
             }
         }
     }
@@ -65,9 +65,13 @@ documentModule.controller('addDocumentCtrl', ['$scope','Upload', '$modalInstance
     // upload on file select or drop
     var upload = function (file) {
         Upload.upload({
-            url: '/admin/document/upload',
+            url: '/coopsys/v1/attachment/' + $scope.formData.owner,
             method: 'POST',
-            fields : {'owner' : $scope.formData.owner, 'description': $scope.formData.description, 'file_type' : $scope.formData.file_type },
+            fields : {
+                'owner' : $scope.formData.owner,
+                'description': $scope.formData.description, 
+                'file_type' : $scope.formData.file_type 
+            },
             file: file
         }).then(function (resp) {
             console.log('Success' , resp.config, resp.success);
@@ -84,7 +88,6 @@ documentModule.controller('addDocumentCtrl', ['$scope','Upload', '$modalInstance
         }, function (evt) {
             var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
             console.log('progress: ' , progressPercentage);
-
             //console.log('progress: ' + progressPercentage + '% ' + evt.config.attachFile.name);
         });
     };
