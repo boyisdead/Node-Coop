@@ -16,5 +16,18 @@
     "multer": "^1.1.0",
     "object-assign": "^4.0.1",
     "password-hash": "^1.2.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boyisdead/Node-Coop.git"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "bugs": {
+    "url": "https://github.com/boyisdead/Node-Coop/issues"
+  },
+  "homepage": "https://github.com/boyisdead/Node-Coop#readme",
+  "devDependencies": {},
+  "license": "ISC"
 }

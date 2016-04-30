@@ -4,10 +4,17 @@ var this_year  = new Date().getFullYear() + 543;
 var newId = mongoose.Types.ObjectId();
 
 var studentSchema = mongoose.Schema({
-    "_id": { type: String, default: '' },
+    "_id": { type: String, 
+        validate: {
+          validator: function(v) {
+            return /\b[5-9]{1}\d{1}[0-2]{1}\d{1}[0-1]{1}\d{4}\b/.test(v);
+          },
+          msg: '{VALUE} is not a student ID!'
+        },
+    },
     "name": {
-        "first": { type: String, default: '' },
-        "last": { type: String, default: '' },
+        "first": { type: String, required : true  },
+        "last": { type: String, required : true  },
         "title": { type: String, default: '' }
     },
     "secretKey":{ type: mongoose.Schema.ObjectId },
@@ -15,12 +22,18 @@ var studentSchema = mongoose.Schema({
     "date_of_birth" : { type : Date },
     "adviser_id": { type: String, default: '' },
     "sex": { type: String, default: '', enum : ['M','F','male','female','ชาย','หญิง'] },
-    "password": { type: String, default: '' },
-    "academic_year": { type: String, default: this_year },
+    "password": { type: String, default: '', required : true  },
+    "academic_year": { type: String, default: this_year, required : true  },
     "status": {type: Boolean, default: false},
     "contact": {
         "tel": { type: String, default: '' },
-        "email": { type: String, default: '' , required : true },
+        "email": { type: String, default: '' , required : true, validate: {
+            validator: function(v) {
+                return /([\d\w]+[\.\w\d]*)\+?([\.\w\d]*)?@([\w\d]+[\.\w\d]*)/.test(v);
+            },
+            msg: '{VALUE} is not an valid email!'
+        },
+    },
         "address": { type: String, default: '' }
     },
     "prefered_company" : {

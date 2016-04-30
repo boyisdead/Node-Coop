@@ -57,7 +57,6 @@ applicationModule.controller('applicationCtrl', ['$scope', '$rootScope','$uibMod
 
     $scope.openAddApplication = function() {
         var modalInstance = $uibModal.open({
-            size: 'lg',
             animation: true,
             templateUrl: 'view/modal/add_application_modal.html',
             controller: 'addApplicationCtrl'
@@ -76,7 +75,6 @@ applicationModule.controller('applicationCtrl', ['$scope', '$rootScope','$uibMod
         };
         var modalInstance = $uibModal.open({
             scope: scope,
-            size: 'lg',
             animation: true,
             templateUrl: 'view/modal/edit_application_modal.html',
             controller: 'editApplicationCtrl'

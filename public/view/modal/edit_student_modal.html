@@ -38,9 +38,6 @@
                         <input type="text" class="form-control text-med" ng-model="formData.contact.tel" placeholder="Telephone" id="tel" name="tel" autocomplete="off">
                     </div>
                 </div>
-                <div class="col-md-6 col-md-offset-6">
-                    <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
-                </div>
             </form>
         </div>
         <div class="row" ng-show="allowPwChange">
@@ -70,7 +67,8 @@
 </div>
 <div class="modal-footer inline-block">
     <!-- <button type="reset" class="btn btn-danger" ng-click="allowPwChange = !allowPwChange" id="changePass"><span ng-hide="allowPwChange">เปลี่ยนรหัสผ่าน</span><span ng-show="allowPwChange">ยกเลิก และ กลับไปแก้ไขข้อมูล</span></button> -->
-    <button type="submit" class="btn btn-success" ng-click="changPw(formData.pw,formData._id)">บันทึก</button>
+    <button ng-show="allowPwChange" type="submit" class="btn btn-success" ng-click="changPw(formData.pw,formData._id)">บันทึก</button>
+    <button ng-hide="allowPwChange" type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
     <button type="button" class="btn btn-warning" ng-click="getStudentData()">คืนค่า</button>
     <button class="btn btn-default" ng-click="ok()">ปิด</button>
 </div>

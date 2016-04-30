@@ -39,7 +39,7 @@ companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$l
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "ใช่, ลบเอกสารนี้!",
+            confirmButtonText: "ใช่, ลบสถานประกอบการนี้!",
             cancelButtonText: "ยกเลิก",
             closeOnConfirm: false,
             closeOnCancel:false,
@@ -49,7 +49,7 @@ companyModule.controller('companyCtrl', ['$scope', '$rootScope','$uibModal', '$l
                 CompaniesService.delete(id).success(function(data) {
                     console.log(data);
                     if(data.success)
-                    	swal("สำเร็จ!","ไฟล์ถูกลบแล้ว","success");
+                    	swal("สำเร็จ!","สถานประกอบการถูกลบแล้ว","success");
                     else
                     	swal("ล้มเหลว!", data,"error");
                 }).then(function(data){

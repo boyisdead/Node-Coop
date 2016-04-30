@@ -163,6 +163,13 @@ var getMyAdviser = function(res, id) {
 };
 
 var studentRegistration = function (res, item) { // wait for mailing module
+
+    if(!item._id)
+        return res.status(400).send({
+                success: false, 
+                message: "No student id provide", 
+                error: {_id:{name:"Validation error",message:"No student id provide"}}, 
+            });
     Student.findOne({
         _id: item._id
     }, function(err, doc){
@@ -209,6 +216,13 @@ var studentRegistration = function (res, item) { // wait for mailing module
 }
 
 var createStudent = function(res, item) {
+
+    if(!item._id)
+        return res.status(400).send({
+                success: false, 
+                message: "No student id provide", 
+                error: {_id:{name:"Validation error",message:"No student id provide"}}, 
+            });
     Student.findOne({
         "_id": item._id
     }, function(err, doc){
@@ -229,7 +243,7 @@ var createStudent = function(res, item) {
                 });
             console.log(item.password);
             newStudent.password = passwordHash.generate(item.password.toString());
-            newStudent.secretKey = new ObjectId();
+            newStudent.status = true;
             newStudent.save(function(err){
                 var host_name = require('../../config/hosting').host_domain;
                 console.log(host_name,newStudent.secretKey);
@@ -683,7 +697,7 @@ var createAttachment = function (res, file, attachment, student){
             fs.unlinkSync(tmp_path);
             return res.status(500).send({
                 success: false, 
-                message: "Something went wrong while removing. try again.", 
+                message: "Something went wrong while removing temporaries. try again.", 
                 error: err
             });
         }

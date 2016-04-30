@@ -47,27 +47,24 @@ var findApplicationById = function(res, item) {
 };
 
 var getStudentApplyStatus = function(res, item){
-    Application.find({student:item, apply_date:{$exists:true}, reply: false},function(err, application) {
+    Application.find({student:item, apply_date:{$exists:true}},function(err, application) {
         if (err)
             return res.status(500).send({
                 success: false,
                 error:err
             }); 
-        if(application)
+        if(!application)
             return res.status(200).send({
+                success: true,
+                result: {status : false}
+            }); 
+        return res.status(200).send({
                 success:true,
                 result: {
-                    status:true,
-                    _id:item
+                    status : true,
+                    applications: application
                 }
             }); 
-        res.status(200).send({
-            success:true,
-            result: {
-                status: false,
-                _id:item
-            }
-        }); 
     });
 }
 

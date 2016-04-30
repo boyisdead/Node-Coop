@@ -18,14 +18,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="desc">คำอธิบาย <span class="glyphicon glyphicon-question-sign" tooltip-popup-close-delay='1000' tooltip-placement="right" uib-tooltip-template="'descTemplate.html'"></span> <span class="mini-red" ng-show="formData.file_type=='Certificate'">*เอกสารประเภทใบรับรองต้องกรอกหัวข้อด้วย</span><span class="mini-gray" ng-hide="formData.file_type=='Certificate'">(ไม่จำเป็น)</span></label>
+                        <label for="desc">คำอธิบาย <span class="mini-red" ng-show="formData.file_type=='Certificate'">*เอกสารประเภทใบรับรองต้องกรอกหัวข้อด้วย</span><span class="mini-gray" ng-hide="formData.file_type=='Certificate'">(ไม่จำเป็น)</span></label>
                         <input type="text" ng-class="{'ex-touched':formData.file_type!='Certificate'}" class="form-control" id="desc" name="desc" ng-model="formData.description" placeholder="คำอธิบาย" for="fileUpload"  style="max-width:250px;">
                     </div>
 
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="fname">การตรวจสอบ <span class="mini-red">*</span></label>
+                        <label for="fname">การตรวจสอบ<span class="mini-red">*</span> <span class="glyphicon glyphicon-question-sign" tooltip-popup-close-delay='1000' tooltip-placement="right" uib-tooltip-template="'descTemplate.html'"></span> </label>
                         <div class="btn-group">
                             <label class="btn btn-success btn-sm" ng-model="formData.status" uib-btn-radio="'true'" uncheckable>Approve</label>
                             <label class="btn btn-danger btn-sm" ng-model="formData.status" uib-btn-radio="'false'" uncheckable>Decline</label>
@@ -36,14 +36,12 @@
                         <textarea  type="text" class="form-control text-med" cols="40" rows="2" ng-model="formData.comment" placeholder="Note" id="note" name="note" autocomplete="off"></textarea>
                     </div>
                 </div>
-                <div class="col-md-6 col-md-offset-6">
-                    <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
-                </div>
             </form>
         </div>
     </div>
 </div>
 <div class="modal-footer inline-block">
+    <button type="submit" class="btn btn-success" ng-click="validateForm(editForm)">บันทึก</button>
     <button type="button" class="btn btn-warning" ng-click="getDocumentData()">คืนค่า</button>
     <button class="btn btn-default" ng-click="ok()">ปิด</button>
 </div>
