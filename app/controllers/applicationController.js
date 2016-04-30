@@ -35,7 +35,7 @@ var getApplicationByStudent = function(res, item){
 };
 
 var getApplicationByCompany = function(res, item){
-	getApplication(res, {"company":item});
+	getApplication(res, {"company._id":item});
 };
 
 var getApplicationUnreply = function(res, item){

@@ -61,14 +61,12 @@
                         <span class="mini-red" ng-hide="formData.password==formData.password_confirm">การยืนยันรหัสผ่านไม่ถูกต้อง</span>
                     </div>
                 </div>
-                <div class="col-md-6 col-md-offset-6" ng-show="addForm.$valid && formData.password==formData.password_confirm ">
-                    <button type="submit" class="btn btn-success" ng-click="validateForm(addForm)">บันทึก</button>
-                    <button type="reset" class="btn btn-warning">ล้างค่า</button>
-                </div>
             </form>
         </div>
     </div>
 </div>
 <div class="modal-footer">
+    <button type="submit" class="btn btn-success" ng-show="addForm.$valid && formData.password==formData.password_confirm" ng-click="validateForm(addForm)">บันทึก</button>
+    <button type="reset" class="btn btn-warning" ng-click="formData={}">ล้างค่า</button>
     <button class="btn btn-default" ng-click="ok()">ปิด</button>
 </div>

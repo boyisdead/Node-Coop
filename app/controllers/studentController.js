@@ -182,6 +182,7 @@ var studentRegistration = function (res, item) { // wait for mailing module
         if(!doc){
             var newStudent = new Student();
             objectAssign(newStudent, item);
+            newStudent.secretKey = new ObjectId();
             newStudent.password = passwordHash.generate(item.password);
             newStudent.save(function(err){
                 if(!err){
@@ -194,7 +195,8 @@ var studentRegistration = function (res, item) { // wait for mailing module
                         from : "nattawut_k@cmu.ac.th",
                         to : item.contact.email,
                         subject : "Your coopsys account has been created.",
-                        text : "user : " + item._id + " password : " + item.password
+                        text : "Your username is : " + item._id + " password : " + item.password + "\nHere's your activation code : " + newStudent.secretKey,
+                        html: "#Welcome <br>Your username is : " + item._id + " password : " + item.password +"<br>Here's your activation code " + newStudent.secretKey
                     }
                     var mailRes = MailController.sendMail(mailOption);                    
                     return res.status(201).send({
@@ -245,15 +247,13 @@ var createStudent = function(res, item) {
             newStudent.password = passwordHash.generate(item.password.toString());
             newStudent.status = true;
             newStudent.save(function(err){
-                var host_name = require('../../config/hosting').host_domain;
-                console.log(host_name,newStudent.secretKey);
                 if(!err){
                     var mailOption = { 
                         from : "nattawut_k@cmu.ac.th",
                         to : item.contact.email,
                         subject : "Your coopsys account has been created.",
-                        text : "Your username is : " + item._id + " password : " + item.password + "\nHere's your activation code : " + newStudent.secretKey,
-                        html: "#Welcome <br>Your username is : " + item._id + " password : " + item.password +"<br>Here's your activation code "+newStudent.secretKey
+                        text : "Your username is : " + item._id + " password : " + item.password,
+                        html: "#Welcome <br>Your username is : " + item._id + " password : " + item.password
                     }
                     var mailRes = MailController.sendMail(mailOption);
                     return res.status(201).send({
@@ -363,7 +363,8 @@ var activeStudent = function(res, student, key) {
                 return res.status(500).send({success:false,error:err,message:"Something went wrong while activate Student. try again."});
             return res.status(200).send({success:true,message:"Activation complete."});
             })
-        }
+        }else
+            return res.status(401).send({success:false,error:{msg:"Invalid activation code!"},message:"Invalid activation code!"});
     })
 };
 
@@ -384,7 +385,7 @@ var changePreferedCompany = function (res, owner, item) {
                 doc.save();
                 return res.status(200).send({
                     success : true, 
-                    message: "prefered companies updated."
+                    message: "Prefered companies updated."
                 });
             } else {
                 return res.status(404).send({
