@@ -60,4 +60,4 @@ require('./app/routes.js')(app);
 
 // listen (start app with node server.js) ======================================
 app.listen(server_port, server_ip_address);
-console.log("App listening on " + server_ip_address + ", server_port " + port);
+console.log("App listening on " + server_ip_address + ", server_port " + server_port);
