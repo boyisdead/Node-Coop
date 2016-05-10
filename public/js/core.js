@@ -100,8 +100,7 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
             controller: "companyCtrl",
             data: {
                 // just for now
-                requireLogin: true,
-                accessType: 'teacher'
+                requireLogin: false
             }
         })
         .state('applicationList', {

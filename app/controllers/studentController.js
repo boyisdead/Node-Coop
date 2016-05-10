@@ -67,7 +67,8 @@ var studentLogin = function(res, item, secretToken, expireTime) {
             var token = jwt.sign({
                 "display_name": student.name.first, 
                 "access_type": "student", 
-                "access_id": student._id
+                "access_id": student._id,
+                "success": true
             }, secretToken, {
                 expiresInMinutes: expireTime
             });
@@ -177,7 +178,7 @@ var studentRegistration = function (res, item) { // wait for mailing module
             var newStudent = new Student();
             objectAssign(newStudent, item);
             newStudent.secretKey = new ObjectId();
-            newStudent.password = passwordHash.generate(item.password);
+            newStudent.password = passwordHash.generate(item.password.toString());
             newStudent.save(function(err){
                 if(!err){
 // <<<<<<< HEAD
@@ -274,7 +275,7 @@ var createStudent = function(res, item) {
 var updateStudent = function(res, item) {
     console.log("update student", item._id)
     if (typeof item.password != 'undefined')
-        item.password = passwordHash.generate(item.password);
+        item.password = passwordHash.generate(item.password.toString());
 
     Student.findOne({
         _id: item._id

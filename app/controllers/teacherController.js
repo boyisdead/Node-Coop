@@ -84,7 +84,7 @@ var createTeacher = function(res, item) {
     Counter.findOneAndUpdate({_id:"teachers"},{ $inc : { "seq": 1 }}, function(err, doc){
         var newTeacher = new Teacher();
         objectAssign(newTeacher, item);
-        newTeacher.password = passwordHash.generate(item.password);
+        newTeacher.password = passwordHash.generate(item.password.toString());
         newTeacher._id = autoPrefixId("PS", doc.seq, 4);
         newTeacher.save(function(err){
             if(err)
@@ -117,7 +117,7 @@ var updateTeacher = function(res, item) {
             objectAssign(doc.name, item.name);
         objectAssign(doc, item);
         if (typeof item.password != 'undefined')
-            doc.password = passwordHash.generate(item.password);
+            doc.password = passwordHash.generate(item.password.toString());
         console.log(doc);
         doc.save(function(err){
             if (err)
@@ -221,7 +221,7 @@ var pwChangeTeacher = function(res, item) {
         }
         console.log("Change password from %s to %s (in db is %s).", item.oldPassword, item.newPassword);
         if (passwordHash.verify(item.oldPassword, doc.password)) {
-            doc.password = passwordHash.generate(item.newPassword);
+            doc.password = passwordHash.generate(item.newPassword.toString());
             doc.save(function(err){
                 if(err)
                     return res.status(500).send({

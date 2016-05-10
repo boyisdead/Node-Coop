@@ -92,61 +92,23 @@
             <nav class="hidden-xs">
                 <ul class="nav navbar-nav">
                     <!-- <a ui-sref="home" class="navbar-brand" role="button">Dashboard</a> -->
-                    <li><a ui-sref="studentList">Student</a></li>
-                    <li><a ui-sref="teacherList">Teacher</a></li>
-                    <li><a ui-sref="documentList">Document</a></li>
+                    <li ng-if="currentUser.access_type == 'student'"><a ui-sref="studentList">My profile</a></li>
+                    <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="studentList">Student</a></li>
+                    <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="teacherList">Teacher</a></li>
+                    <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="documentList">Document</a></li>
                     <li><a ui-sref="companyList">Company</a></li>
-                    <li><a ui-sref="applicationList">Application</a></li>
+                    <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="applicationList">Application</a></li>
                     <li><a ui-sref="login"><span ng-show="!currentUser">Login</span><span ng-show="currentUser">Logout</span></a></li>
-
-            <!-- Under construction
-                <li class="dropdown" uib-dropdown="">
-                    <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
-                        Directives <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#accordion">Accordion</a></li>
-                        <li><a href="#alert">Alert</a></li>
-                        <li><a href="#buttons">Buttons</a></li>
-                        <li><a href="#carousel">Carousel</a></li>
-                        <li><a href="#collapse">Collapse</a></li>
-                        <li><a href="#datepicker">Datepicker</a></li>
-                        <li><a href="#dropdown">Dropdown</a></li>
-                        <li><a href="#modal">Modal</a></li>
-                        <li><a href="#pagination">Pagination</a></li>
-                        <li><a href="#popover">Popover</a></li>
-                        <li><a href="#progressbar">Progressbar</a></li>
-                        <li><a href="#rating">Rating</a></li>
-                        <li><a href="#tabs">Tabs</a></li>
-                        <li><a href="#timepicker">Timepicker</a></li>
-                        <li><a href="#tooltip">Tooltip</a></li>
-                        <li><a href="#typeahead">Typeahead</a></li>
-                    </ul>
-                </li>
-             -->
-            <!-- Under construntion
-                <li class="dropdown" uib-dropdown="">
-                    <a role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="false">
-                        Previous docs <b class="caret"></b>
-                    </a>
-                    <ul class="dropdown-menu">
-
-                        <li ng-repeat="version in oldDocs" class="ng-scope">
-                            <a ng-href="/bootstrap" class="ng-binding" href="/bootstrap">Current</a>
-                        </li>
-                    </ul>
-                </li> 
-            -->
                 </ul>
             </nav>
             <nav class="visible-xs collapse" uib-collapse="!isCollapsed" style="height: 0px;">
                 <ul class="nav navbar-nav">
                     <!-- <li><a ui-sref="home" ng-click="isCollapsed = !isCollapsed">Dashboard</a></li> -->
-                    <li><a ui-sref="studentList" ng-click="isCollapsed = !isCollapsed">Student</a></li>
-                    <li><a ui-sref="teacherList" ng-click="isCollapsed = !isCollapsed">Teacher</a></li>
-                    <li><a ui-sref="documentList" ng-click="isCollapsed = !isCollapsed">Document</a></li>
+                    <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="studentList" ng-click="isCollapsed = !isCollapsed">Student</a></li>
+                    <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="teacherList" ng-click="isCollapsed = !isCollapsed">Teacher</a></li>
+                    <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="documentList" ng-click="isCollapsed = !isCollapsed">Document</a></li>
                     <li><a ui-sref="conpanyList" ng-click="isCollapsed = !isCollapsed">Company</a></li>
-                    <li><a ui-sref="applicationList" ng-click="isCollapsed = !isCollapsed">Application</a></li>
+                    <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="applicationList" ng-click="isCollapsed = !isCollapsed">Application</a></li>
                     <li><a ui-sref="login" ng-click="isCollapsed = !isCollapsed"><span ng-show="!currentUser">Login</span><span ng-show="currentUser">Logout</span></a></li>
                 </ul>
             </nav>

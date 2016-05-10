@@ -28,8 +28,8 @@
                         <th>ชื่อ</th>
                         <th>ชื่อย่อ</th>
                         <th>เว็บไซต์</th>
-                        <th class="action"></th>
-                        <th class="action"></th>
+                        <th  ng-if="currentUser.access_type == 'teacher'"  class="action"></th>
+                        <th  ng-if="currentUser.access_type == 'teacher'"  class="action"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,10 +37,10 @@
                         <td ng-bind="company.name.full"></td>
                         <th ng-bind="company.name.initial || company._id"></th>
                         <th><a href="http://{{company.website}}/" target="_blank"><span ng-bind="company.website"></span></a></th>
-                        <td>
+                        <td ng-if="currentUser.access_type == 'teacher'" >
                             <a ng-click="deleteCompany(company._id)"><span class="glyphicon glyphicon-trash"></span></a>
                         </td>
-                        <td> 
+                        <td ng-if="currentUser.access_type == 'teacher'" > 
                             <a ng-click="openEditCompany(company._id)"><span class="glyphicon glyphicon-pencil"></span></a>
                         </td>
                     </tr>
@@ -56,7 +56,7 @@
                 <div style="display:inline-block;width:100%">
                     <h4>
                         <span ng-bind="currentViewCompany.name.full || '-' |capitalize"></span> 
-                        <a ng-click="openEditCompany(currentViewCompany._id)">
+                        <a ng-if="currentUser.access_type == 'teacher'" ng-click="openEditCompany(currentViewCompany._id)">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                     </h4>
@@ -85,7 +85,7 @@
                 <div class="panel panel-default main-panel" style="display:inline-block;">
                     <div class="panel-heading">
                         Contact                         
-                        <a ng-click="openEditCompanyContact(currentViewCompany._id)">
+                        <a ng-if="currentUser.access_type == 'teacher'" ng-click="openEditCompanyContact(currentViewCompany._id)">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                     </div>
@@ -101,7 +101,7 @@
                 <div class="panel panel-default main-panel" style="display:inline-block;">
                     <div class="panel-heading">
                         Coordinator
-                        <a ng-click="openEditCompanyCoordinator(currentViewCompany._id)">
+                        <a ng-if="currentUser.access_type == 'teacher'" ng-click="openEditCompanyCoordinator(currentViewCompany._id)">
                             <span class="glyphicon glyphicon-pencil"></span>
                         </a>
                     </div>
