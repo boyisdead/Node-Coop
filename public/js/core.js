@@ -74,10 +74,10 @@ mainModule.config(function($stateProvider, $urlRouterProvider) {
                 accessType: 'teacher'
             }
         })
-        .state('studentDetail', {
-            url: "/student_detail",
+        .state('myView', {
+            url: "/me",
             templateUrl: "view/student_detail_page.html",
-            controller: "studentDetailCtrl",
+            controller: "myDetailCtrl",
             data: {
                 // just for now
                 requireLogin: true,

@@ -262,7 +262,6 @@ module.exports = function(app) {
         var allow = ["teacher","student"];
         var item = req.decoded.access_id;
         if(req.file){
-            console.log("decoded",req.decoded);
             if(req.decoded.access_type == allow[0]){ 
                 TeacherController.uploadPicture(res, item, req.file);
             } else if (req.decoded.access_type==allow[1]) {
@@ -289,21 +288,10 @@ module.exports = function(app) {
             TeacherController.updateTeacher(res, req.body);
         } else if (req.decoded.access_type==allow[1]) {
             console.log("student", req.body);
+            delete req.body.job;
+            delete req.body.adviser_id;
+            delete req.body.secretKey;
             StudentController.updateStudent(res, req.body);
-        } else {
-            res.status(403).send({
-                success: false,
-                error: "only " + allow + " allow in this section."
-            });
-        }
-    });
-    app.post('/coopsys/v1/myprofile/picture', upload.single('file'), function(req, res) {
-        var allow = ["teacher","student"];
-        var id = req.decoded.access_id;
-        if(req.decoded.access_type == allow[0]){ 
-            TeacherController.uploadPicture(res, id, req.file);
-        } else if (req.decoded.access_type==allow[1]) {
-            StudentController.uploadPicture(res, id, req.file);
         } else {
             res.status(403).send({
                 success: false,

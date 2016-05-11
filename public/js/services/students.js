@@ -25,7 +25,6 @@
 	                method: 'POST',
 	                file: file
 	            });
-
 	        },
 	        delete: function(id) {
 	            return $http.delete('/coopsys/v1/student/' + id);
@@ -43,6 +42,20 @@
 	        },
 	        regisStudent : function(studentData) {
 	        	return $http.post('/coopsys/v1/register',studentData);
-	        }
+	        },
+	        getMyProfile: function() {
+	            return $http.get('/coopsys/v1/myprofile');
+	        },
+	        updateMyProfile: function(studentData) {
+	            return $http.put('/coopsys/v1/myprofile', studentData);
+	        },
+	        updateMyPicture: function(file) {
+	        	console.log("upload picture...");
+	            return Upload.upload({
+	                url: '/coopsys/v1/myprofile/picture',
+	                method: 'PUT',
+	                file: file
+	            });
+	        },
 	    }
 	}]);

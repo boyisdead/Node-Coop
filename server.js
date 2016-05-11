@@ -55,5 +55,5 @@ app.use(cookieParser());
 require('./app/routes.js')(app);
 
 // listen (start app with node server.js) ======================================
-app.listen(server_port, server_ip_address);
+app.listen(server_port);
 console.log("App listening on port " + server_port);
