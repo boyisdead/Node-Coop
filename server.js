@@ -14,7 +14,7 @@ var hashKey = require('./config/security');
 //var multiparty = require('multiparty');
 
 var server_ip_address = process.env.IP || '127.0.0.1'	
-var server_port  	 = process.env.PORT || 8080; 				// set the port
+var server_port  	 = process.env.PORT || 84; 				// set the port
 var methodOverride = require('method-override');
 
 var mkdirp = require('mkdirp');

@@ -46,6 +46,9 @@
 	        getMyProfile: function() {
 	            return $http.get('/coopsys/v1/myprofile');
 	        },
+	        getMyApply: function(){
+	        	return $http.get('/coopsys/v1/mystatus/apply');
+	        },
 	        updateMyProfile: function(studentData) {
 	            return $http.put('/coopsys/v1/myprofile', studentData);
 	        },

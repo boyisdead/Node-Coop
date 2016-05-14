@@ -1,4 +1,4 @@
-studentModule.controller('myDetailCtrl', ['$scope', '$rootScope', '$http', '$uibModal', '$log', '$location', '$anchorScroll', 'StudentsService', 'DocumentsService','OthersService', function($scope, $rootScope, $http, $uibModal, $log, $location, $anchorScroll, StudentsService, DocumentsService,OthersService) {
+studentModule.controller('myDetailCtrl', ['$scope', '$rootScope', '$http', '$uibModal', '$log', '$location', '$anchorScroll', 'StudentsService', 'DocumentsService', 'OthersService', function($scope, $rootScope, $http, $uibModal, $log, $location, $anchorScroll, StudentsService, DocumentsService, OthersService) {
 
     var getMyDetail = function() {
         $scope.loading = true;
@@ -11,8 +11,6 @@ studentModule.controller('myDetailCtrl', ['$scope', '$rootScope', '$http', '$uib
                 console.log("no success", err);
             });
     }
-
-    getMyDetail();
 
     $scope.openEditMyProfile = function() {
         var scope = $rootScope.$new();
@@ -36,11 +34,8 @@ studentModule.controller('myDetailCtrl', ['$scope', '$rootScope', '$http', '$uib
         });
     };
 
-    //////////////////////////////////////////////////////////////////////////
-    //  Attachment part
-    //////////////////////////////////////////////////////////////////////////
-
     $scope.loading = true;
+    $scope.sortField = "company.name";
     
     $scope.myAttachments = []
         ,$scope.currentPage = 1
@@ -62,7 +57,59 @@ studentModule.controller('myDetailCtrl', ['$scope', '$rootScope', '$http', '$uib
         });
     }
 
-    getMyAttachment();
+
+    $scope.order = function (field){
+        $scope.sortField = field;
+        $scope.reverse = ($scope.sortField === field) ? !$scope.reverse : false;
+    }
+
+    $scope.viewAttach = function(id){
+        DocumentsService.findMyAttach(id).success(function(data){
+            if(data.success){
+                $scope.currentViewAttach = data.result[0] || data.result;
+                $location.hash('detail');
+                // call $anchorScroll()
+                $anchorScroll();
+            }
+        });
+    }   
+
+    $scope.openAddAttachment = function() {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'view/modal/add_my_attachment_modal.html',
+            controller: 'addMyAttachmentCtrl'
+        });
+
+        modalInstance.result.then(function() {
+            $log.info('Modal dismissed at: ' + new Date());
+            getMyAttachment();
+        });
+    }
+    
+    $scope.openEditAttachment = function(id) {
+        console.log(id)
+        var scope = $rootScope.$new();
+            scope.params = {
+            attachmentId: id
+        };
+        var modalInstance = $uibModal.open({
+            scope: scope,
+            animation: true,
+            templateUrl: 'view/modal/edit_my_attachment_modal.html',
+            controller: 'editMyAttachmentCtrl'
+        });
+
+        modalInstance.result.then(function(data) {
+            $log.info('Modal dismissed at: ' + new Date());
+            console.log("data : ", data);
+            if(typeof data !='undefined' && data){
+                swal(data);
+                console.log("call swal");
+            }
+            getMyAttachment();
+        });
+    };
 
     $scope.deleteMyAttachment = function(id) {
 
@@ -99,52 +146,26 @@ studentModule.controller('myDetailCtrl', ['$scope', '$rootScope', '$http', '$uib
         });
     };
 
-    $scope.openAddAttachment = function() {
-        var modalInstance = $uibModal.open({
-            animation: true,
-            templateUrl: 'view/modal/add_my_attachment_modal.html',
-            controller: 'addMyAttachmentCtrl'
-        });
+    var getApplication = function () {
+        $scope.loading = true;
+        StudentsService.getMyApply().then(function(data) {
+            console.log("applications data retrieving success.");
+            console.log(data);
+            $scope.applyStatus = data.data.result.status;
+            $scope.applications = data.data.result.applications;
+            $scope.loading = false;
+        }, function(){
 
-        modalInstance.result.then(function() {
-            $log.info('Modal dismissed at: ' + new Date());
-            getMyAttachment();
         });
     }
 
-    $scope.openEditAttachment = function(id) {
-        console.log(id)
-        var scope = $rootScope.$new();
-            scope.params = {
-            attachmentId: id
-        };
-        var modalInstance = $uibModal.open({
-            scope: scope,
-            animation: true,
-            size: 'sm',
-            templateUrl: 'view/modal/edit_my_attachment_modal.html',
-            controller: 'editMyAttachmentCtrl'
-        });
+    $scope.viewApply= function(item){
+        $scope.currentViewApply = item
+    }   
 
-        modalInstance.result.then(function(data) {
-            $log.info('Modal dismissed at: ' + new Date());
-            console.log("data : ", data);
-            if(typeof data !='undefined' && data){
-                swal(data);
-                console.log("call swal");
-            }
-            getMyAttachment();
-        });
-    };
 
-    $scope.viewAttach = function(id){
-        DocumentsService.findMyAttach(id).success(function(data){
-            if(data.success){
-                $scope.currentViewAttach = data.result[0] || data.result;
-                $location.hash('detail');
-                // call $anchorScroll()
-                $anchorScroll();
-            }
-        });
-    }	
+    getMyDetail();
+    getMyAttachment();    
+    getApplication();
+
 }])
