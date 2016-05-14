@@ -33,6 +33,24 @@ studentModule.controller('studentCtrl', ['$scope', '$rootScope', '$http', '$uibM
     }
     getAcaYrs();
     getStudent();
+
+    $scope.toggleStudentStatus = function (){
+        $scope.currentViewStudent.status = !!!$scope.currentViewStudent.status;
+        StudentsService.update($scope.currentViewStudent).success(function(data) {
+            var title
+            if($scope.currentViewStudent.status)
+                title = "บันชีนี้สามารถใช้งานได้แล้ว!";
+            else
+                title = "ระงับการใช้งานบัญชีนี้แล้ว!";
+
+            swal({
+                title: title,
+                type: "success",
+                confirmButtonText: "ปิด"
+            });
+            $modalInstance.close();
+        });
+    }
     // DELETE ==================================================================
     // delete a student after click it
     $scope.deleteStudent = function(id) {

@@ -7,6 +7,7 @@ var applicationSchema = mongoose.Schema({
             "name" : { type: String },
             "_id" : { type: String, required: true },
         },
+        "mail_text" : { type : String },
         "apply_date": { type: Date, default: Date.now, required: true },
         "reply_date": { type: Date },
         "reply" : { type: Boolean, default: false, required: true},

@@ -1,138 +1,233 @@
 <div class="container">
     <div class="page-header">
-        <h2>ข้อมูลของฉัน
-            <small>
-                <a ng-click="openEditMyProfile()">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </a>
-            </small>
+        <h2>
+            ข้อมูลของฉัน
         </h2>
     </div>
-    <div class="row">
-        <div class="col-xs-12 detail-panel">
-            <div class="col-xs-12 col-sm-3 side-bar">
-                <div style="display:inline-block;width:100%">
-                    <img class="profile-display" ngf-thumbnail="myDetail.profile_picture || './images/no-profile.png'" alt="Profile image">
-                    <strong>Status</strong> <span ng-show="myDetail.status" class="label label-success">Active</span>
-                    <span ng-hide="myDetail.status" class="label label-danger">Inactive</span>
-                </div>
-                <div>
-                    <h4>
+    <uib-tabset active="active">
+        <uib-tab index="0" heading="Static title">
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-user"></i> ข้อมูลของฉัน 
+            </uib-tab-heading>
+            <div class="row">
+                <div class="col-xs-12 detail-panel">
+                    <div class="col-xs-12 col-sm-3 side-bar">
+                        <div style="display:inline-block;width:100%">
+                            <img class="profile-display" ngf-thumbnail="myDetail.profile_picture || './images/no-profile.png'" alt="Profile image">
+                            <strong>Status</strong> <span ng-show="myDetail.status" class="label label-success">Active</span>
+                            <span ng-hide="myDetail.status" class="label label-danger">Inactive</span>
+                        </div>
+                        <div>
+                            <h4>
+                        <span ng-bind="myDetail.name.title |capitalize"></span> 
                         <span ng-bind="myDetail.name.first || '-' |capitalize"></span> 
                         <span ng-bind="myDetail.name.last || '-' |capitalize"></span>
+                        <a ng-click="openEditMyProfile()">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
                     </h4>
-                    <ul class="contact">
-                        <li>
-                            <span class="glyphicon glyphicon-user"></span>
-                            ID <span ng-bind="myDetail._id"></span> 
-                            Sex <span ng-bind="myDetail.sex || '-' "></span>
-                        </li>
-                        <li>
-                            <span class="glyphicon glyphicon-education"></span> 
-                            Academic Year : <span class="label label-default" ng-bind="myDetail.academic_year || '-' "> </span>
-                            GPA : <span ng-class="{'label label-success': myDetail.gpa >= '1.75','label label-danger': myDetail.gpa < '1.75'}"ng-bind="myDetail.gpa || '-' "></span>
-                        </li>
-                    </ul>
+                            <ul class="contact">
+                                <li>
+                                    <span class="glyphicon glyphicon-user"></span> ID <span ng-bind="myDetail._id"></span> Sex <span ng-bind="myDetail.sex || '-' "></span>
+                                </li>
+                                <li>
+                                    <span class="glyphicon glyphicon-education"></span> Academic Year : <span class="label label-default" ng-bind="myDetail.academic_year || '-' "> </span> GPA : <span ng-class="{'label label-success': myDetail.gpa >= '1.75','label label-danger': myDetail.gpa < '1.75'}" ng-bind="myDetail.gpa || '-' "></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-8 main-detail" style="display:inline-block;">
+                        <div class="panel panel-default main-panel" style="display:inline-block;">
+                            <div class="panel-heading">Contact</div>
+                            <div class="panel-body">
+                                <ul class="contact">
+                                    <li><span class="glyphicon glyphicon-envelope"></span> <span ng-bind="myDetail.contact.email || '-' "></span></li>
+                                    <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="myDetail.contact.tel || '-' "></span></li>
+                                    <li><span class="glyphicon glyphicon-home"></span> <span ng-bind="myDetail.contact.address || '-' "></span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel panel-default main-panel" style="display:inline-block;">
+                            <div class="panel-heading">Emergency contact</div>
+                            <div class="panel-body">
+                                <ul class="contact">
+                                    <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="myDetail.emergency_contact.name.title + myDetail.emergency_contact.name.first + ' ' +  myDetail.emergency_contact.name.last || '-' "></span></li>
+                                    <li><span class="glyphicon glyphicon-glyphicon glyphicon-heart"></span> <span ng-bind="myDetail.emergency_contact.relationship || '-' |capitalize"></span></li>
+                                    <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="myDetail.emergency_contact.tel || '-' "></span></li>
+                                    <li><span class="glyphicon glyphicon-home"></span> <span ng-bind="myDetail.emergency_contact.address || '-' "></span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel panel-default main-panel" style="display:inline-block;" ng-if="!!myDetail.aptitudes">
+                            <div class="panel-heading">Aptitudes</div>
+                            <div class="panel-body">
+                                <ul class="contact" ng-repeat="skill in myDetail.aptitudes">
+                                    <li><span ng-bind="skill.subject|capitalize"></span> Lv.<span ng-bind="skill.level"></span></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="panel panel-default main-panel" style="display:inline-block;">
+                            <div class="panel-heading">Prefered Company
+                            </div>
+                            <div class="panel-body">
+                                <ol class="prefer">
+                                    <li><span ng-bind="myDetail.prefered_company.first || '-' |capitalize"></span></li>
+                                    <li><span ng-bind="myDetail.prefered_company.second || '-' "></span></li>
+                                    <li><span ng-bind="myDetail.prefered_company.third || '-' |capitalize"></span></li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="panel panel-default main-panel" style="width:100% !important" ng-if="!!myDetail.job">
+                            <div class="panel-heading">Job Detail
+                                <span ng-show="myDetail.job.status=='inactive'" class="label label-default right" ng-bind="myDetail.job.status || '-' | capitalize"></span>
+                                <span ng-show="myDetail.job.status=='active'" class="label label-success right" ng-bind="myDetail.job.status || '-' | capitalize"></span>
+                                <span ng-show="myDetail.job.status=='suspend'" class="label label-danger right" ng-bind="myDetail.job.status || '-' | capitalize"></span>
+                                <span ng-show="myDetail.job.status=='finished'" class="label label-info right" ng-bind="myDetail.job.status || '-' | capitalize"></span>
+                            </div>
+                            <div class="panel-body">
+                                <table>
+                                    <tr>
+                                        <th style="width:20%"><span>Company</span></th>
+                                        <td style="width:30%"><span ng-bind="myDetail.job.company || '-' |capitalize"></span> </td>
+                                        <th style="width:20%"><span>Welfares</span> </th>
+                                        <td style="width:30%">
+                                            <span ng-if="!!myDetail.job.welfares" ng-bind="myDetail.job.welfares |arrayToText"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><span>Work Site</span></th>
+                                        <td><span ng-bind="myDetail.job.work_site || '-' |capitalize"></span> </td>
+                                        <th><span>Payment</span></th>
+                                    </tr>
+                                    <tr>
+                                        <th><span>Job Position</span></th>
+                                        <td><span ng-bind="myDetail.job.position || '-' |capitalize"></span> </td>
+                                        <td>Method</td>
+                                        <td>
+                                            <span ng-bind="myDetail.job.payment.method || '-' |capitalize"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><span>Report Date</span> </th>
+                                        <td><span ng-bind="myDetail.job.report_date || '-' | date:'fullDate'"></span> </td>
+                                        <td>Period</td>
+                                        <td>
+                                            <span ng-bind="myDetail.job.payment.period || '-' |capitalize"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><span>Finish Date</span> </th>
+                                        <td><span ng-bind="myDetail.job.finish_date || '-' | date:'fullDate'"></span> </td>
+                                        <td>Amount per period</td>
+                                        <td>
+                                            <span ng-bind="myDetail.job.payment.amount_per_period || '-' |capitalize"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><span>Launch Date</span> </th>
+                                        <td><span ng-bind="myDetail.job.launch_date || '-' | date:'fullDate'"></span> </td>
+                                        <th><span>Note</span> </th>
+                                        <td><span ng-bind="myDetail.job.note || '-' |capitalize"></span> </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-8 main-detail" style="display:inline-block;">
-                <div class="panel panel-default main-panel" style="display:inline-block;">
-                    <div class="panel-heading">Contact</div>
-                    <div class="panel-body">
-                        <ul class="contact">
-                            <li><span class="glyphicon glyphicon-envelope"></span> <span ng-bind="myDetail.contact.email || '-' "></span></li>
-                            <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="myDetail.contact.tel || '-' "></span></li>
-                            <li><span class="glyphicon glyphicon-home"></span> <span ng-bind="myDetail.contact.address || '-' "></span></li>
-                        </ul>
+        </uib-tab>
+        <uib-tab index="1">
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-paperclip"></i> เอกสารประกอบการสมัคร
+            </uib-tab-heading>
+            <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div class="page-header">
+                <h1>จัดการเอกสาร</h1>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-6" style="position:relative;min-height:90px;">
+            <form class="form-inline" style="position:absolute;right:15px;bottom:5px;">
+                <button class="btn btn-default btn-sm" type="button" ng-click="openAddAttachment()">เพิ่มเอกสาร <span class="glyphicon glyphicon-plus"></span></button>
+                <div class="form-group">
+                    <div class="input-group input-group-sm" style="max-width:200px;">
+                        <span class="input-group-addon" id="searchBox"><span class="glyphicon glyphicon-search"></span></span>
+                        <input type="text" class="form-control" placeholder="Keyword" aria-describedby="searchBox" ng-model="searchKey">
                     </div>
                 </div>
-                <div class="panel panel-default main-panel" style="display:inline-block;">
-                    <div class="panel-heading">Emergency contact</div>
-                    <div class="panel-body">
-                        <ul class="contact">
-                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="myDetail.emergency_contact.name.title + myDetail.emergency_contact.name.first + ' ' +  myDetail.emergency_contact.name.last || '-' "></span></li>
-                            <li><span class="glyphicon glyphicon-glyphicon glyphicon-heart"></span> <span ng-bind="myDetail.emergency_contact.relationship || '-' |capitalize"></span></li>
-                            <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="myDetail.emergency_contact.tel || '-' "></span></li>
-                            <li><span class="glyphicon glyphicon-home"></span> <span ng-bind="myDetail.emergency_contact.address || '-' "></span></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="panel panel-default main-panel" style="display:inline-block;" ng-if="!!myDetail.aptitudes">
-                    <div class="panel-heading">Aptitudes</div>
-                    <div class="panel-body">
-                        <ul class="contact" ng-repeat="skill in myDetail.aptitudes">
-                            <li><span ng-bind="skill.subject|capitalize"></span> Lv.<span ng-bind="skill.level"></span></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="panel panel-default main-panel" style="display:inline-block;">
-                    <div class="panel-heading">Prefered Company
-                    </div>
-                    <div class="panel-body">
-                        <ol class="prefer">
-                            <li><span ng-bind="myDetail.prefered_company.first || '-' |capitalize"></span></li>
-                            <li><span ng-bind="myDetail.prefered_company.second || '-' "></span></li>
-                            <li><span ng-bind="myDetail.prefered_company.third || '-' |capitalize"></span></li>
-                        </ol>
-                    </div>
-                </div>
-                <div class="panel panel-default main-panel" style="width:100% !important" ng-if="!!myDetail.job">
-                    <div class="panel-heading">Job Detail 
-                        <span ng-show="myDetail.job.status=='inactive'" class="label label-default right" ng-bind="myDetail.job.status || '-' | capitalize"></span>
-                        <span ng-show="myDetail.job.status=='active'" class="label label-success right" ng-bind="myDetail.job.status || '-' | capitalize"></span>
-                        <span ng-show="myDetail.job.status=='suspend'" class="label label-danger right" ng-bind="myDetail.job.status || '-' | capitalize"></span>
-                        <span ng-show="myDetail.job.status=='finished'" class="label label-info right" ng-bind="myDetail.job.status || '-' | capitalize"></span>
-                    </div>
-                    <div class="panel-body">
-                        <table>
-                            <tr>
-                                <th style="width:20%"><span >Company</span></th>
-                                <td style="width:30%"><span ng-bind="myDetail.job.company || '-' |capitalize"></span> </td>
-
-                                <th style="width:20%"><span >Welfares</span> </th>
-                                <td style="width:30%">
-                                    <span ng-if="!!myDetail.job.welfares" ng-bind="myDetail.job.welfares |arrayToText"></span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th><span >Work Site</span></th>
-                                <td><span ng-bind="myDetail.job.work_site || '-' |capitalize"></span> </td>
-                                <th><span >Payment</span></th>
-                            </tr>
-                            <tr>
-                                <th><span >Job Position</span></th>
-                                <td><span ng-bind="myDetail.job.position || '-' |capitalize"></span> </td>
-                                <td>Method</td>
-                                <td>
-                                    <span ng-bind="myDetail.job.payment.method || '-' |capitalize"></span>
-                                </td>
-                            </tr>
-                             <tr>
-                                <th><span >Report Date</span> </th>
-                                <td><span ng-bind="myDetail.job.report_date || '-' | date:'fullDate'"></span> </td>
-                                <td>Period</td>
-                                <td>
-                                    <span ng-bind="myDetail.job.payment.period || '-' |capitalize"></span>
-                                </td>
-                            </tr>
-                             <tr>
-                                <th><span >Finish Date</span> </th>
-                                <td><span ng-bind="myDetail.job.finish_date || '-' | date:'fullDate'"></span> </td>
-                                <td>Amount per period</td>
-                                <td>
-                                    <span ng-bind="myDetail.job.payment.amount_per_period || '-' |capitalize"></span>
-                                </td>
-                             </tr>
-                             <tr>
-                                <th><span >Launch Date</span> </th>
-                                <td><span ng-bind="myDetail.job.launch_date || '-' | date:'fullDate'"></span> </td>
-                                <th><span >Note</span> </th>
-                                <td><span ng-bind="myDetail.job.note || '-' |capitalize"></span> </td>
-                             </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>        
+            </form>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xs-12 ">
+            <table class="table table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th class="filetype">ประเภท</th>
+                        <th class="">คำอธิบาย</th>
+                        <th class="action"></th>
+                        <th class="action"></th>
+                        <th class="action"></th>
+                        <th class="action"></th>
+                        <th class="action"></th>
+                        <th class="action"></th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="attachment in myAttachments  |filter:searchKey |startFrom:(currentPage - 1) * numPerPage:numPerPage">
+                    <tr ng-click="viewAttach(attachment._id)">
+                        <td>
+                            <span ng-bind="attachment.file_type"></span></a>
+                        </td>
+                        <td>
+                            <span ng-bind="attachment.description"></span>
+                        </td>
+                        <td>
+                            <span ng-class="{'label label-success': attachment.reviewed,'label label-danger': !attachment.reviewed }">R</span>
+                        </td>
+                        <td>
+                            <span ng-class="{'label label-success': attachment.status,'label label-danger': !attachment.status }">A</span>
+                        </td>
+                        <td ng-click="openEditAttachment(attachment._id)">
+                            <a><span class="glyphicon glyphicon-pencil"></span></a>
+                        </td>
+                        <td>
+                            <a href="{{attachment.file_path}}" target="_blank"><span class="glyphicon glyphicon-eye-open"></span></a>
+                        </td><td>
+                            <a href="{{attachment.file_path}}" download><span class="glyphicon glyphicon-download"></span></a>
+                        </td><td ng-click="deleteMyAttachment(attachment._id)">
+                            <a><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-center" ng-show="loading"><span class="fa fa-spinner fa-spin fa-3x"></span></p>
+            <uib-pagination ng-model="currentPage" total-items="totalMyAttachments" max-size="maxSize" items-per-page="numPerPage" boundary-links="true"></uib-pagination>
+        </div>
+    </div>
+    <div class="row" ng-show="!!currentViewAttach" id="detail">
+        <div class="col-xs-12 detail-panel">
+            <div class="col-xs-12 side-bar">
+                <h4>Owner : <span ng-bind="currentViewAttach.owner || '-' |capitalize"></span> </h4>
+                <ul class="contact">
+                    <li>
+                        <span class="glyphicon glyphicon-file"></span> Type : <span ng-bind="currentViewAttach.file_type || '-' |capitalize"></span>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-list-alt"></span> Description : <span ng-bind="currentViewAttach.description || '-' "></span>
+                    </li>
+                    <li>
+                        <span class="glyphicon glyphicon-ok"></span> Reviewed : <span ng-class="{'label label-success': currentViewAttach.reviewed,'label label-danger': !currentViewAttach.reviewed }" ng-bind="currentViewAttach.reviewed"> </span> Approval : <span ng-class="{'label label-success': currentViewAttach.status,'label label-danger': !currentViewAttach.status }" ng-bind="currentViewAttach.status"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+        </uib-tab>
+        <uib-tab index="2">
+            <uib-tab-heading>
+                <i class="glyphicon glyphicon-briefcase"></i> สถานะการส่งสมัคร
+            </uib-tab-heading>
+            I've got an HTML heading, and a select callback. Pretty cool!
+        </uib-tab>
+    </uib-tabset>
 </div>

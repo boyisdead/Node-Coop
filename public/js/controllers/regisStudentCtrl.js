@@ -27,6 +27,14 @@ studentModule.controller('regisStudentCtrl', ['$scope', '$modalInstance','Studen
                 errList += "คำนำหน้าชื่อ ไม่ถูกเลือก\n";
             }
 
+            if($scope.formData.name.title=="นาย"){
+                $scope.formData.sex = "ชาย";
+            } else if ($scope.formData.name.title == "นาง" || $scope.formData.name.title == "นางสาว"){
+                $scope.formData.sex = "หญิง";
+            } else {
+                errList += "คำนำหน้าชื่อ ไม่ถูกต้อง\n";
+            }
+            
             if (msg.first_name.$error.required) {
                 errList += "ชื่อ ไม่ถูกกรอก\n";
             }
@@ -70,20 +78,20 @@ studentModule.controller('regisStudentCtrl', ['$scope', '$modalInstance','Studen
     var regisStudent = function() {
         if ($scope.formData._id != undefined) {
             $scope.loading = true;
-            StudentsService.regisStudent($scope.formData).success(function(data) {
+            StudentsService.regisStudent($scope.formData).then(function(data) {
                 $scope.loading = false;
+                    sweetAlert("เสร็จสิ้น!", "กรุณารอรับรหัสยืนยันทางอีเมล์ที่ระบุ", 'success');
                 $modalInstance.close({success:true});
+            }, function(data){
+                console.log(data);
+                if(data.status==400)
+                    sweetAlert("เกิดข้อผิดพลาด!", "ข้อมูลการสมัครไม่ถูกต้อง กรุณาลองอีกครั้ง\n"+ data.data.message || data.data.error, 'error');
+                else if(data.status==500)
+                    sweetAlert("เกิดข้อผิดพลาด!", "เซิร์ฟเวอร์ขัดข้อง กรุณาลองอีกครั้งภายหน้า\n"+ data.data.message || data.data.error, 'error');
             });
         }
     };
-
-    $scope.sexChange = function () {
-        if ($scope.formData.name.title._id == 1)
-            $scope.formData.sex = "ชาย";
-        else 
-            $scope.formData.sex = "หญิง";
-    }
-
+    
     $scope.ok = function () {
     //can return something
     $modalInstance.close();

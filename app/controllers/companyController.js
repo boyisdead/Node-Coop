@@ -92,7 +92,7 @@ var updateCompany = function(res, item) {
                 error: err
             })
         if(!doc)
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false,
                 error: "Company not exist."
             })
@@ -129,7 +129,7 @@ var updateCompanyContact = function(res, owner, item){
                 message: "Something went wrong while retrieving. try again."
             })
         if(!doc)
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false,
                 message: "File not exist."
             })
@@ -162,7 +162,7 @@ var updateCompanyCoor = function(res, owner, item){
                 error: err
             })
         if(!doc)
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false,
                 message: "File not exist."
             })
@@ -192,7 +192,7 @@ var delCompany = function(res, item) {
                 message: "Something went wrong while retrieving. try again."
             })
         if(!doc)
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false,
                 message: "File not exist."
             })
@@ -276,7 +276,7 @@ var delCompanyPicture = function (res, owner, item) {
                 message: "Something went wrong while retrieving. try again."
             })
         if(!doc)
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false,
                 message: "File not exist."
             })

@@ -13,7 +13,6 @@
         </div>
         <div class="col-xs-12 col-sm-6" style="position:relative;min-height:90px;">
             <form class="form-inline" style="position:absolute;right:15px;bottom:5px;">
-                <button disabled class="btn btn-default btn-sm" type="button"><span class="glyphicon glyphicon-trash"></span></button>
                 <button class="btn btn-default btn-sm" type="button" ng-click="openAddStudent()">เพิ่มนักศึกษา <span class="glyphicon glyphicon-plus"></span></button>
                 <div class="form-group">
                     <div class="input-group input-group-sm" style="max-width:200px;">
@@ -85,6 +84,8 @@
                             GPA : <span ng-class="{'label label-success': currentViewStudent.gpa >= '1.75','label label-danger': currentViewStudent.gpa < '1.75'}"ng-bind="currentViewStudent.gpa || '-' "></span>
                         </li>
                     </ul>
+                    <button type="button" ng-if="!currentViewStudent.status" ng-click="toggleStudentStatus()" class="btn btn-success btn-lg btn-block">Activate this account</button>
+                    <button type="button" ng-if="currentViewStudent.status" ng-click="toggleStudentStatus()" class="btn btn-danger btn-lg btn-block">Deactivate this account</button>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-8 main-detail" style="display:inline-block;">

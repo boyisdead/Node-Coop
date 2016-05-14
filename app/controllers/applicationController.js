@@ -92,27 +92,10 @@ var getStudentAcceptStatus = function(res, item){
 
 // Create
 
-var createApplication = function(res, item) {
-    var newApplication = new Application();
-    console.log("create ite : ", item);
-    objectAssign(newApplication, item);
-    newApplication.save(function(err) {
-        if (err)
-            return res.status(500).send({
-                success:false, 
-                error:err
-            });
-        mailingStudentApplicant(item.student, item.company, item.attachments);
-        res.status(201).send({success: true});
-    });
-};
-
-
-var mailingStudentApplicant = function(student_id, company_id, attachmentList){
-    var attachmentList = attachmentList
-
+var createApplication = function(res, item){
+    
     Student.findOne({ 
-        _id : student_id 
+        _id : item.student 
     },{
         attachments: 1,
         contact: 1,
@@ -120,44 +103,61 @@ var mailingStudentApplicant = function(student_id, company_id, attachmentList){
         gpa: 1,
         sex: 1
     }, function(err, studentInfo){
-        if(err)
+        if(err) {
             return res.status(500).send({
-                success:false,
-                error: err
-            })
-        if(!studentInfo)
+                success:false, 
+                error:err
+            });
+        }
+        if(!studentInfo) {
             return res.status(400).send({
-                success: false,
+                success:false, 
                 error: {
                     message: "Student doesn't exist."
                 }
-            })
+            });
+        }
         var attach =[];
-        console.log("attachs: ", studentInfo.attachments, studentInfo.attachments.length>0, studentInfo.attachments.length, typeof attach);
+        //console.log("attachs: ", studentInfo.attachments, studentInfo.attachments.length>0, studentInfo.attachments.length, typeof attach);
         if(studentInfo.attachments && studentInfo.attachments.length>0)
-            attach = initialAttachment(studentInfo.attachments, attachmentList);
+            attach = initialAttachment(studentInfo.attachments, item.attachments);
         Company.findOne({
-            _id: company_id
+            _id: item.company._id
         },{
             contact: 1,
             coordinator: 1,
             name: 1
         }, function(err, companyInfo){
-            if(err)
+            if(err) {
                 return res.status(500).send({
-                    success:false,
-                    error: err
-                })
-            if(!companyInfo)
+                    success:false, 
+                    error:err
+                });
+            }
+            if(!companyInfo) { 
                 return res.status(400).send({
-                    success: false,
+                    success:false, 
                     error: {
                         message: "Company doesn't exist."
                     }
-                })
+                });
+            }
+
+            var newApplication = new Application();
+
+            objectAssign(newApplication, item);
+            newApplication.save(function(err) {
+                if (err)
+                    return res.status(500).send({
+                        success:false, 
+                        error:err
+                    });
+            }); 
+                
+
             var studentEmail = studentInfo.contact.email;
             var mailContent = "Student name : " + studentInfo.name.title + studentInfo.name.first + " " + studentInfo.name.last + "\n";
-            mailContent = mailContent + "ID : " + student_id + "\n";
+            mailContent = mailContent + "ID : " + studentInfo._id + "\n";
             mailContent = mailContent + "Email : " + studentEmail + " Tel : " + studentInfo.contact.tel + "\n";
             mailContent = mailContent + "GPA : " + studentInfo.gpa + "\n";
             mailContent = mailContent + "Sex : " + studentInfo.sex + "\n";
@@ -168,9 +168,9 @@ var mailingStudentApplicant = function(student_id, company_id, attachmentList){
                     name: 'CoopSys Admin',
                     address: 'nattawut_k@cmu.ac.th'
                 },
-                to : companyInfo.contact.email || companyInfo.coordinator.email || companyInfo.email + ', "' + companyInfo.contact.name.first  || companyInfo.coordinator.name.first + " " + companyInfo.contact.name.last  || companyInfo.coordinator.name.last+'"',
+                to : companyInfo.contact.email + ', "' + companyInfo.contact.name.first + " " + companyInfo.contact.name.last  +'"',
                 subject : "CS CMU Cooperative plan's student application",
-                text : mailContent,
+                text : mailContent + "\n" + item.mail_text,
                 attachments : attach
             }
             var mailStudentOption = { 
@@ -182,29 +182,30 @@ var mailingStudentApplicant = function(student_id, company_id, attachmentList){
                 subject : "You have been apply to " + companyInfo.name.full,
                 text : mailContent
             }
+
             MailController.sendMail(mailCompanyOption);
             MailController.sendMail(mailStudentOption);
+
+            res.status(201).send({success: true, message: "Application email has been sent to the Company"});
         })
-    });
+    })
 }
 
 var initialAttachment = function(attachments, needAttachments){
     attachments = attachments || [];
-    console.log("init : ",needAttachments);
     var result = [];
     var i = 0; 
     for(var i=0; i<attachments.length; i++){
-        console.log("doc"+i+" : " + attachments[i]._id, needAttachments.lastIndexOf(attachments[i]._id));
+        //console.log("doc"+i+" : " + attachments[i]._id, needAttachments.lastIndexOf(attachments[i]._id));
         if(needAttachments.lastIndexOf(attachments[i]._id.toString())>=0){
             var newItem= {};
             newItem.filename = attachments[i].file_name,
             newItem.path = "./public/" + attachments[i].file_path.substr(2);
             newItem.contentType = "application/pdf"
             result.push(newItem);
-            console.log(newItem)
+            //console.log(newItem)
         }
     }
-    console.log("att : ", result);
     return result;
 }
 
@@ -221,7 +222,7 @@ var updateApplication = function(res, item) {
             });
         if (!doc) {
             console.log("Not found - not update");
-            return res.status(404).send({
+            return res.status(400).send({
                 success:false, 
                 result:err
             });

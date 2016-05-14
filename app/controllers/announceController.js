@@ -69,7 +69,7 @@ var updateAnnounce = function(res, item, announcer) {
             return res.status(200).send({success:true});
         } else { 
             console.log("Not found - not update");
-            return res.status(404).send({success:false,error:err});
+            return res.status(400).send({success:false,error:err});
         }
     });
 };

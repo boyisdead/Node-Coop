@@ -118,9 +118,9 @@ var findStudentById = function(res, id) {
     getStudents(res, { _id: id }, {secretKey:0, attachments:0});
 };
 
-var getMyAdviser = function(res, id) {
-    console.log("Get adviser of %s", id);
-    Student.findOne({_id: id}, { adviser_id: 1 }, function(err, student){
+var getMyAdvisor = function(res, id) {
+    console.log("Get advisor of %s", id);
+    Student.findOne({_id: id}, { advisor_id: 1 }, function(err, student){
         if(err)
             return res.status(500).send({
                 success: false, 
@@ -128,13 +128,13 @@ var getMyAdviser = function(res, id) {
                 error: err, 
             });
         if(!student || typeof student == "undefined") 
-            return res.status(404).send({
+            return res.status(400).send({
                 success : false, 
                 message : "This Account no longer exists an database."
             });
-        console.log("Adviser of %s is ", id);
-        console.log(student.adviser_id);
-        Teacher.findOne({_id: student.adviser_id}, function (err, doc){
+        console.log("Advisor of %s is ", id);
+        console.log(student.advisor_id);
+        Teacher.findOne({_id: student.advisor_id}, function (err, doc){
             if(err)
                 return res.status(500).send({
                     success: false, 
@@ -142,7 +142,7 @@ var getMyAdviser = function(res, id) {
                     error: err, 
                 });
             if(!doc) {
-                return res.status(404).send({
+                return res.status(400).send({
                     success : false, 
                     message : "No Teacher was found."
                 });
@@ -157,16 +157,17 @@ var getMyAdviser = function(res, id) {
     });
 };
 
-var studentRegistration = function (res, item) { // wait for mailing module
+var studentRegistration = function (res, item) {
 
     if(!item._id)
         return res.status(400).send({
                 success: false, 
                 message: "No student id provide", 
-                error: {_id:{name:"Validation error",message:"No student id provide"}}, 
+                error: {_id:{name:"Validation error", message:"No student id provide"}}, 
             });
     Student.findOne({
-        _id: item._id
+        _id: item._id,
+        //"contact.email" : item.email
     }, function(err, doc){
         if(err)
             return res.status(500).send({
@@ -181,11 +182,6 @@ var studentRegistration = function (res, item) { // wait for mailing module
             newStudent.password = passwordHash.generate(item.password.toString());
             newStudent.save(function(err){
                 if(!err){
-// <<<<<<< HEAD
-//                     return res.status(201).send({
-//                         success: true, 
-//                         message: "Your account has been created."
-// =======
                     var mailOption = { 
                         from : "nattawut_k@cmu.ac.th",
                         to : item.contact.email,
@@ -198,7 +194,6 @@ var studentRegistration = function (res, item) { // wait for mailing module
                         success: true, 
                         message: "Your account has been created.",
                         result : mailRes
-// >>>>>>> nCoop-nodeMailer
                     });
                 }
                 return res.send(err);
@@ -299,8 +294,8 @@ var updateStudent = function(res, item) {
                 objectAssign(doc.contact, item.contact);
                 delete item.contact;
             }
-            if(item.documuents){
-                delete item.documuents;
+            if(item.attachments){
+                delete item.attachments;
             }
 
             objectAssign(doc, item);
@@ -318,7 +313,7 @@ var updateStudent = function(res, item) {
                 });
             });
         } else {
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false, 
                 message: "No Student was found."
             });
@@ -351,7 +346,7 @@ var activeStudent = function(res, student, key) {
         if(err)
             return res.status(500).send({success:false,error:err,message:"Something went wrong while finding Student. try again."});
         if(!doc)
-            return res.status(404).send({success:false,error:err,message:"Student doesn't exist."});
+            return res.status(400).send({success:false,error:err,message:"Student doesn't exist."});
         if(doc.secretKey==key){
             Student.findOneAndUpdate({_id:student},{status:true},function(err, doc){
             if(err)
@@ -383,7 +378,7 @@ var changePreferedCompany = function (res, owner, item) {
                     message: "Prefered companies updated."
                 });
             } else {
-                return res.status(404).send({
+                return res.status(400).send({
                     success: false, 
                     message: "No Student was found."
                 });
@@ -441,7 +436,7 @@ var uploadPicture = function(res, id, file){
                 });
                 
             } else {
-                return res.status(404).send({
+                return res.status(400).send({
                     success: false, 
                     message: "No Student was found."
                 });
@@ -466,7 +461,7 @@ var pwChangeStudent = function(res, item) {
             })
         }
         if (!doc) {
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false, 
                 message: "Account not found."
             })
@@ -504,7 +499,7 @@ var delStudent = function(res, item) {
                 error: err
             })
         if(!doc)
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false, 
                 error: "File not exist."
             })
@@ -793,9 +788,9 @@ var delAttachment = function (res, item){
                 error: err
             });
         if(!docs[0])
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false, 
-                error: "File not exist."
+                error: "Attachment not exist."
             })
         else {
             console.log("docs in findOne : ", docs);
@@ -832,21 +827,30 @@ var delAttachment = function (res, item){
 }
 
 var delMyAttachment = function (res, item, owner){
+    var newItem = new ObjectId(item);
     Student.aggregate([
         {$project:{"_id": 1, "attachments": 1}},
         {$unwind: "$attachments"},
-        {$match:{"attachments._id": newItem}}, 
         {$project:{
             "_id": "$attachments._id",
             "owner": "$_id"
-        }}], function(err, doc){
+            }
+        },
+        {$match:{"_id": newItem}}
+    ], function(err, docs){
+        console.log(docs, item, owner)
         if(err)
             return res.status(500).send({
                 success: false, 
                 message: "Something went wrong while removing. try again.", 
                 error: err
             });
-        if(doc[0].owner==owner){
+        if(!docs)
+            return res.status(400).send({
+                success: false, 
+                message: "Attachment not exist.", 
+            });
+        if(docs[0].owner == owner){
             delAttachment(res, item);
         }
     });
@@ -881,7 +885,7 @@ module.exports = {
 	'getStudents': getStudents, 
 	'getStudentByAcaYr': getStudentByAcaYr, 
     'findStudentById': findStudentById, 
-    'getMyAdviser': getMyAdviser, 
+    'getMyAdvisor': getMyAdvisor, 
 	'createStudent': createStudent, 
 	'updateStudent': updateStudent, 
 	// 'lockStuProfile': lockStuProfile, 

@@ -1,5 +1,8 @@
 documentModule.factory('DocumentsService', ['$http','Upload', function($http,Upload){
 	return{
+		create : function (docData) {
+			return $http.post('coopsys/v1/attachment/' + docData.owner);
+		},
 		get : function (){
 			return $http.get('/coopsys/v1/attachment');
 		},
@@ -17,6 +20,21 @@ documentModule.factory('DocumentsService', ['$http','Upload', function($http,Upl
 		},
 		delete : function (id){
 			return $http.delete('/coopsys/v1/attachment/'+ id);
+		},
+		createMyAttach : function (docData) {
+			return $http.post('/coopsys/v1/myattach', docData);
+		},
+		getMyAttach : function () {
+			return $http.get('/coopsys/v1/myattach');
+		},
+		findMyAttach : function (id) {
+			return $http.get('/coopsys/v1/myattach/' + id);
+		},
+		updateMyAttach : function (docData) {
+			return $http.put('/coopsys/v1/myattach', docData);
+		},
+		deleteMyAttach : function (id) {
+			return $http.delete('/coopsys/v1/myattach/' + id);
 		}
 	};
 }])

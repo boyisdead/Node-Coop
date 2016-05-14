@@ -20,8 +20,8 @@ var studentSchema = mongoose.Schema({
     "secretKey":{ type: mongoose.Schema.ObjectId },
     "gpa" : { type : Number },
     "date_of_birth" : { type : Date },
-    "adviser_id": { type: String, default: '' },
-    "sex": { type: String, default: '', enum : ['M','F','male','female','ชาย','หญิง'] },
+    "advisor_id": { type: String, default: '' },
+    "sex": { type: String, default: ''},
     "password": { type: String, default: '', required : true  },
     "academic_year": { type: String, default: this_year, required : true  },
     "status": {type: Boolean, default: false},
@@ -87,9 +87,9 @@ var studentSchema = mongoose.Schema({
 });
 
 studentSchema.pre('save', function(next) {
-    if(this.sex=='M' || this.sex.toLowerCase() == 'male')
+    if(this.sex=='M' || this.sex.toLowerCase() == 'male' || this.name.title == "นาย")
         this.sex = "ชาย";
-    else if(this.sex=='F' || this.sex.toLowerCase() == 'female')
+    else if(this.sex=='F' || this.sex.toLowerCase() == 'female' || this.name.title == "นาง"  || this.name.title == "นางสาว")
         this.sex = "หญิง";
     next();
 });

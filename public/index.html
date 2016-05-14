@@ -32,6 +32,7 @@
     <script src="js/controllers/editStudentAptitudeCtrl.js"></script>
     <script src="js/controllers/myDetailCtrl.js"></script>
     <script src="js/controllers/editMyDetailCtrl.js"></script>
+    <script src="js/controllers/activateCtrl.js"></script>
 
     <script src="js/controllers/teacherCtrl.js"></script>
     <script src="js/controllers/addTeacherCtrl.js"></script>
@@ -40,6 +41,8 @@
     <script src="js/controllers/documentCtrl.js"></script>
     <script src="js/controllers/addDocumentCtrl.js"></script>
     <script src="js/controllers/editDocumentCtrl.js"></script>
+    <script src="js/controllers/addMyAttachmentCtrl.js"></script>
+    <script src="js/controllers/editMyAttachmentCtrl.js"></script>
 
 
     <script src="js/controllers/companyCtrl.js"></script>
@@ -109,7 +112,7 @@
                     <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="studentList" ng-click="isCollapsed = !isCollapsed">Student</a></li>
                     <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="teacherList" ng-click="isCollapsed = !isCollapsed">Teacher</a></li>
                     <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="documentList" ng-click="isCollapsed = !isCollapsed">Document</a></li>
-                    <li><a ui-sref="conpanyList" ng-click="isCollapsed = !isCollapsed">Company</a></li>
+                    <li><a ui-sref="companyList" ng-click="isCollapsed = !isCollapsed">Company</a></li>
                     <li ng-if="currentUser.access_type == 'teacher'"><a ui-sref="applicationList" ng-click="isCollapsed = !isCollapsed">Application</a></li>
                     <li><a ui-sref="login" ng-click="isCollapsed = !isCollapsed"><span ng-show="!currentUser">Login</span><span ng-show="currentUser">Logout</span></a></li>
                 </ul>

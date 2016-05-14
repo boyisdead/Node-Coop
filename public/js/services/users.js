@@ -19,6 +19,9 @@ authenticationModule.factory('UsersService', ['$http', function($http){
 				if(loginType=="student"){
 					return $http.post('/coopsys/v1/login/student',loginData);
 				}
+			},
+			activateStudentAccount : function(student_id, activation_code){
+				return $http.get('/coopsys/v1/student/'+ student_id + '/activate/' + activation_code);
 			}
 		}
 }]);

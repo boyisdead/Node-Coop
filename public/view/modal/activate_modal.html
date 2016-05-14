@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h3 class="modal-title">ยืนยันการสมัคร</h3>
+</div>
+<div class="modal-body" style="padding-left:20px;padding-right:20px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2">
+                <p>
+                    การยืนยันการสมัครจะต้องใช้รหัสจากระบบที่ได้รับในอีเมล์ที่ระบุ <br>
+                </p>
+                <form class="form-inline" role="form" name="activationForm" novalidate>
+                    <div class="form-group">
+                        <label for="ID">รหัสนักศึกษา</label>
+                        <input type="text" class="form-control" id="ID" placeholder="Student ID" ng-model="activation._id" required/>
+                      </div>
+                    <div class="form-group">
+                        <label for="activationCode">รหัสยืนยัน</label>
+                        <input type="text" class="form-control" id="activationCode" placeholder="Paste code here" ng-model="activation.code" required/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="submit" ng-click="activateAccount()" class="btn btn-success">ยืนยัน</button>
+    <button type="reset" class="btn btn-warning" ng-click="activation = {}">ล้างค่า</button>
+    <button class="btn btn-default" ng-click="ok()">ปิด</button>
+</div>

@@ -76,7 +76,7 @@ module.exports = function(app) {
         OtherController.acadePosTypehead(res);
     });
 
-    app.get('/coopsys/v1/typehead/adviser', function(req, res) {
+    app.get('/coopsys/v1/typehead/advisor', function(req, res) {
         TeacherController.teacherTypehead(res);
     });
 
@@ -289,7 +289,7 @@ module.exports = function(app) {
         } else if (req.decoded.access_type==allow[1]) {
             console.log("student", req.body);
             delete req.body.job;
-            delete req.body.adviser_id;
+            delete req.body.advisor_id;
             delete req.body.secretKey;
             StudentController.updateStudent(res, req.body);
         } else {
@@ -327,9 +327,9 @@ module.exports = function(app) {
     //  \______/   \__|    \______/ \_______/ \________|\__|  \__|   \__|  
     //=================================================================================
 
-    // Get the token owner's adviser
-    app.get('/coopsys/v1/myadviser', function (req, res) {
-        StudentController.getMyAdviser(res, req.decoded.access_id);
+    // Get the token owner's advisor
+    app.get('/coopsys/v1/myadvisor', function (req, res) {
+        StudentController.getMyAdvisor(res, req.decoded.access_id);
     });
 
     // Get the token owner's job
@@ -378,7 +378,7 @@ module.exports = function(app) {
 
     // Edit the token owner's attachment
     app.put('/coopsys/v1/myattach', function (req, res) {
-        StudentController.uploadAttachment(res, req.body);
+        StudentController.updateAttachment(res, req.body);
     });
 
     // Delete the token owner's a specific attachment

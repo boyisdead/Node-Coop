@@ -158,7 +158,7 @@ var uploadPicture = function(res, id, item){
             }
             if (!doc){
                 fs.unlinkSync(tmp_path);
-                return res.status(404).send({
+                return res.status(400).send({
                     success: false,
                     message: "Account not found - not update"
                 })
@@ -214,7 +214,7 @@ var pwChangeTeacher = function(res, item) {
             })
         }
         if (!doc) {
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false,
                 message: "Account not found."
             })
@@ -254,7 +254,7 @@ var delTeacher = function(res, item) {
                 error :err
             });
         if (!doc)
-            return res.status(404).send({
+            return res.status(400).send({
                 success: false,
                 error: "Account not found"
             });
