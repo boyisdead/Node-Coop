@@ -8,14 +8,14 @@ studentModule.controller('addStudentCtrl', ['$scope', '$modalInstance','Students
         });
     };
 
-    var getAdvisor = function() {
-        OthersService.getAdvisor().success(function(advisors){
-            $scope.advisorList = advisors.result;
-        });
-    };
+    // var getAdvisor = function() {
+    //     OthersService.getAdvisor().success(function(advisors){
+    //         $scope.advisorList = advisors.result;
+    //     });
+    // };
 
     getTitleName();
-    getAdvisor();
+    // getAdvisor();
 
     $scope.validateForm = function(msg) {
         var errList = "";

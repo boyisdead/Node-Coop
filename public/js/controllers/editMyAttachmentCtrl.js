@@ -26,7 +26,6 @@ documentModule.controller('editMyAttachmentCtrl', ['$scope', '$modalInstance', '
     }
     var updateDocument = function() {
         console.log("Updating...");
-        $scope.formData.reviewed = true; 
         DocumentsService.updateMyAttach($scope.formData).success(function(data) {
             swal({
                 title: "บันทึก!",

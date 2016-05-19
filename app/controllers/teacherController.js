@@ -116,7 +116,7 @@ var updateTeacher = function(res, item) {
         if(item.name)
             objectAssign(doc.name, item.name);
         objectAssign(doc, item);
-        if (typeof item.password != 'undefined')
+        if (typeof item.password != 'undefined' && !passwordHash.isHashed(item.password))
             doc.password = passwordHash.generate(item.password.toString());
         console.log(doc);
         doc.save(function(err){

@@ -91,10 +91,8 @@ companyModule.controller('editCompanyCtrl', ['$scope','$modalInstance', 'Compani
         if (typeof $scope.formData != 'undefined') {
             if(msg.name_first.$error.required || msg.name_last.$error.required)
                 errList += "ชื่อ หรือ นามสกุลผู้ติดต่อ ไม่ถูกกรอก\n";
-            if(msg.telephone.$error.required)
-                errList += "เบอร์โทรศัพท์ ไม่ถูกกรอก\n";
-            if(msg.email.$error.required)
-                errList += "อีเมล์ ไม่ถูกกรอก\n";
+            if(msg.telephone.$error.required && msg.email.$error.required)
+                errList += "ช่องทางติดต่อ ไม่ถูกกรอก\n";
             if (errList != "") {
                 sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
             } else {

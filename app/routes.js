@@ -378,6 +378,8 @@ module.exports = function(app) {
 
     // Edit the token owner's attachment
     app.put('/coopsys/v1/myattach', function (req, res) {
+        delete req.body.reviewed;
+        delete req.body.status;
         StudentController.updateAttachment(res, req.body);
     });
 

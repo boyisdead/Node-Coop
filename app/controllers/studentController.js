@@ -47,18 +47,18 @@ var studentLogin = function(res, item, secretToken, expireTime) {
         if (err)
             return res.status(500).send(err);
         if (!student) 
-            return res.status(403).send({
+            return res.status(401).send({
                 success: false, // not found
                 message: 'Authentication failed. No Account was found.'
             });
         // check if password matches
         if (!passwordHash.verify(item.password, student.password)) {
-            return res.status(403).send({
+            return res.status(401).send({
                 success: false, // wrong password
                 message: 'Authentication failed. Invalid password.', 
             });
         } else if(!student.status){
-            return res.status(403).send({
+            return res.status(401).send({
                 success : false, 
                 message : "Account is inactive. Please activate."
 
@@ -269,7 +269,7 @@ var createStudent = function(res, item) {
 
 var updateStudent = function(res, item) {
     console.log("update student", item._id)
-    if (typeof item.password != 'undefined')
+    if (typeof item.password != 'undefined' && !passwordHash.isHashed(item.password.toString()))
         item.password = passwordHash.generate(item.password.toString());
 
     Student.findOne({

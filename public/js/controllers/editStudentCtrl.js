@@ -11,83 +11,143 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
             $scope.titleNameList = titledata.result;
         });
     };
-    var getAdvisor = function() {
-        OthersService.getAdvisor().success(function(advisors) {
-            $scope.advisorList = advisors.result;
-        });
-    };
+    // var getAdvisor = function() {
+    //     OthersService.getAdvisor().success(function(advisors) {
+    //         $scope.advisorList = advisors.result;
+    //     });
+    // };
 
     getTitleName();
-    getAdvisor();
+    // getAdvisor();
     $scope.getStudentData();
 
     $scope.validateForm = function(msg) {
         var errList = "";
         if (typeof $scope.formData != 'undefined') {
 
-            if (msg.first_name.$error.required) {
-                errList += "ชื่อภาษาไทย ไม่ถูกกรอก\n";
+            if (msg.s_fname.$error.required) {
+                errList += "ชื่อนักศึกษา ไม่ถูกกรอก\n";
             }
-            if (msg.last_name.$error.required) {
-                errList += "นามสกุลภาษาไทย ไม่ถูกกรอก\n";
+            if (msg.s_lname.$error.required) {
+                errList += "นามสกุลนักศึกษา ไม่ถูกกรอก\n";
+            }
+            if (msg.acaYr.$error.required) {
+                errList += "ปีที่สมัคร ไม่ถูกกรอก\n";
+            }
+            if (msg.email.$error.required) {
+                errList += "อีเมล์นักศึกษา ไม่ถูกกรอก\n";
+            }
+            if (msg.em_fname.$error.required) {
+                errList += "ชื่อผู้ติดต่อ ไม่ถูกกรอก\n";
+            }
+            if (msg.em_lname.$error.required) {
+                errList += "นามสกุลผู้ติดต่อ ไม่ถูกกรอก\n";
+            }
+            if (msg.em_relate.$error.required) {
+                errList += "ความเกี่ยวข้องกับผู้ติดต่อ ไม่ถูกกรอก\n";
+            }
+            if (msg.em_tel.$error.required) {
+                errList += "เบอร์โทรศัพท์ผู้ติดต่อ ไม่ถูกกรอก\n";
             }
             if (errList != "") {
-                sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
+                errorWarning(errList);
             } else {
-                console.log("aaa");
-                updateStudent();
+                if($scope.profile_pic&& typeof $scope.profile_pic!='undefined'){
+                    uploadPicture();
+                }
+                updateStudent($scope.formData, true);
             }
         }
     }
-    var updateStudent = function() {
-        console.log("Updating...");
-        StudentsService.update($scope.formData).success(function(data) {
-            if($scope.profile_pic&& typeof $scope.profile_pic!='undefined'){
-                StudentsService.uploadPicture($scope.profile_pic, $scope.formData._id).success(function(data2){
-                // some kind of alert
-                    console.log(data2);
-                });
+
+    $scope.validateProfileForm = function(msg) {
+        var errList = "";
+        if (typeof $scope.formData != 'undefined') {
+
+            if (msg.s_fname.$error.required) {
+                errList += "ชื่อนักศึกษา ไม่ถูกกรอก\n";
             }
-            swal({
-                title: "บันทึก!",
-                type: "success",
-                confirmButtonText: "ปิด"
-            });
-            $modalInstance.close();
-        });
-    };
+            if (msg.s_lname.$error.required) {
+                errList += "นามสกุลนักศึกษา ไม่ถูกกรอก\n";
+            }
+            if (msg.acaYr.$error.required) {
+                errList += "ปีที่สมัคร ไม่ถูกกรอก\n";
+            }
+            if (msg.gpa.$error.required) {
+                errList += "เกรดเฉลี่ย ไม่ถูกกรอก\n";
+            }
+            if (msg.email.$error.required) {
+                errList += "อีเมล์นักศึกษา ไม่ถูกกรอก\n";
+            }
+            if (errList != "") {
+                errorWarning(errList);
+            } else {
+                if($scope.profile_pic && typeof $scope.profile_pic!='undefined'){
+                    uploadPicture();
+                }
+                updateStudent({
+                    _id : $scope.formData._id,
+                    name: $scope.formData.name, 
+                    contact: $scope.formData.contact,
+                    gpa: $scope.formData.gpa,
+                    academic_year : $scope.formData.academic_year
+                }, false);
+            }
+        }
+    }
 
     $scope.validateEmcForm = function(msg) {
         var errList = "";
         if (typeof $scope.formData != 'undefined') {
 
-            if (msg.tname.$error.required) {
-                errList += "คำนำหน้าชื่อ ไม่ถูกกรอก\n";
+            if (msg.em_tname.$error.required) {
+                errList += "คำนำหน้าชื่อผู้ติดต่อ ไม่ถูกกรอก\n";
             }
-            if (msg.name_first.$error.required) {
-                errList += "ชื่อ ไม่ถูกกรอก\n";
+            if (msg.em_fname.$error.required) {
+                errList += "ชื่อผู้ติดต่อ ไม่ถูกกรอก\n";
             }
-            if (msg.name_last.$error.required) {
-                errList += "นามสกุล ไม่ถูกกรอก\n";
+            if (msg.em_lname.$error.required) {
+                errList += "นามสกุลผู้ติดต่อ ไม่ถูกกรอก\n";
             }
-            if (msg.relationship.$error.required) {
-                errList += "ความเกี่ยวข้อง ไม่ถูกกรอก\n";
+            if (msg.em_relate.$error.required) {
+                errList += "ความเกี่ยวข้องกับผู้ติดต่อ ไม่ถูกกรอก\n";
             }
-            if (msg.telephone.$error.required) {
-                errList += "เบอร์โทรศัพท์ ไม่ถูกกรอก\n";
+            if (msg.em_tel.$error.required) {
+                errList += "เบอร์โทรศัพท์ผู้ติดต่อ ไม่ถูกกรอก\n";
             }
             if (errList != "") {
-                sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
+                errorWarning(errList);
             } else {
-                updateStudent();
+                updateStudent({_id: $scope.formData._id ,emergency_contact : $scope.formData.emergency_contact}, false);
             }
         }
+    }
+
+    var updateStudent = function(updateData, modalClose) {
+        console.log("Updating..."); 
+        StudentsService.update(updateData).then(function(data) {
+            swal({
+                title: "บันทึก!",
+                type: "success",
+                confirmButtonText: "ปิด"
+            });
+            if(modalClose) $modalInstance.close();
+        }, function (resp){
+            console.log(resp);
+        });
+    };
+
+    var uploadPicture = function () {
+        StudentsService.uploadPicture($scope.profile_pic, $scope.formData._id).success(function(data){
+        // some kind of alert
+            console.log(data);
+        });
     }
 
     $scope.changPw = function(passwordData, id) {
         console.log("chng pw", passwordData, id);
         if (passwordData.newPassword == passwordData.password_confirm) {
-            StudentsService.pwChange(passwordData, id).success(function(data) {
+            StudentsService.update({_id: id, password: passwordData.newPassword }).success(function(data) {
                 if(data.success) { 
                     swal({
                         title: "ดำเนินการ!",
@@ -114,48 +174,10 @@ studentModule.controller('editStudentCtrl', ['$scope', '$modalInstance', 'Studen
         }
     }
 
-    $scope.lockStudent = function (id) {
-        var msg;
-        swal({
-            title:"ล็อคข้อมูล",
-            text:"ข้อมูลนักศึกษาจะถูกตรวจสอบความครบถ้วนเพื่อยืนยันสถานะ",
-            type:"warning",
-            showCancelButton: true,   
-            confirmButtonText: "ตรวจสอบและล็อคข้อมูลนี้",   
-            cancelButtonText: "ยกเลิก",
-            closeOnConfirm: false,
-            closeOnCancel: false
-        },function(isConfirm){
-            if(isConfirm){
-                StudentsService.lockProfile(id).success(function(data){
-                    if(data.success){
-                        msg = {
-                            title:"สำเร็จ!",
-                            text:"ข้อมูลนี้ถูกตรวจสอบและล็อคแล้ว",
-                            type:"success",
-                            confirmButtonText:"ปิด"
-                        };
-                    } else {
-                        msg = {
-                            title:"ล้มเหลว!",
-                            text:"มีบางอย่างผิดพลาด",
-                            type:"error",
-                            confirmButtonText:"ปิด"
-                        };
-                    }
-                    $modalInstance.close(msg);
-                });
-            } else {
-                msg = {
-                    title:"ยกเลิก!",
-                    text:"",
-                    type:"error",
-                    confirmButtonText:"ปิด"
-                };
-                $modalInstance.close(msg);
-            }
-        });
-    }
+    var errorWarning = function (errList){
+        if (errList != "") 
+            sweetAlert("ฟอร์มไม่ถูกต้อง!", errList, 'error');
+    } 
 
     $scope.ok = function() {
         //can return something

@@ -103,7 +103,7 @@
                     <div class="panel-heading">Emergency contact <a ng-click="openEditStudentEmc(currentViewStudent._id)"><span class="glyphicon glyphicon-pencil"></span></a> </div>
                     <div class="panel-body">
                         <ul class="contact">
-                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentViewCompany.emergency_contact.name.title + currentViewCompany.emergency_contact.name.first + ' ' +  currentViewCompany.emergency_contact.name.last || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentViewStudent.emergency_contact.name.title + currentViewStudent.emergency_contact.name.first + ' ' +  currentViewStudent.emergency_contact.name.last || '-' "></span></li>
                             <li><span class="glyphicon glyphicon-glyphicon glyphicon-heart"></span> <span ng-bind="currentViewStudent.emergency_contact.relationship || '-' |capitalize"></span></li>
                             <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="currentViewStudent.emergency_contact.tel || '-' "></span></li>
                             <li><span class="glyphicon glyphicon-home"></span> <span ng-bind="currentViewStudent.emergency_contact.address || '-' "></span></li>

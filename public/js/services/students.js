@@ -5,10 +5,10 @@
 	        get: function(acaYr) {
 	            if (typeof acaYr === "undefined" || acaYr == "ทั้งหมด") {
 	            	console.log("getAllStu");
-	                return $http.get('/coopsys/v1/student');
+	                return $http.get('/coopsys/v1/student?sort=_id');
 	            } else {
 	            	console.log("getStu",acaYr);
-	                return $http.get('/coopsys/v1/student/academic_year/' + acaYr);
+	                return $http.get('/coopsys/v1/student/academic_year/' + acaYr + '?sort=_id');
 	            }
 
 	        },

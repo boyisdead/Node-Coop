@@ -3,6 +3,7 @@ studentModule.controller('editMyDetailCtrl', ['$scope', '$modalInstance', 'Stude
     $scope.getMyDetail = function() {
         StudentsService.getMyProfile().success(function(data) {
             $scope.formData = data.result[0];
+            $scope.profile_pic =  $scope.formData.profile_pic;
         });
     }
 
@@ -56,7 +57,7 @@ studentModule.controller('editMyDetailCtrl', ['$scope', '$modalInstance', 'Stude
             if (errList != "") {
                 errorWarning(errList);
             } else {
-                if($scope.profile_pic&& typeof $scope.profile_pic!='undefined'){
+                if($scope.profile_pic && typeof $scope.profile_pic!='undefined'){
                     uploadPicture();
                 }
                 updateStudent($scope.formData, false);
@@ -72,7 +73,7 @@ studentModule.controller('editMyDetailCtrl', ['$scope', '$modalInstance', 'Stude
         var errList = "";
         if (typeof $scope.formData != 'undefined') {
 
-            if (!$scope.formData.prefered_company.first) {
+            if (!($scope.formData.prefered_company.first|| $scope.formData.prefered_company.second|| $scope.formData.prefered_company.third)) {
                 errList += "ต้องเลือกสถานประกอบการอย่างน้อย 1 แห่ง\n";
             }
             if (errList != "") {
@@ -138,8 +139,8 @@ studentModule.controller('editMyDetailCtrl', ['$scope', '$modalInstance', 'Stude
             if (msg.em_tel.$error.required) {
                 errList += "เบอร์โทรศัพท์ผู้ติดต่อ ไม่ถูกกรอก\n";
             }
-            if (!($scope.formData.first || $scope.formData.second || $scope.formData.third)) {
-                errList += "ไม่มีการเลือกสถานประกอบการ\n";
+            if (!($scope.formData.prefered_company.first|| $scope.formData.prefered_company.second|| $scope.formData.prefered_company.third)) {
+                errList += "ต้องเลือกสถานประกอบการอย่างน้อย 1แห่ง\n";
             }
             if (errList != "") {
                 errorWarning(errList);
@@ -166,13 +167,15 @@ studentModule.controller('editMyDetailCtrl', ['$scope', '$modalInstance', 'Stude
 
     var updateStudent = function(updateData, modalClose) {
         console.log("Updating...");
-        StudentsService.updateMyProfile(updateData).success(function(data) {
+        StudentsService.updateMyProfile(updateData).then(function(data) {
             swal({
                 title: "บันทึก!",
                 type: "success",
                 confirmButtonText: "ปิด"
             });
             if(modalClose) $modalInstance.close();
+        }, function (resp){
+            console.log(resp);
         });
     };
 
@@ -198,7 +201,8 @@ studentModule.controller('editMyDetailCtrl', ['$scope', '$modalInstance', 'Stude
             });
         } else {
             swal({
-                title: "การยืนยันรหัสผ่านไม่ถูกต้อง!",
+                title: "ล้มเหลว!",
+                text: "การยืนยันรหัสผ่านไม่ถูกต้อง!",
                 type: "error",
                 confirmButtonText: "ปิด"
             });

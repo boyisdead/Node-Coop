@@ -14,8 +14,8 @@
                             <label for="profile_pic">
                                 รูปนักศึกษา
                             </label>
-                            <img class="profile-display" ngf-thumbnail="formData.profile_picture || './images/no-profile.png'">
-                            <input type="file" class="form-control text-med" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="profile_pic" placeholder="รหัสนักศึกษา" id="profile_pic" name="profile_pic" ngf-resize-if="$width > 150 || $height > 180" ngf-resize="{width: 150, height: 180,requality: .8, centerCrop: true}">
+                            <img class="profile-display" ngf-thumbnail="profile_pic || formData.profile_picture || './images/no-profile.png'">
+                            <input type="file" class="form-control text-med" ngf-select ngf-multiple="false" ngf-pattern="'image/*'" accept="'image/*'" ng-model="profile_pic" placeholder="รหัสนักศึกษา" id="profile_pic" name="profile_pic" ngf-resize-if="$width > 150 || $height > 180" ngf-resize="{width: 300, height: 360,requality: .8, centerCrop: true}">
                         </div>
                         <div class="form-group">
                             <label for="fname">ชื่อ<span class="mini-red">*</span></label>

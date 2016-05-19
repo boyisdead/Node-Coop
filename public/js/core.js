@@ -31,7 +31,7 @@ var applicationModule = angular.module('coopEdAssist.application', []);
 
 mainModule.config(function($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise("home");
+    $urlRouterProvider.otherwise("login");
 
     $stateProvider
         .state('home', {

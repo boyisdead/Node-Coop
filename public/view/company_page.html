@@ -9,7 +9,7 @@
         </div>
         <div class="col-xs-12 col-sm-6" style="position:relative;min-height:90px;">
             <form class="form-inline" style="position:absolute;right:15px;bottom:5px;">
-                <button class="btn btn-default btn-sm" type="button" ng-click="openAddCompany()">เพิ่มสถานประกอบการ <span class="glyphicon glyphicon-plus"></span></button>
+                <button ng-if="currentUser.access_type == 'teacher'" class="btn btn-default btn-sm" type="button" ng-click="openAddCompany()">เพิ่มสถานประกอบการ <span class="glyphicon glyphicon-plus"></span></button>
                 <div class="form-group">
                     <div class="input-group input-group-sm" style="max-width:200px;">
                         <span class="input-group-addon" id="searchBox"><span class="glyphicon glyphicon-search"></span></span>
@@ -51,7 +51,7 @@
     </div>
     <div class="row" ng-show="currentViewCompany" id="detail">
         <div class="col-xs-12 detail-panel">
-            <div class="col-xs-12 col-sm-3 side-bar">
+            <div class="col-xs-12 col-sm-5 side-bar">
                 <div style="display:inline-block;width:100%">
                     <h4>
                         <span ng-bind="currentViewCompany.name.full || '-' |capitalize"></span> 
@@ -80,8 +80,8 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-8 main-detail" style="display:inline-block;">
-                <div class="panel panel-default main-panel" style="display:inline-block;">
+            <div class="col-xs-12 col-sm-6 main-detail" style="display:block;">
+                <div class="panel panel-default main-panel" style="display:block;">
                     <div class="panel-heading">
                         Contact                         
                         <a ng-if="currentUser.access_type == 'teacher'" ng-click="openEditCompanyContact(currentViewCompany._id)">
@@ -97,7 +97,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="panel panel-default main-panel" style="display:inline-block;">
+                <div class="panel panel-default main-panel" style="display:block;">
                     <div class="panel-heading">
                         Coordinator
                         <a ng-if="currentUser.access_type == 'teacher'" ng-click="openEditCompanyCoordinator(currentViewCompany._id)">
@@ -106,14 +106,14 @@
                     </div>
                     <div class="panel-body">
                         <ul class="contact">
-                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentViewCompany.coordinator.name.title + currentViewCompany.contact.name.first + ' ' +  currentViewCompany.contact.name.last || '-' "></span></li>
+                            <li><span class="glyphicon glyphicon-user"></span> <span ng-bind="currentViewCompany.coordinator.name.title + currentViewCompany.coordinator.name.first + ' ' +  currentViewCompany.coordinator.name.last || '-' "></span></li>
                             <li><span class="glyphicon glyphicon-briefcase"></span> <span ng-bind="currentViewCompany.coordinator.position || '-' "></span></li>
                             <li><span class="glyphicon glyphicon-envelope"></span> <span ng-bind="currentViewCompany.coordinator.email || '-' "></span></li>
                             <li><span class="glyphicon glyphicon-earphone"></span> <span ng-bind="currentViewCompany.coordinator.tel || '-' "></span></li>
                         </ul>
                     </div>
                 </div>
-            </div>        
+            </div> 
         </div>
     </div>
 </div>

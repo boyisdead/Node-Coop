@@ -8,17 +8,17 @@
                 <div class="col-sm-6 form-column">
                     <div class="form-group">
                         <label for="tname">คำนำหน้าชื่อ <span class="mini-red">*</span></label>
-                        <select class="form-control title-name" id="tname" name="tname" ng-model="formData.emergency_contact.name.title" ng-options="titleName.th as titleName.th for titleName in titleNameList" required>
+                        <select class="form-control title-name" id="em_tname" name="em_tname" ng-model="formData.emergency_contact.name.title" ng-options="titleName.th as titleName.th for titleName in titleNameList" required>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="name_first">ชื่อ <span class="mini-red">*</span></label>
-                        <input type="text" class="form-control text-med" ng-model="formData.emergency_contact.name.first" placeholder="Name" id="name_first" name="name_first" autocomplete="off" required>
-                        <input type="text" class="form-control text-med" ng-model="formData.emergency_contact.name.last" placeholder="Lastname" id="name_last" name="name_last" autocomplete="off" required>
+                        <input type="text" class="form-control text-med" ng-model="formData.emergency_contact.name.first" placeholder="Name" id="em_fname" name="em_fname" autocomplete="off" required>
+                        <input type="text" class="form-control text-med" ng-model="formData.emergency_contact.name.last" placeholder="Lastname" id="em_lname" name="em_lname" autocomplete="off" required>
                     </div>
                     <div class="form-group">
                         <label for="relationship">ความเกี่ยวข้อง <span class="mini-red">*</span></label>
-                        <input class="form-control text-med" ng-model="formData.emergency_contact.relationship" placeholder="Relationship" id="relationship" name="relationship" autocomplete="off" required> </textarea>
+                        <input class="form-control text-med" ng-model="formData.emergency_contact.relationship" placeholder="Relationship" id="em_relate" name="em_relate" autocomplete="off" required> </textarea>
                     </div>
                 </div>
                 <div class="col-sm-6 form-column">
@@ -26,7 +26,7 @@
                     <div class="form-group">
                         <label for="telephone">เบอร์โทรศัพท์ <span class="mini-red"> *</span></label><span class="mini-gray"> *ตัวเลขไม่มี '-' </span>
                         <div class="form-inline">
-                            <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.emergency_contact.tel" placeholder="Telephone" id="telephone" name="telephone" autocomplete="off" required/>
+                            <input type="text" pattern="^[0-9]*$" class="form-control text-short" ng-model="formData.emergency_contact.tel" placeholder="Telephone" id="em_tel" name="em_tel" autocomplete="off" required/>
                         </div>
                     </div>
                     <div class="form-group">

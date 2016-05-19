@@ -91,6 +91,11 @@ studentSchema.pre('save', function(next) {
         this.sex = "ชาย";
     else if(this.sex=='F' || this.sex.toLowerCase() == 'female' || this.name.title == "นาง"  || this.name.title == "นางสาว")
         this.sex = "หญิง";
+
+    if(this.prefered_company.first=="" || typeof this.prefered_company.first == "undefined"){
+        this.prefered_company.first = this.prefered_company.second
+        this.prefered_company.second = this.prefered_company.third
+    }
     next();
 });
 
